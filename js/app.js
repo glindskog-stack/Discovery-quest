@@ -253,6 +253,15 @@ function renderGoalPill() {
   const label = I18n.t(key, { current, target: progress.target });
   $("goal-pill").textContent = `${progress.met ? "✅" : "🎯"} ${label}`;
   $("goal-pill").classList.toggle("goal-pill-met", progress.met);
+  renderStreakPill();
+}
+
+function renderStreakPill() {
+  const el = $("streak-pill");
+  const n = state.streak.current;
+  el.textContent = `🔥 ${I18n.plural("streak_pill.days", n)}`;
+  el.title = I18n.t("streak_pill.title", { n: state.streak.longest });
+  el.classList.toggle("streak-pill-lit", n > 0);
 }
 
 function renderActiveProfileTag() {
@@ -653,12 +662,29 @@ $("close-focus").addEventListener("click", leaveFocusScreen);
 $("focus-start-bottom").addEventListener("click", leaveFocusScreen);
 
 function renderFocusScreen() {
+  $("difficulty-reset-status").classList.add("hidden");
   renderBreadthToggle();
   renderTopicChips();
   renderRegionChips();
   renderSubjectDomainOptions();
   renderSubjectRequests();
 }
+
+// Difficulty auto-adjusts per domain as you play (Engine.recordResponse
+// nudges state.tier up/down on correct/miss); this is a manual override
+// for "it's drifted somewhere I don't want" — resets every domain's tier
+// to the chosen level in one shot, same effect as the onboarding pick.
+document.querySelectorAll("#difficulty-reset-choice .choice-btn-lg").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const level = Number(btn.dataset.value);
+    DOMAIN_ORDER.forEach((d) => (state.tier[d] = level));
+    Storage.saveState(activeProfile.id, state);
+    const levelKey = level === 1 ? "difficulty.easy.title" : level === 2 ? "difficulty.medium.title" : "difficulty.hard.title";
+    const status = $("difficulty-reset-status");
+    status.textContent = I18n.t("focus.difficulty_reset_confirm", { level: I18n.t(levelKey) });
+    status.classList.remove("hidden");
+  });
+});
 
 function renderBreadthToggle() {
   document.querySelectorAll(".breadth-option").forEach((btn) => {

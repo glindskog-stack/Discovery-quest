@@ -90,7 +90,10 @@
         </div>
       </header>
 
-      <button id="goal-pill" class="goal-pill" data-i18n-title="goal_pill.title"></button>
+      <div class="pill-row">
+        <button id="goal-pill" class="goal-pill" data-i18n-title="goal_pill.title"></button>
+        <div id="streak-pill" class="streak-pill"></div>
+      </div>
 
       <div id="domain-badge" class="domain-badge"></div>
 
@@ -138,6 +141,17 @@
 
       <div class="focus-content">
         <p id="focus-intro" class="focus-intro-hint hidden" data-i18n="focus.first_run_hint"></p>
+
+        <div class="focus-block">
+          <div class="focus-block-title" data-i18n="focus.difficulty_label"></div>
+          <p class="focus-hint" data-i18n="focus.difficulty_hint"></p>
+          <div id="difficulty-reset-choice" class="choice-row">
+            <button type="button" class="choice-btn-lg" data-value="1"><span data-i18n="difficulty.easy.title"></span><span data-i18n="difficulty.easy.sub"></span></button>
+            <button type="button" class="choice-btn-lg" data-value="2"><span data-i18n="difficulty.medium.title"></span><span data-i18n="difficulty.medium.sub"></span></button>
+            <button type="button" class="choice-btn-lg" data-value="3"><span data-i18n="difficulty.hard.title"></span><span data-i18n="difficulty.hard.sub"></span></button>
+          </div>
+          <p id="difficulty-reset-status" class="focus-hint hidden"></p>
+        </div>
 
         <div class="focus-block">
           <div class="focus-block-title" data-i18n="focus.range_label"></div>

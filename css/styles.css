@@ -431,6 +431,13 @@ button {
   gap: 8px;
 }
 
+.pill-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
 .goal-pill {
   align-self: flex-start;
   background: var(--surface);
@@ -441,13 +448,31 @@ button {
   font-size: 12.5px;
   font-weight: 700;
   padding: 7px 14px;
-  margin-bottom: 14px;
   cursor: pointer;
 }
 
 .goal-pill.goal-pill-met {
   border-color: var(--status-good);
   color: var(--text-primary);
+}
+
+.streak-pill {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 7px 14px;
+  opacity: 0.6;
+  transition: opacity 0.15s ease, border-color 0.15s ease;
+}
+
+.streak-pill.streak-pill-lit {
+  border-color: #ff9d2e;
+  color: var(--text-primary);
+  opacity: 1;
 }
 
 .domain-badge {
