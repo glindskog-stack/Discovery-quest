@@ -1,68 +1,67 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Rocket Lab mascot: a cream labrador with pixel sunglasses, a bandana, and its tongue out">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Rocket Lab mascot: a cream labrador with floppy ears, pixel sunglasses, a bandana, and its tongue out">
 
   <!-- everything tilts together for a cocky, jaunty pose; no background fill -->
-  <g transform="rotate(-6 256 294)">
+  <g transform="rotate(-6 256 292)">
 
     <!-- bandana: peeking out from behind the jaw -->
-    <path d="M 312 400 L 348 411 L 308 432 Z" fill="#D4FF00" stroke="#0A0A0F" stroke-width="4" stroke-linejoin="round" />
-    <circle cx="312" cy="400" r="5" fill="#0A0A0F" opacity="0.85" />
+    <path d="M 330 372 L 368 384 L 326 402 Z" fill="#D4FF00" stroke="#0A0A0F" stroke-width="4" stroke-linejoin="round" />
+    <circle cx="330" cy="372" r="5" fill="#0A0A0F" opacity="0.85" />
 
-    <!-- ears (behind head) — deepened a shade for silhouette contrast, hugging the slim head -->
-    <ellipse cx="158" cy="264" rx="44" ry="112" fill="#E5CE9C" transform="rotate(-18 158 264)" />
-    <ellipse cx="354" cy="264" rx="44" ry="112" fill="#E5CE9C" transform="rotate(18 354 264)" />
+    <!-- ears (behind head) — wide, floppy, hanging down like a real lab's, not pointy -->
+    <path d="M 158 195 C 108 202 80 252 84 312 C 87 348 96 378 121 385 C 140 390 149 361 149 320 C 150 279 153 231 158 195 Z" fill="#E5CE9C" />
+    <path d="M 354 195 C 404 202 432 252 428 312 C 425 348 416 378 391 385 C 372 390 363 361 363 320 C 362 279 359 231 354 195 Z" fill="#E5CE9C" />
 
-    <!-- fur tuft: spiky cowlick, drawn under the head so only the tips poke out -->
-    <path d="M 264 176 L 273 124 L 282 178 Z" fill="#E4C98A" />
-    <path d="M 279 180 L 291 100 L 302 180 Z" fill="#E4C98A" />
-    <path d="M 296 178 L 307 128 L 316 176 Z" fill="#E4C98A" />
+    <!-- head: broad oval, friendly not slim -->
+    <ellipse cx="256" cy="288" rx="134" ry="130" fill="#F7ECD6" />
 
-    <!-- head: slim oval, not round -->
-    <ellipse cx="256" cy="294" rx="108" ry="150" fill="#F7ECD6" />
+    <!-- rosy cheeks for warmth -->
+    <ellipse cx="196" cy="338" rx="20" ry="13" fill="#FFACC2" opacity="0.5" />
+    <ellipse cx="316" cy="338" rx="20" ry="13" fill="#FFACC2" opacity="0.5" />
 
     <!-- brow: peeking above the shades for a bit of attitude -->
-    <path d="M 194 236 Q 210 222 226 234" stroke="#E4D3AC" stroke-width="7" fill="none" stroke-linecap="round" />
-    <path d="M 286 234 Q 302 222 318 236" stroke="#E4D3AC" stroke-width="7" fill="none" stroke-linecap="round" />
+    <path d="M 190 228 Q 208 214 226 226" stroke="#E4D3AC" stroke-width="7" fill="none" stroke-linecap="round" />
+    <path d="M 286 226 Q 304 214 322 228" stroke="#E4D3AC" stroke-width="7" fill="none" stroke-linecap="round" />
 
     <!-- sunglasses: pixel / "deal with it" meme style, 8-bit block lenses -->
-    <line x1="176" y1="250" x2="154" y2="240" stroke="#14171C" stroke-width="9" stroke-linecap="round" />
-    <line x1="336" y1="250" x2="358" y2="240" stroke="#14171C" stroke-width="9" stroke-linecap="round" />
-    <rect x="245" y="266" width="19" height="8" fill="#14171C" />
+    <line x1="156" y1="244" x2="132" y2="234" stroke="#14171C" stroke-width="9" stroke-linecap="round" />
+    <line x1="356" y1="244" x2="380" y2="234" stroke="#14171C" stroke-width="9" stroke-linecap="round" />
+    <rect x="246" y="264" width="20" height="8" fill="#14171C" />
 
     <!-- left lens: pixel-stepped silhouette -->
-    <rect x="192" y="242" width="40" height="8" fill="#14171C" />
-    <rect x="184" y="250" width="56" height="8" fill="#14171C" />
-    <rect x="176" y="258" width="16" height="8" fill="#14171C" />
-    <rect x="192" y="258" width="8" height="8" fill="#FFFFFF" />
-    <rect x="200" y="258" width="48" height="8" fill="#14171C" />
-    <rect x="176" y="266" width="72" height="8" fill="#14171C" />
-    <rect x="176" y="274" width="72" height="8" fill="#14171C" />
-    <rect x="184" y="282" width="56" height="8" fill="#14171C" />
-    <rect x="192" y="290" width="40" height="8" fill="#14171C" />
+    <rect x="176" y="234" width="50" height="10" fill="#14171C" />
+    <rect x="166" y="244" width="70" height="10" fill="#14171C" />
+    <rect x="156" y="254" width="20" height="10" fill="#14171C" />
+    <rect x="176" y="254" width="10" height="10" fill="#FFFFFF" />
+    <rect x="186" y="254" width="60" height="10" fill="#14171C" />
+    <rect x="156" y="264" width="90" height="10" fill="#14171C" />
+    <rect x="156" y="274" width="90" height="10" fill="#14171C" />
+    <rect x="166" y="284" width="70" height="10" fill="#14171C" />
+    <rect x="176" y="294" width="50" height="10" fill="#14171C" />
 
     <!-- right lens: mirrored pixel-stepped silhouette -->
-    <rect x="280" y="242" width="40" height="8" fill="#14171C" />
-    <rect x="272" y="250" width="56" height="8" fill="#14171C" />
-    <rect x="264" y="258" width="48" height="8" fill="#14171C" />
-    <rect x="312" y="258" width="8" height="8" fill="#FFFFFF" />
-    <rect x="320" y="258" width="16" height="8" fill="#14171C" />
-    <rect x="264" y="266" width="72" height="8" fill="#14171C" />
-    <rect x="264" y="274" width="72" height="8" fill="#14171C" />
-    <rect x="272" y="282" width="56" height="8" fill="#14171C" />
-    <rect x="280" y="290" width="40" height="8" fill="#14171C" />
+    <rect x="286" y="234" width="50" height="10" fill="#14171C" />
+    <rect x="276" y="244" width="70" height="10" fill="#14171C" />
+    <rect x="336" y="254" width="20" height="10" fill="#14171C" />
+    <rect x="326" y="254" width="10" height="10" fill="#FFFFFF" />
+    <rect x="266" y="254" width="60" height="10" fill="#14171C" />
+    <rect x="266" y="264" width="90" height="10" fill="#14171C" />
+    <rect x="266" y="274" width="90" height="10" fill="#14171C" />
+    <rect x="276" y="284" width="70" height="10" fill="#14171C" />
+    <rect x="286" y="294" width="50" height="10" fill="#14171C" />
 
-    <!-- snout: narrow, more muzzle-like -->
-    <ellipse cx="256" cy="356" rx="64" ry="58" fill="#FBF6E9" />
+    <!-- snout: broad and blocky, like a real lab's muzzle -->
+    <ellipse cx="256" cy="346" rx="82" ry="62" fill="#FBF6E9" />
 
     <!-- nose: dusty pink-brown, not black -->
-    <ellipse cx="256" cy="322" rx="17" ry="12" fill="#B8806C" />
-    <circle cx="250" cy="317" r="3.5" fill="#FFFFFF" opacity="0.6" />
+    <ellipse cx="256" cy="312" rx="22" ry="15" fill="#B8806C" />
+    <circle cx="247" cy="306" r="4.5" fill="#FFFFFF" opacity="0.6" />
 
     <!-- mouth -->
-    <path d="M 256 336 L 256 348 Q 256 360 236 366 Q 218 370 210 358" stroke="#8A5A46" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-    <path d="M 256 348 Q 256 360 276 366 Q 294 370 302 358" stroke="#8A5A46" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 256 328 L 256 342 Q 256 356 232 362 Q 210 366 200 352" stroke="#8A5A46" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 256 342 Q 256 356 280 362 Q 302 366 312 352" stroke="#8A5A46" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
 
     <!-- tongue, hanging out -->
-    <path d="M 244 362 Q 244 408 256 414 Q 268 408 268 362 Z" fill="#FA92A8" />
-    <line x1="256" y1="368" x2="256" y2="402" stroke="#E4728A" stroke-width="4" stroke-linecap="round" />
+    <path d="M 242 358 Q 242 406 256 412 Q 270 406 270 358 Z" fill="#FA92A8" />
+    <line x1="256" y1="364" x2="256" y2="402" stroke="#E4728A" stroke-width="4" stroke-linecap="round" />
   </g>
 </svg>
