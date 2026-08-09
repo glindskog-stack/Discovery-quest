@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Discovery Quest</title>
+  <meta name="description" content="An adaptive curiosity app for math/science, writing, code, and trivia. No grading, just leveling up." />
+  <meta name="theme-color" content="#0a0a0f" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div id="app" class="app">
+
+    <!-- Profile picker -->
+    <section id="screen-profiles" class="screen" data-screen="profiles">
+      <header class="brand">
+        <h1>Discovery Quest</h1>
+        <p class="brand-tagline">Two slots. Zero grading. Pick yours.</p>
+      </header>
+      <div id="profile-list" class="profile-list"></div>
+      <form id="new-profile-form" class="new-profile-form hidden">
+        <label for="new-profile-name">Name</label>
+        <input id="new-profile-name" name="name" maxlength="24" placeholder="What do we call you?" autocomplete="off" required />
+        <div id="emoji-picker" class="emoji-picker"></div>
+        <div class="form-actions">
+          <button type="button" id="cancel-new-profile" class="btn btn-ghost">Cancel</button>
+          <button type="submit" class="btn btn-primary">Let's go</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Main quest loop -->
+    <section id="screen-quest" class="screen hidden" data-screen="quest">
+      <header class="quest-header">
+        <button id="switch-profile" class="btn btn-ghost btn-small" title="Switch profile">⇄</button>
+        <div id="active-profile-tag" class="active-profile-tag"></div>
+        <div class="quest-header-actions">
+          <button id="open-focus" class="btn btn-ghost btn-small" title="Choose what to drill into">Focus</button>
+          <button id="open-dashboard" class="btn btn-ghost btn-small">Stats</button>
+        </div>
+      </header>
+
+      <div id="domain-badge" class="domain-badge"></div>
+
+      <div id="quest-card" class="quest-card">
+        <p id="quest-prompt" class="quest-prompt"></p>
+        <div id="quest-choices" class="quest-choices"></div>
+        <div id="quest-freeresponse" class="quest-freeresponse hidden">
+          <textarea id="freeresponse-input" rows="4" placeholder="Type here. No wrong answers."></textarea>
+          <div id="wordcount" class="wordcount"></div>
+          <button id="submit-freeresponse" class="btn btn-primary">Submit</button>
+        </div>
+        <div id="enjoyment-picker" class="enjoyment-picker hidden">
+          <p>How was that?</p>
+          <div class="enjoyment-options">
+            <button class="btn enjoyment-btn" data-value="1">🥱</button>
+            <button class="btn enjoyment-btn" data-value="2">🙂</button>
+            <button class="btn enjoyment-btn" data-value="3">😃</button>
+            <button class="btn enjoyment-btn" data-value="4">🔥</button>
+          </div>
+        </div>
+        <div id="quest-feedback" class="quest-feedback hidden"></div>
+      </div>
+
+      <div class="quest-footer">
+        <button id="next-prompt" class="btn btn-primary hidden">Next</button>
+        <button id="skip-prompt" class="btn btn-ghost btn-small">Skip this one</button>
+      </div>
+    </section>
+
+    <!-- Dashboard -->
+    <section id="screen-dashboard" class="screen hidden" data-screen="dashboard">
+      <header class="dashboard-header">
+        <button id="close-dashboard" class="btn btn-ghost btn-small">Back</button>
+        <h2 id="dashboard-title"></h2>
+      </header>
+      <div id="dashboard-content" class="dashboard-content"></div>
+    </section>
+
+    <!-- Focus: what to drill into -->
+    <section id="screen-focus" class="screen hidden" data-screen="focus">
+      <header class="dashboard-header">
+        <button id="close-focus" class="btn btn-ghost btn-small">Back</button>
+        <h2>Focus</h2>
+      </header>
+
+      <div class="focus-content">
+        <div class="focus-block">
+          <div class="focus-block-title">Range</div>
+          <div id="breadth-toggle" class="breadth-toggle">
+            <button class="breadth-option" data-breadth="broad">Broad<span>bounce around everything</span></button>
+            <button class="breadth-option" data-breadth="narrow">Narrow<span>drill into what's picked</span></button>
+          </div>
+        </div>
+
+        <div id="focus-topics" class="focus-block"></div>
+
+        <div id="focus-regions-block" class="focus-block">
+          <div class="focus-block-title">Trivia regions</div>
+          <div id="focus-regions" class="chip-row"></div>
+        </div>
+
+        <div class="focus-block">
+          <div class="focus-block-title">Write in a subject</div>
+          <p class="focus-hint">Doesn't drop in instantly — it queues for the next content pass. See what's already queued below.</p>
+          <form id="subject-request-form" class="subject-request-form">
+            <select id="subject-domain" aria-label="Domain"></select>
+            <input id="subject-text" maxlength="80" placeholder="e.g. K-pop history, orbital mechanics, Rust" autocomplete="off" />
+            <button type="submit" class="btn btn-primary btn-small">Add</button>
+          </form>
+          <div id="subject-requests-list" class="subject-requests-list"></div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/cloud.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
