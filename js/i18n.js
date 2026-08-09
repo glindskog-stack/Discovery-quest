@@ -12,7 +12,7 @@ const I18N_LANGS = [
 ];
 
 const I18N_STRINGS = {
-  "brand.tagline": { en: "No grades. No limits. Just get silly good.", sv: "Inga betyg. Inga gränser. Bli sjukt bra.", fr: "Pas de notes. Pas de limites. Juste deviens trop fort.", de: "Keine Noten. Keine Grenzen. Werd einfach verdammt gut.", es: "Sin notas. Sin límites. Ponte ridículamente bueno." },
+  "brand.tagline": { en: "No grades. No limits. Just get silly good at something.", sv: "Inga betyg. Inga gränser. Bli bara stört bra på nåt.", fr: "Pas de notes. Pas de limites. Juste deviens trop fort en un truc.", de: "Keine Noten. Keine Grenzen. Werd einfach verdammt gut in irgendwas.", es: "Sin notas. Sin límites. Ponte ridículamente bueno en algo." },
 
   "onboarding.name_label": { en: "What do we call you?", sv: "Vad ska vi kalla dig?", fr: "Comment on t'appelle ?", de: "Wie sollen wir dich nennen?", es: "¿Cómo te llamamos?" },
   "onboarding.name_placeholder": { en: "Your name", sv: "Ditt namn", fr: "Ton prénom", de: "Dein Name", es: "Tu nombre" },

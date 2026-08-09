@@ -177,6 +177,10 @@ button {
   margin: 0;
   color: var(--text-secondary);
   font-size: 15px;
+  white-space: nowrap;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 @keyframes glitch-flicker {

@@ -70,6 +70,7 @@ function setLanguage(code) {
   localizeDomains();
   localizeAchievements();
   I18n.applyStaticDOM();
+  fitTaglineToOneLine();
   document.documentElement.lang = code;
   renderLangPicker();
   renderProfileList();
@@ -80,6 +81,20 @@ function setLanguage(code) {
   }
   $("close-focus").textContent = I18n.t(firstRunFocus ? "btn.start_quest" : "btn.back");
   $("focus-start-bottom").textContent = I18n.t(firstRunFocus ? "btn.start_quest" : "btn.back");
+}
+
+// Some translations run much longer than others (German especially), so a
+// fixed or viewport-only font-size can't guarantee one line across all 5
+// languages. Measure the actual overflow and shrink until it fits instead.
+function fitTaglineToOneLine() {
+  const el = $("brand-tagline");
+  if (!el) return;
+  let size = 15;
+  el.style.fontSize = size + "px";
+  while (el.scrollWidth > el.clientWidth && size > 9) {
+    size -= 0.5;
+    el.style.fontSize = size + "px";
+  }
 }
 
 // ---------- Onboarding wizard ----------
@@ -778,6 +793,8 @@ function boot() {
   localizeDomains();
   localizeAchievements();
   I18n.applyStaticDOM();
+  fitTaglineToOneLine();
+  window.addEventListener("resize", fitTaglineToOneLine);
   renderLangPicker();
   $("toggle-sound").textContent = Sound.isMuted() ? "🔇" : "🔊";
   renderProfileList();
