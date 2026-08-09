@@ -22,32 +22,35 @@
     <path d="M 190 228 Q 208 214 226 226" stroke="#E4D3AC" stroke-width="7" fill="none" stroke-linecap="round" />
     <path d="M 286 226 Q 304 214 322 228" stroke="#E4D3AC" stroke-width="7" fill="none" stroke-linecap="round" />
 
-    <!-- sunglasses: pixel / "deal with it" meme style, 8-bit block lenses -->
-    <line x1="156" y1="244" x2="132" y2="234" stroke="#14171C" stroke-width="9" stroke-linecap="round" />
-    <line x1="356" y1="244" x2="380" y2="234" stroke="#14171C" stroke-width="9" stroke-linecap="round" />
-    <rect x="246" y="264" width="20" height="8" fill="#14171C" />
+    <!-- sunglasses: true "deal with it" meme style — solid black bar per
+         lens with a pixelated checkerboard "melt" along the bottom edge -->
+    <line x1="158" y1="245" x2="134" y2="236" stroke="#14171C" stroke-width="9" stroke-linecap="round" />
+    <line x1="354" y1="245" x2="378" y2="236" stroke="#14171C" stroke-width="9" stroke-linecap="round" />
 
-    <!-- left lens: pixel-stepped silhouette -->
-    <rect x="176" y="234" width="50" height="10" fill="#14171C" />
-    <rect x="166" y="244" width="70" height="10" fill="#14171C" />
-    <rect x="156" y="254" width="20" height="10" fill="#14171C" />
-    <rect x="176" y="254" width="10" height="10" fill="#FFFFFF" />
-    <rect x="186" y="254" width="60" height="10" fill="#14171C" />
-    <rect x="156" y="264" width="90" height="10" fill="#14171C" />
-    <rect x="156" y="274" width="90" height="10" fill="#14171C" />
-    <rect x="166" y="284" width="70" height="10" fill="#14171C" />
-    <rect x="176" y="294" width="50" height="10" fill="#14171C" />
+    <!-- left lens -->
+    <rect x="158" y="240" width="88" height="33" fill="#14171C" />
+    <rect x="158" y="273" width="11" height="11" fill="#14171C" />
+    <rect x="180" y="273" width="11" height="11" fill="#14171C" />
+    <rect x="202" y="273" width="11" height="11" fill="#14171C" />
+    <rect x="224" y="273" width="11" height="11" fill="#14171C" />
+    <rect x="169" y="284" width="11" height="11" fill="#14171C" />
+    <rect x="191" y="284" width="11" height="11" fill="#14171C" />
+    <rect x="213" y="284" width="11" height="11" fill="#14171C" />
+    <rect x="235" y="284" width="11" height="11" fill="#14171C" />
 
-    <!-- right lens: mirrored pixel-stepped silhouette -->
-    <rect x="286" y="234" width="50" height="10" fill="#14171C" />
-    <rect x="276" y="244" width="70" height="10" fill="#14171C" />
-    <rect x="336" y="254" width="20" height="10" fill="#14171C" />
-    <rect x="326" y="254" width="10" height="10" fill="#FFFFFF" />
-    <rect x="266" y="254" width="60" height="10" fill="#14171C" />
-    <rect x="266" y="264" width="90" height="10" fill="#14171C" />
-    <rect x="266" y="274" width="90" height="10" fill="#14171C" />
-    <rect x="276" y="284" width="70" height="10" fill="#14171C" />
-    <rect x="286" y="294" width="50" height="10" fill="#14171C" />
+    <!-- bridge -->
+    <rect x="246" y="251" width="20" height="11" fill="#14171C" />
+
+    <!-- right lens: mirrored -->
+    <rect x="266" y="240" width="88" height="33" fill="#14171C" />
+    <rect x="343" y="273" width="11" height="11" fill="#14171C" />
+    <rect x="321" y="273" width="11" height="11" fill="#14171C" />
+    <rect x="299" y="273" width="11" height="11" fill="#14171C" />
+    <rect x="277" y="273" width="11" height="11" fill="#14171C" />
+    <rect x="332" y="284" width="11" height="11" fill="#14171C" />
+    <rect x="310" y="284" width="11" height="11" fill="#14171C" />
+    <rect x="288" y="284" width="11" height="11" fill="#14171C" />
+    <rect x="266" y="284" width="11" height="11" fill="#14171C" />
 
     <!-- snout: broad and blocky, like a real lab's muzzle -->
     <ellipse cx="256" cy="346" rx="82" ry="62" fill="#FBF6E9" />

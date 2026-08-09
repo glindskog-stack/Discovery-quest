@@ -33,10 +33,10 @@ const I18N_STRINGS = {
   "goal.count10.sub": { en: "10 prompts", sv: "10 frågor", fr: "10 questions", de: "10 Aufgaben", es: "10 preguntas" },
   "goal.count20.title": { en: "Daily 20", sv: "Dagliga 20", fr: "20 par jour", de: "Täglich 20", es: "20 al día" },
   "goal.count20.sub": { en: "20 prompts", sv: "20 frågor", fr: "20 questions", de: "20 Aufgaben", es: "20 preguntas" },
+  "goal.time5.title": { en: "5 min", sv: "5 min", fr: "5 min", de: "5 Min", es: "5 min" },
+  "goal.time5.sub": { en: "timed", sv: "tidsstyrt", fr: "chronométré", de: "zeitgesteuert", es: "cronometrado" },
   "goal.time10.title": { en: "10 min", sv: "10 min", fr: "10 min", de: "10 Min", es: "10 min" },
   "goal.time10.sub": { en: "timed", sv: "tidsstyrt", fr: "chronométré", de: "zeitgesteuert", es: "cronometrado" },
-  "goal.time20.title": { en: "20 min", sv: "20 min", fr: "20 min", de: "20 Min", es: "20 min" },
-  "goal.time20.sub": { en: "timed", sv: "tidsstyrt", fr: "chronométré", de: "zeitgesteuert", es: "cronometrado" },
 
   "btn.back": { en: "Back", sv: "Tillbaka", fr: "Retour", de: "Zurück", es: "Atrás" },
   "btn.cancel": { en: "Cancel", sv: "Avbryt", fr: "Annuler", de: "Abbrechen", es: "Cancelar" },

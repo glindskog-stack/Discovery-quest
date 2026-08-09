@@ -1055,6 +1055,10 @@ button {
   gap: 26px;
 }
 
+.focus-content.has-floating-cta {
+  padding-bottom: 88px;
+}
+
 .focus-intro-hint {
   margin: -10px 0 0;
   padding: 12px 14px;
@@ -1066,8 +1070,18 @@ button {
   font-weight: 600;
 }
 
+/* Floating, not inline: pinned to the viewport bottom so it's reachable no
+   matter how far you've scrolled through topics — nobody should have to
+   hunt for the way out of the first-run scope step. */
 .focus-start-cta {
-  width: 100%;
+  position: fixed;
+  left: 50%;
+  bottom: calc(16px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  width: calc(100% - 36px);
+  max-width: 524px;
+  z-index: 40;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55), 0 0 0 2px var(--brand);
 }
 
 .focus-block-title {

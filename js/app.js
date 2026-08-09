@@ -81,6 +81,7 @@ function setLanguage(code) {
     if (currentNode) renderNode(currentNode);
   }
   $("close-focus").textContent = I18n.t(firstRunFocus ? "btn.start_quest" : "btn.back");
+  $("focus-start-bottom").textContent = I18n.t(firstRunFocus ? "btn.start_quest" : "btn.back");
 }
 
 // ---------- Onboarding wizard ----------
@@ -618,7 +619,11 @@ function openFocusScreen(fresh) {
   firstRunFocus = fresh;
   renderFocusScreen();
   $("focus-intro").classList.toggle("hidden", !fresh);
-  $("focus-start-bottom").classList.toggle("hidden", !fresh);
+  // Floating CTA is always available — a topic/region list this long
+  // shouldn't require scrolling all the way back up or down to leave.
+  $("focus-start-bottom").classList.remove("hidden");
+  $("focus-start-bottom").textContent = I18n.t(fresh ? "btn.start_quest" : "btn.back");
+  document.querySelector(".focus-content").classList.add("has-floating-cta");
   $("close-focus").textContent = I18n.t(fresh ? "btn.start_quest" : "btn.back");
   showScreen("focus");
 }
