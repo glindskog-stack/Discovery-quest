@@ -6,6 +6,7 @@
 const STORAGE_PREFIX = "dq:";
 const PROFILES_KEY = STORAGE_PREFIX + "profiles";
 const ACTIVE_KEY = STORAGE_PREFIX + "active";
+const REMINDER_KEY = STORAGE_PREFIX + "reminder"; // device-level, like language — a push subscription belongs to the browser install, not a profile
 
 function stateKey(profileId) {
   return `${STORAGE_PREFIX}state:${profileId}`;
@@ -80,6 +81,14 @@ const Storage = {
 
   setActiveProfileId(id) {
     localStorage.setItem(ACTIVE_KEY, id);
+  },
+
+  getReminderPrefs() {
+    return readJSON(REMINDER_KEY, { enabled: false, hour: 18, minute: 0 });
+  },
+
+  setReminderPrefs(prefs) {
+    writeJSON(REMINDER_KEY, prefs);
   },
 
   defaultState() {

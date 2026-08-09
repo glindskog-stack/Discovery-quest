@@ -154,6 +154,16 @@
         </div>
 
         <div class="focus-block">
+          <div class="focus-block-title" data-i18n="focus.reminder_label"></div>
+          <p class="focus-hint" data-i18n="focus.reminder_hint"></p>
+          <div class="reminder-row">
+            <input id="reminder-time" type="time" value="18:00" />
+            <button id="reminder-toggle" type="button" class="btn btn-primary btn-small"></button>
+          </div>
+          <p id="reminder-status" class="focus-hint"></p>
+        </div>
+
+        <div class="focus-block">
           <div class="focus-block-title" data-i18n="focus.range_label"></div>
           <div id="breadth-toggle" class="breadth-toggle">
             <button class="breadth-option" data-breadth="broad"><span data-i18n="focus.broad_title"></span><span data-i18n="focus.broad_sub"></span></button>
@@ -218,6 +228,7 @@
   <script src="js/engine.js"></script>
   <script src="js/dashboard.js"></script>
   <script src="js/cloud.js"></script>
+  <script src="js/push.js"></script>
   <script src="js/sound.js"></script>
   <script src="js/app.js"></script>
 </body>

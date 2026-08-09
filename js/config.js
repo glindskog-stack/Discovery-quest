@@ -11,3 +11,12 @@ window.DISCOVERY_QUEST_CLOUD = {
   url: "https://trtpuwluedasftpaclmq.supabase.co",
   anonKey: "sb_publishable_3eCZx2OW-vuLffCuROwyDg_yGe2Pf6D",
 };
+
+// Daily reminder push notifications — also optional, also a no-op until
+// sql/push_reminders.sql is applied and a scheduled sender is deployed.
+// See docs/PUSH_REMINDERS_SETUP.md. This public key is safe to ship (it's
+// the whole point of VAPID — only the matching private key, which never
+// leaves the server, can actually sign a push).
+window.DISCOVERY_QUEST_PUSH = {
+  vapidPublicKey: "BInbJEw1hLO8lG0KxeUr0MG6OS7GzVot6A7iOKNM7C9aDZQV_j1_LRNq0yc5n6d7w4Yt2XkXvm9prb79d2PNDvo",
+};

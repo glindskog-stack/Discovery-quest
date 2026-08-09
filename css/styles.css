@@ -1242,6 +1242,29 @@ button {
   gap: 8px;
 }
 
+.reminder-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.reminder-row input[type="time"] {
+  flex: 1;
+  min-width: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.reminder-row input[type="time"]:focus {
+  outline: none;
+  border-color: var(--brand);
+}
+
 .subject-request-item {
   display: flex;
   align-items: center;

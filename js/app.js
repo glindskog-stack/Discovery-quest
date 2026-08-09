@@ -668,7 +668,68 @@ function renderFocusScreen() {
   renderRegionChips();
   renderSubjectDomainOptions();
   renderSubjectRequests();
+  renderReminderState();
 }
+
+// ---------- Daily reminder ----------
+
+function pad2(n) {
+  return String(n).padStart(2, "0");
+}
+
+function renderReminderState() {
+  const btn = $("reminder-toggle");
+  const status = $("reminder-status");
+  const input = $("reminder-time");
+  const prefs = Storage.getReminderPrefs();
+  input.value = `${pad2(prefs.hour)}:${pad2(prefs.minute)}`;
+
+  if (!Push.isSupported()) {
+    btn.disabled = true;
+    input.disabled = true;
+    status.textContent = I18n.t("focus.reminder_unsupported");
+    return;
+  }
+
+  input.disabled = false;
+  btn.disabled = false;
+
+  if (Push.permission() === "denied") {
+    btn.disabled = true;
+    status.textContent = I18n.t("focus.reminder_denied");
+    return;
+  }
+
+  btn.textContent = I18n.t(prefs.enabled ? "btn.reminder_disable" : "btn.reminder_enable");
+  status.textContent = prefs.enabled
+    ? I18n.t("focus.reminder_status_on", { time: `${pad2(prefs.hour)}:${pad2(prefs.minute)}` })
+    : I18n.t("focus.reminder_status_off");
+}
+
+$("reminder-toggle").addEventListener("click", async () => {
+  const btn = $("reminder-toggle");
+  const status = $("reminder-status");
+  const prefs = Storage.getReminderPrefs();
+  btn.disabled = true;
+
+  if (prefs.enabled) {
+    await Push.disable();
+    Storage.setReminderPrefs({ ...prefs, enabled: false });
+    renderReminderState();
+    return;
+  }
+
+  const [hourStr, minuteStr] = $("reminder-time").value.split(":");
+  const hour = Number(hourStr), minute = Number(minuteStr);
+  const result = await Push.enable(hour, minute);
+  if (result.ok) {
+    Storage.setReminderPrefs({ enabled: true, hour, minute });
+    renderReminderState();
+    return;
+  }
+  status.textContent = I18n.t(result.reason === "denied" ? "focus.reminder_denied" : "focus.reminder_error");
+  btn.disabled = false;
+});
 
 // Difficulty auto-adjusts per domain as you play (Engine.recordResponse
 // nudges state.tier up/down on correct/miss); this is a manual override
