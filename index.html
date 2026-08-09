@@ -126,11 +126,13 @@
     <!-- Focus: what to drill into -->
     <section id="screen-focus" class="screen hidden" data-screen="focus">
       <header class="dashboard-header">
-        <button id="close-focus" class="btn btn-ghost btn-small" data-i18n="btn.back"></button>
+        <button id="close-focus" class="btn btn-ghost btn-small"></button>
         <h2 data-i18n="focus.title"></h2>
       </header>
 
       <div class="focus-content">
+        <p id="focus-intro" class="focus-intro-hint hidden" data-i18n="focus.first_run_hint"></p>
+
         <div class="focus-block">
           <div class="focus-block-title" data-i18n="focus.range_label"></div>
           <div id="breadth-toggle" class="breadth-toggle">
@@ -156,6 +158,8 @@
           </form>
           <div id="subject-requests-list" class="subject-requests-list"></div>
         </div>
+
+        <button id="focus-start-bottom" class="btn btn-primary focus-start-cta hidden" data-i18n="btn.start_quest"></button>
       </div>
     </section>
 

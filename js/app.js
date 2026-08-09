@@ -16,6 +16,7 @@ let onboardingStepIndex = 0;
 let onboardingDraft = {};
 let toastQueue = [];
 let toastShowing = false;
+let firstRunFocus = false; // true while showing Focus as the pre-quest scope step for a brand-new profile
 
 function $(id) {
   return document.getElementById(id);
@@ -79,6 +80,7 @@ function setLanguage(code) {
     renderGoalPill();
     if (currentNode) renderNode(currentNode);
   }
+  $("close-focus").textContent = I18n.t(firstRunFocus ? "btn.start_quest" : "btn.back");
 }
 
 // ---------- Onboarding wizard ----------
@@ -181,7 +183,7 @@ function completeOnboarding() {
   const profile = Storage.createProfile(name, emoji, onboardingDraft);
   $("onboarding").classList.add("hidden");
   $("profile-list").classList.remove("hidden");
-  selectProfile(profile.id);
+  selectProfile(profile.id, { fresh: true });
 }
 
 function buildEmojiPicker() {
@@ -210,7 +212,7 @@ function escapeHTML(str) {
   return div.innerHTML;
 }
 
-function selectProfile(id) {
+function selectProfile(id, opts = {}) {
   activeProfile = Storage.listProfiles().find((p) => p.id === id);
   Storage.setActiveProfileId(id);
   state = Storage.getState(id);
@@ -218,10 +220,16 @@ function selectProfile(id) {
   sessionEntry.xpGained = 0;
   Storage.saveState(id, state);
   startSessionTimer();
-  showScreen("quest");
   renderActiveProfileTag();
   renderGoalPill();
-  loadNextNode();
+  if (opts.fresh) {
+    // Brand-new profile: let them shape scope before the first prompt shows,
+    // instead of dropping them straight into a random question.
+    openFocusScreen(true);
+  } else {
+    showScreen("quest");
+    loadNextNode();
+  }
 }
 
 function renderGoalPill() {
@@ -442,23 +450,68 @@ function trackAnswered(node, xpGained) {
   if (!sessionEntry.domainsTouched.includes(node.domain)) sessionEntry.domainsTouched.push(node.domain);
 }
 
+// Every answer gets a headline (randomized, so it doesn't feel canned) plus
+// a one-sentence body: the "explain" fact for rigorous questions, nothing
+// extra needed for creative ones since the headline itself is the
+// affirmation. XP/level/streak land in a separate, quieter meta line.
 function showFeedback(result, node, brokenRecords) {
   const feedback = $("quest-feedback");
-  const parts = [];
-  if (result.xpGained) parts.push(`+${result.xpGained} XP`);
-  if (result.leveledUp) parts.push(I18n.t("quest.level_up"));
-  if (brokenRecords && brokenRecords.includes("bestCorrectStreak") && state.correctStreak > 1) {
-    parts.push(I18n.t("quest.new_best_streak", { n: state.correctStreak }));
-  }
+  feedback.innerHTML = "";
+
+  let toneClass;
+  let icon;
+  let headline;
+  const bodyParts = [];
+
   if (node.style === "rigorous") {
-    if (node.explain) parts.push(node.explain);
+    toneClass = result.correct ? "feedback-good" : "feedback-miss";
+    icon = result.correct ? "✅" : "💡";
+    headline = result.correct ? I18n.tRandom("feedback.correct", 5) : I18n.tRandom("feedback.incorrect", 5);
+    if (node.explain) bodyParts.push(node.explain);
     if (node.source) {
       const dateSuffix = node.verifiedAt ? I18n.t("quest.source_checked", { date: node.verifiedAt }) : "";
-      parts.push(I18n.t("quest.source", { name: node.source }) + dateSuffix);
+      bodyParts.push(I18n.t("quest.source", { name: node.source }) + dateSuffix);
     }
+  } else if (!result.completed) {
+    toneClass = "feedback-neutral";
+    icon = "⏭️";
+    headline = I18n.t("feedback.creative_skipped");
+  } else if (result.goodOutcome) {
+    toneClass = "feedback-good";
+    icon = "✨";
+    headline = I18n.tRandom("feedback.creative_good", 5);
+  } else {
+    toneClass = "feedback-creative";
+    icon = "📝";
+    headline = I18n.tRandom("feedback.creative_meh", 3);
   }
-  feedback.textContent = parts.join(" — ");
-  feedback.classList.toggle("hidden", parts.length === 0);
+
+  feedback.className = `quest-feedback ${toneClass}`;
+
+  const head = document.createElement("div");
+  head.className = "feedback-headline";
+  head.textContent = `${icon} ${headline}`;
+  feedback.appendChild(head);
+
+  if (bodyParts.length) {
+    const body = document.createElement("div");
+    body.className = "feedback-body";
+    body.textContent = bodyParts.join(" ");
+    feedback.appendChild(body);
+  }
+
+  const metaParts = [];
+  if (result.xpGained) metaParts.push(`+${result.xpGained} XP`);
+  if (result.leveledUp) metaParts.push(I18n.t("quest.level_up"));
+  if (brokenRecords && brokenRecords.includes("bestCorrectStreak") && state.correctStreak > 1) {
+    metaParts.push(I18n.t("quest.new_best_streak", { n: state.correctStreak }));
+  }
+  if (metaParts.length) {
+    const meta = document.createElement("div");
+    meta.className = "feedback-meta";
+    meta.textContent = metaParts.join(" — ");
+    feedback.appendChild(meta);
+  }
 
   if (result.leveledUp && Cloud.isConfigured()) {
     Cloud.getPercentile(node.domain, state.xp[node.domain]).then((pct) => {
@@ -561,14 +614,25 @@ $("goal-complete-dismiss").addEventListener("click", () => {
 
 // ---------- Focus: what to drill into ----------
 
-$("open-focus").addEventListener("click", () => {
+function openFocusScreen(fresh) {
+  firstRunFocus = fresh;
   renderFocusScreen();
+  $("focus-intro").classList.toggle("hidden", !fresh);
+  $("focus-start-bottom").classList.toggle("hidden", !fresh);
+  $("close-focus").textContent = I18n.t(fresh ? "btn.start_quest" : "btn.back");
   showScreen("focus");
-});
+}
 
-$("close-focus").addEventListener("click", () => {
+function leaveFocusScreen() {
+  const wasFresh = firstRunFocus;
+  firstRunFocus = false;
   showScreen("quest");
-});
+  if (wasFresh) loadNextNode();
+}
+
+$("open-focus").addEventListener("click", () => openFocusScreen(false));
+$("close-focus").addEventListener("click", leaveFocusScreen);
+$("focus-start-bottom").addEventListener("click", leaveFocusScreen);
 
 function renderFocusScreen() {
   renderBreadthToggle();

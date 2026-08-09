@@ -64,6 +64,31 @@ const I18N_STRINGS = {
   "quest.source_checked": { en: " · checked {date}", sv: " · kontrollerad {date}", fr: " · vérifié {date}", de: " · geprüft {date}", es: " · verificado {date}" },
   "quest.ahead_of": { en: "Now ahead of {pct}% of explorers in {domain}.", sv: "Nu före {pct}% av utforskarna inom {domain}.", fr: "Maintenant devant {pct}% des explorateurs en {domain}.", de: "Jetzt vor {pct}% der Entdecker in {domain}.", es: "Ahora por delante del {pct}% de exploradores en {domain}." },
 
+  // Feedback headlines: picked at random (see pickRandomFeedback in app.js)
+  // so answering doesn't feel like reading the same toast every time.
+  "feedback.correct.0": { en: "Nice one!", sv: "Snyggt jobbat!", fr: "Bien joué !", de: "Gut gemacht!", es: "¡Bien hecho!" },
+  "feedback.correct.1": { en: "Nailed it!", sv: "Helt rätt!", fr: "En plein dans le mille !", de: "Genau richtig!", es: "¡Diste en el clavo!" },
+  "feedback.correct.2": { en: "Boom — correct!", sv: "Bom — korrekt!", fr: "Boum — correct !", de: "Bumm — richtig!", es: "¡Boom, correcto!" },
+  "feedback.correct.3": { en: "Sharp thinking!", sv: "Skarpt tänkt!", fr: "Bien vu !", de: "Scharf kombiniert!", es: "¡Buen ojo!" },
+  "feedback.correct.4": { en: "Yes! Exactly right.", sv: "Ja! Exakt rätt.", fr: "Oui ! Exactement ça.", de: "Ja! Exakt richtig.", es: "¡Sí! Exactamente." },
+  "feedback.incorrect.0": { en: "Not quite — here's the deal:", sv: "Inte riktigt — så här ligger det till:", fr: "Pas tout à fait — voici pourquoi :", de: "Nicht ganz — hier die Auflösung:", es: "No exactamente — aquí va:" },
+  "feedback.incorrect.1": { en: "So close! Here's why:", sv: "Nära! Så här var det:", fr: "Presque ! Voici pourquoi :", de: "Knapp daneben! Hier ist warum:", es: "¡Casi! Aquí tienes por qué:" },
+  "feedback.incorrect.2": { en: "Good guess. Actually:", sv: "Bra gissning. Faktum är:", fr: "Bonne tentative. En fait :", de: "Guter Versuch. Tatsächlich:", es: "Buen intento. En realidad:" },
+  "feedback.incorrect.3": { en: "Missed it — worth knowing:", sv: "Fel den här gången — bra att veta:", fr: "Raté — bon à savoir :", de: "Daneben — gut zu wissen:", es: "Fallaste — dato útil:" },
+  "feedback.incorrect.4": { en: "Not this time. Here's the fact:", sv: "Inte den här gången. Här är faktan:", fr: "Pas cette fois. Voici le fait :", de: "Diesmal nicht. Hier die Fakten:", es: "Esta vez no. Aquí el dato:" },
+  "feedback.creative_good.0": { en: "Love that direction!", sv: "Älskar den riktningen!", fr: "J'adore cette direction !", de: "Diese Richtung gefällt mir!", es: "¡Me encanta esa dirección!" },
+  "feedback.creative_good.1": { en: "That's a solid take.", sv: "Bra idé.", fr: "Belle idée.", de: "Solide Idee.", es: "Buena idea." },
+  "feedback.creative_good.2": { en: "Nice voice in that one.", sv: "Fin röst i den texten.", fr: "Belle voix dans ce texte.", de: "Schöne Stimme in dem Text.", es: "Buena voz en eso." },
+  "feedback.creative_good.3": { en: "Genuinely creative — good work.", sv: "Verkligen kreativt — bra jobbat.", fr: "Vraiment créatif — bon travail.", de: "Wirklich kreativ — gute Arbeit.", es: "Muy creativo — buen trabajo." },
+  "feedback.creative_good.4": { en: "That's some main-character energy.", sv: "Det där är huvudkaraktärsenergi.", fr: "Ça, c'est de l'énergie de personnage principal.", de: "Das ist Hauptfigur-Energie.", es: "Eso es energía de protagonista." },
+  "feedback.creative_meh.0": { en: "Thanks for writing that — every rep counts.", sv: "Tack för att du skrev det — varje försök räknas.", fr: "Merci de l'avoir écrit — chaque essai compte.", de: "Danke fürs Schreiben — jeder Versuch zählt.", es: "Gracias por escribir eso — cada intento cuenta." },
+  "feedback.creative_meh.1": { en: "Logged. On to the next one.", sv: "Loggat. Vidare till nästa.", fr: "Enregistré. On passe à la suite.", de: "Notiert. Weiter geht's.", es: "Registrado. A por el siguiente." },
+  "feedback.creative_meh.2": { en: "Appreciate you giving it a shot.", sv: "Tack för att du gav det ett försök.", fr: "Merci d'avoir tenté le coup.", de: "Danke, dass du es versucht hast.", es: "Gracias por intentarlo." },
+  "feedback.creative_skipped": { en: "No worries — skipped. Next one:", sv: "Inga problem — hoppade över. Nästa:", fr: "Pas de souci — passé. Suivant :", de: "Kein Problem — übersprungen. Weiter:", es: "Sin problema — omitido. Siguiente:" },
+
+  "btn.start_quest": { en: "Start quest", sv: "Starta questet", fr: "Lancer la quête", de: "Quest starten", es: "Empezar la misión" },
+  "focus.first_run_hint": { en: "Quick pick before we dive in — choose what to focus on, or just hit Start.", sv: "Snabbval innan vi kör igång — välj vad du vill fokusera på, eller tryck bara Starta.", fr: "Petit choix avant de plonger — choisis ce qui t'intéresse, ou lance-toi directement.", de: "Kurze Auswahl, bevor's losgeht — wähle deinen Fokus oder starte direkt.", es: "Elección rápida antes de empezar — elige tu enfoque o simplemente pulsa Empezar." },
+
   "focus.title": { en: "Focus", sv: "Fokus", fr: "Focus", de: "Fokus", es: "Enfoque" },
   "focus.range_label": { en: "Range", sv: "Omfång", fr: "Portée", de: "Umfang", es: "Alcance" },
   "focus.broad_title": { en: "Broad", sv: "Brett", fr: "Large", de: "Breit", es: "Amplio" },
@@ -217,6 +242,13 @@ const I18n = {
   plural(baseKey, n, vars) {
     const key = `${baseKey}.${n === 1 ? "one" : "other"}`;
     return this.t(key, { n, ...vars });
+  },
+
+  // Picks a random numbered variant from a pool like "feedback.correct.0",
+  // "feedback.correct.1", ... so the same headline doesn't show every time.
+  tRandom(baseKey, count, vars) {
+    const i = Math.floor(Math.random() * count);
+    return this.t(`${baseKey}.${i}`, vars);
   },
 
   achievementLabel(id) {

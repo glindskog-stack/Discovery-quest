@@ -82,7 +82,8 @@ const Engine = {
     state.lastDomain = domain;
     state.lastNodeId = node.id;
 
-    return { xpGained, correct, goodOutcome, leveledUp: Storage.levelForXP(state.xp[domain]) > beforeLevel };
+    const completed = node.style === "rigorous" ? true : !!response.completed;
+    return { xpGained, correct, goodOutcome, completed, leveledUp: Storage.levelForXP(state.xp[domain]) > beforeLevel };
   },
 
   // Follows an explicit writing branch if the just-answered node has one.
