@@ -1,8 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Rocket Lab mascot: a cream labrador with its tongue out">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Rocket Lab mascot: a cream labrador in sunglasses with its tongue out">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#FFE8C4" />
       <stop offset="100%" stop-color="#FFC98A" />
+    </linearGradient>
+    <linearGradient id="lens" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#3A4452" />
+      <stop offset="100%" stop-color="#0D0F12" />
     </linearGradient>
   </defs>
 
@@ -15,15 +19,18 @@
   <!-- head -->
   <ellipse cx="256" cy="288" rx="152" ry="136" fill="#F7ECD6" />
 
-  <!-- eyes -->
-  <circle cx="203" cy="266" r="16" fill="#3A2415" />
-  <circle cx="309" cy="266" r="16" fill="#3A2415" />
-  <circle cx="197" cy="260" r="5.5" fill="#FFFFFF" opacity="0.85" />
-  <circle cx="303" cy="260" r="5.5" fill="#FFFFFF" opacity="0.85" />
+  <!-- brow: peeking above the shades for a bit of attitude -->
+  <path d="M 178 234 Q 203 220 228 232" stroke="#E4D3AC" stroke-width="7" fill="none" stroke-linecap="round" />
+  <path d="M 284 232 Q 309 220 334 234" stroke="#E4D3AC" stroke-width="7" fill="none" stroke-linecap="round" />
 
-  <!-- brow shading: soft, same-family tone, not a hard marking -->
-  <path d="M 180 238 Q 203 224 226 236" stroke="#E4D3AC" stroke-width="7" fill="none" stroke-linecap="round" />
-  <path d="M 286 236 Q 309 224 332 238" stroke="#E4D3AC" stroke-width="7" fill="none" stroke-linecap="round" />
+  <!-- sunglasses: temple arms, lenses, bridge, gloss -->
+  <line x1="168" y1="256" x2="140" y2="244" stroke="#14171C" stroke-width="10" stroke-linecap="round" />
+  <line x1="344" y1="256" x2="372" y2="244" stroke="#14171C" stroke-width="10" stroke-linecap="round" />
+  <rect x="166" y="244" width="72" height="44" rx="18" fill="url(#lens)" />
+  <rect x="274" y="244" width="72" height="44" rx="18" fill="url(#lens)" />
+  <rect x="236" y="258" width="40" height="10" rx="5" fill="#14171C" />
+  <path d="M 178 254 L 202 254 L 182 274 L 176 274 Z" fill="#FFFFFF" opacity="0.35" />
+  <path d="M 286 254 L 310 254 L 290 274 L 284 274 Z" fill="#FFFFFF" opacity="0.35" />
 
   <!-- snout -->
   <ellipse cx="256" cy="344" rx="90" ry="68" fill="#FBF6E9" />

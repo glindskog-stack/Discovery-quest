@@ -153,6 +153,9 @@ button {
 }
 
 .brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
   margin-bottom: 40px;
 }
@@ -219,10 +222,24 @@ button {
 }
 
 .profile-chip-add {
-  color: var(--text-secondary);
   justify-content: center;
-  border-style: dashed;
-  font-weight: 600;
+  background: var(--brand);
+  border: 2px solid var(--brand);
+  color: var(--brand-ink);
+  font-size: 18px;
+  font-weight: 800;
+  animation: cta-glow 2.6s ease-in-out infinite;
+}
+
+.profile-chip-add:hover {
+  border-color: var(--brand);
+  filter: brightness(1.08);
+  transform: translateY(-2px) scale(1.01);
+}
+
+@keyframes cta-glow {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--brand) 45%, transparent); }
+  50% { box-shadow: 0 0 0 10px color-mix(in srgb, var(--brand) 0%, transparent); }
 }
 
 .profile-emoji {
@@ -235,6 +252,15 @@ button {
   width: 84px;
   height: 84px;
   margin-bottom: 12px;
+  animation: mascot-idle 3.2s ease-in-out infinite;
+  transform-origin: 50% 90%;
+}
+
+@keyframes mascot-idle {
+  0%, 100% { transform: rotate(0deg) translateY(0); }
+  25% { transform: rotate(-4deg) translateY(-2px); }
+  50% { transform: rotate(0deg) translateY(0); }
+  75% { transform: rotate(4deg) translateY(-2px); }
 }
 
 .onboarding {
