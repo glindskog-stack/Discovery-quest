@@ -102,6 +102,7 @@ const Storage = {
       streak: { current: 0, longest: 0, lastActiveDate: null },
       totalTimeMs: 0,
       sessionHistory: [], // [{date, startedAt, durationMs, domainsTouched, promptsAnswered}]
+      answerLog: [], // [{nodeId, domain, style, question, answer, correct, completed, enjoyment, xpGained, at}] — full history, capped; see appendAnswerLog
       answeredIds: [], // recent, capped — avoids immediate repeats
       lastDomain: null,
       lastNodeId: null, // for resuming a writing branch mid-thread
@@ -158,6 +159,14 @@ const Storage = {
   recordAnswered(state, id) {
     state.answeredIds.push(id);
     if (state.answeredIds.length > 60) state.answeredIds.shift();
+  },
+
+  // Full answer history — question, what was answered/written, right or
+  // not, when. Capped locally so localStorage can't grow unbounded; the
+  // cloud copy (Cloud.logAnswer, pushed alongside this) has no such cap.
+  appendAnswerLog(state, entry) {
+    state.answerLog.push({ at: Date.now(), ...entry });
+    if (state.answerLog.length > 1000) state.answerLog.shift();
   },
 
   addSubjectRequest(state, domain, text) {

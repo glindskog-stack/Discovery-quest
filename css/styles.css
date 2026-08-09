@@ -995,6 +995,87 @@ button {
   font-size: 14px;
 }
 
+/* ---------- Answer history ---------- */
+
+.history-lookup-form {
+  display: flex;
+  gap: 8px;
+  margin: -4px 0 12px;
+}
+
+.history-lookup-form input {
+  flex: 1;
+  min-width: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+}
+
+.history-lookup-form input:focus {
+  outline: none;
+  border-color: var(--brand);
+}
+
+.history-status {
+  margin: -6px 0 12px;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.history-row {
+  display: flex;
+  gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+}
+
+.history-row-icon {
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.history-row-body {
+  min-width: 0;
+  flex: 1;
+}
+
+.history-row-question {
+  font-size: 13.5px;
+  color: var(--text-primary);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.history-row-answer {
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.history-row-meta {
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
 /* ---------- Peer comparison + cloud sync cards ---------- */
 
 .peer-rows,

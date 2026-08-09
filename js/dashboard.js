@@ -15,6 +15,7 @@ const Dashboard = {
     container.appendChild(this.buildPeersCard(profile, state));
     container.appendChild(this.buildSyncCard(profile, state, container));
     container.appendChild(this.buildSessionHistory(state));
+    container.appendChild(this.buildAnswerHistory(profile, state));
   },
 
   buildHero(state) {
@@ -259,7 +260,125 @@ const Dashboard = {
     wrap.appendChild(list);
     return wrap;
   },
+
+  // Every answer this profile has given, question + answer text included —
+  // defaults to this device's local log, with a code lookup to pull any
+  // profile's log from the cloud (same code = full access model as the
+  // sync card above, just for the detailed log instead of aggregate stats).
+  buildAnswerHistory(profile, state) {
+    const wrap = document.createElement("div");
+    wrap.className = "dash-history";
+    const title = document.createElement("h3");
+    title.className = "dash-section-title";
+    title.textContent = I18n.t("dashboard.history_title");
+    wrap.appendChild(title);
+
+    const hint = document.createElement("p");
+    hint.className = "focus-hint";
+    hint.textContent = I18n.t("dashboard.history_hint");
+    wrap.appendChild(hint);
+
+    if (Cloud.isConfigured()) {
+      const form = document.createElement("form");
+      form.className = "history-lookup-form";
+      form.innerHTML = `
+        <input type="text" placeholder="${I18n.t("dashboard.history_lookup_placeholder")}" maxlength="20" />
+        <button type="submit" class="btn btn-ghost btn-small">${I18n.t("btn.load")}</button>
+      `;
+      wrap.appendChild(form);
+
+      const status = document.createElement("p");
+      status.className = "focus-hint history-status hidden";
+      wrap.appendChild(status);
+
+      const list = document.createElement("div");
+      list.className = "history-list";
+      wrap.appendChild(list);
+
+      this.renderHistoryList(list, state.answerLog, profile);
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const input = form.querySelector("input");
+        const code = input.value.trim();
+        if (!code) return;
+        status.classList.remove("hidden");
+        status.textContent = I18n.t("dashboard.history_checking");
+        const remote = await Cloud.getAnswerLog(code);
+        if (!remote || !remote.length) {
+          status.textContent = I18n.t("dashboard.history_not_found");
+          return;
+        }
+        status.textContent = I18n.t("dashboard.history_remote", { code: code.toUpperCase() });
+        this.renderHistoryList(list, remote.map((r) => ({
+          nodeId: r.node_id, domain: r.domain, style: r.style, question: r.question,
+          answer: r.answer, correct: r.correct, completed: r.completed, enjoyment: r.enjoyment,
+          xpGained: r.xp_gained, at: new Date(r.created_at).getTime(),
+        })), profile, true);
+      });
+
+      return wrap;
+    }
+
+    const list = document.createElement("div");
+    list.className = "history-list";
+    wrap.appendChild(list);
+    this.renderHistoryList(list, state.answerLog, profile);
+    return wrap;
+  },
+
+  // `entries` newest-first if `alreadySorted` (cloud rows come pre-sorted
+  // by the RPC); local state.answerLog is oldest-first, so reverse it here.
+  renderHistoryList(listEl, entries, profile, alreadySorted) {
+    listEl.innerHTML = "";
+    const ordered = alreadySorted ? entries : [...entries].reverse();
+    const recent = ordered.slice(0, 40);
+
+    if (!recent.length) {
+      const empty = document.createElement("p");
+      empty.className = "dash-empty";
+      empty.textContent = I18n.t("dashboard.history_empty");
+      listEl.appendChild(empty);
+      return;
+    }
+
+    recent.forEach((entry) => {
+      const domain = DOMAINS[entry.domain];
+      const row = document.createElement("div");
+      row.className = "history-row";
+      const icon = entry.style === "rigorous"
+        ? (entry.correct ? "✅" : "💡")
+        : (!entry.completed ? "⏭️" : entry.enjoyment != null && entry.enjoyment < 3 ? "📝" : "✨");
+      const answerLine = entry.answer
+        ? `<div class="history-row-answer">${escapeHtml(truncate(entry.answer, 140))}</div>`
+        : "";
+      row.innerHTML = `
+        <div class="history-row-icon">${icon}</div>
+        <div class="history-row-body">
+          <div class="history-row-question"><span class="domain-icon" style="color:${domain.accent}">${domain.icon}</span> ${escapeHtml(truncate(entry.question, 100))}</div>
+          ${answerLine}
+          <div class="history-row-meta">${formatLogDate(entry.at)}${entry.xpGained ? ` · +${entry.xpGained} XP` : ""}</div>
+        </div>
+      `;
+      listEl.appendChild(row);
+    });
+  },
 };
+
+function truncate(str, max) {
+  return str.length > max ? str.slice(0, max - 1) + "…" : str;
+}
+
+function escapeHtml(str) {
+  const div = document.createElement("div");
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function formatLogDate(ts) {
+  const d = new Date(ts);
+  return d.toLocaleDateString(undefined, { month: "short", day: "numeric" }) + " · " + d.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
+}
 
 function formatDuration(ms) {
   const totalMinutes = Math.round(ms / 60000);

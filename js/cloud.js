@@ -131,6 +131,54 @@ const Cloud = {
       return false;
     }
   },
+
+  // Full-fidelity answer log, including free-response text — a step up in
+  // sensitivity from the aggregate-only stats above, on purpose: this is
+  // what lets a parent (or the player on another device) pull up "what did
+  // I answer/write" for a profile from anywhere, given its code. Same
+  // trust model as everything else here: the code is the only credential.
+  async logAnswer(profile, entry) {
+    if (!this.isConfigured()) return false;
+    const code = this.ensureSyncCode(profile);
+    try {
+      const res = await fetch(`${this.config.url}/rest/v1/rpc/quest_log_answer`, {
+        method: "POST",
+        headers: this.headers(),
+        body: JSON.stringify({
+          p_code: code,
+          p_node_id: entry.nodeId,
+          p_domain: entry.domain,
+          p_style: entry.style,
+          p_question: entry.question,
+          p_answer: entry.answer,
+          p_correct: entry.correct,
+          p_completed: entry.completed,
+          p_enjoyment: entry.enjoyment,
+          p_xp_gained: entry.xpGained,
+        }),
+      });
+      return res.ok;
+    } catch {
+      return false;
+    }
+  },
+
+  // Pulls a profile's full answer log by code, most recent first — for
+  // viewing from a different device (or after clearing local storage).
+  async getAnswerLog(code, limit = 200) {
+    if (!this.isConfigured() || !code) return null;
+    try {
+      const res = await fetch(`${this.config.url}/rest/v1/rpc/quest_get_answer_log`, {
+        method: "POST",
+        headers: this.headers(),
+        body: JSON.stringify({ p_code: code.trim().toUpperCase(), p_limit: limit }),
+      });
+      if (!res.ok) return null;
+      return await res.json();
+    } catch {
+      return null;
+    }
+  },
 };
 
 Cloud.init();

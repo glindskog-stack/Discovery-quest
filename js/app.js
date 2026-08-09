@@ -388,12 +388,12 @@ function handleChoice(node, choiceIndex, btnEl) {
     isCorrect ? Sound.correct() : Sound.wrong();
     buzz(isCorrect ? 15 : [12, 30, 12]);
     const result = Engine.recordResponse(state, node, { choiceIndex });
-    finishAnswer(node, result);
+    finishAnswer(node, result, { choiceIndex, answerText: node.choices[choiceIndex] });
   } else if (node.next) {
     // Branching writing choice: always "completes", no wrong path.
     $("quest-choices").children[choiceIndex].classList.add("choice-correct");
     const result = Engine.recordResponse(state, node, { completed: true, enjoyment: 3 });
-    finishAnswer(node, result, choiceIndex);
+    finishAnswer(node, result, { choiceIndex, answerText: node.choices[choiceIndex] });
   }
 }
 
@@ -412,11 +412,11 @@ $("submit-freeresponse").addEventListener("click", () => {
   if (!text) {
     // Nothing written — count it as a pass, no enjoyment ask, no guilt trip.
     const result = Engine.recordResponse(state, currentNode, { completed: false });
-    finishAnswer(currentNode, result);
+    finishAnswer(currentNode, result, {});
     return;
   }
 
-  pendingFreeResponse = { node: currentNode, completed };
+  pendingFreeResponse = { node: currentNode, completed, text };
   $("enjoyment-picker").classList.remove("hidden");
 });
 
@@ -424,9 +424,9 @@ document.querySelectorAll(".enjoyment-btn").forEach((btn) => {
   btn.addEventListener("click", () => {
     const enjoyment = Number(btn.dataset.value);
     $("enjoyment-picker").classList.add("hidden");
-    const { node, completed } = pendingFreeResponse;
+    const { node, completed, text } = pendingFreeResponse;
     const result = Engine.recordResponse(state, node, { completed, enjoyment });
-    finishAnswer(node, result);
+    finishAnswer(node, result, { answerText: text, enjoyment });
   });
 });
 
@@ -434,8 +434,22 @@ $("skip-prompt").addEventListener("click", () => {
   loadNextNode();
 });
 
-function finishAnswer(node, result, choiceIndex) {
+function finishAnswer(node, result, opts = {}) {
+  const { choiceIndex, answerText, enjoyment } = opts;
   trackAnswered(node, result.xpGained);
+
+  Storage.appendAnswerLog(state, {
+    nodeId: node.id,
+    domain: node.domain,
+    style: node.style,
+    question: node.q,
+    answer: answerText ?? null,
+    correct: result.correct,
+    completed: result.completed,
+    enjoyment: enjoyment ?? null,
+    xpGained: result.xpGained,
+  });
+  Cloud.logAnswer(activeProfile, state.answerLog[state.answerLog.length - 1]);
 
   const brokenRecords = Storage.updateRecords(state, {
     correctStreak: state.correctStreak,
