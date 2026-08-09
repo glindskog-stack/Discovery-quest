@@ -6,6 +6,12 @@
   <title>Rocket Lab</title>
   <meta name="description" content="An adaptive curiosity app for math/science, writing, code, and trivia. No grading, just leveling up." />
   <meta name="theme-color" content="#0a0a0f" />
+  <!-- iOS Safari doesn't reliably read name/display-mode from the web
+       manifest the way Android does — these make "Rocket Lab" and the
+       no-browser-chrome standalone launch consistent across iOS versions. -->
+  <meta name="apple-mobile-web-app-title" content="Rocket Lab" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="icons/mascot.svg" type="image/svg+xml" />
   <link rel="icon" href="icons/icon-192.png" />
