@@ -1,12 +1,11 @@
-// Profile + persistence layer. Two profiles max, fully separate state —
-// nothing is ever read across profile boundaries. localStorage is plenty
-// for this data size; swap for IndexedDB later if the content bank or
-// session history grows large enough to matter.
+// Profile + persistence layer. No cap on profile count, fully separate
+// state — nothing is ever read across profile boundaries. localStorage is
+// plenty for this data size; swap for IndexedDB later if the content bank
+// or session history grows large enough to matter.
 
 const STORAGE_PREFIX = "dq:";
 const PROFILES_KEY = STORAGE_PREFIX + "profiles";
 const ACTIVE_KEY = STORAGE_PREFIX + "active";
-const MAX_PROFILES = 2;
 
 function stateKey(profileId) {
   return `${STORAGE_PREFIX}state:${profileId}`;
@@ -34,10 +33,6 @@ const Storage = {
     return readJSON(PROFILES_KEY, []);
   },
 
-  canCreateProfile() {
-    return this.listProfiles().length < MAX_PROFILES;
-  },
-
   // `onboarding` (all optional): { age, difficulty: 1|2|3, interests: [domainId],
   // goalType: "count"|"time", goalValue: number }. Age/difficulty/interests are
   // recorded on the profile for reference; their *effects* (starting tier,
@@ -45,7 +40,6 @@ const Storage = {
   // the adaptive engine takes over from there.
   createProfile(name, emoji, onboarding = {}) {
     const profiles = this.listProfiles();
-    if (profiles.length >= MAX_PROFILES) throw new Error("Profile slots full");
     const profile = {
       id: crypto.randomUUID(),
       name: name.trim().slice(0, 24),

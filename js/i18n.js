@@ -12,7 +12,7 @@ const I18N_LANGS = [
 ];
 
 const I18N_STRINGS = {
-  "brand.tagline": { en: "Two slots. Zero grading. Pick yours.", sv: "Två platser. Inga betyg. Välj din.", fr: "Deux profils. Zéro notation. À toi de choisir.", de: "Zwei Plätze. Keine Noten. Wähl deinen.", es: "Dos perfiles. Cero notas. Elige el tuyo." },
+  "brand.tagline": { en: "No grades. No limits. Just streaks.", sv: "Inga betyg. Inga gränser. Bara sviter.", fr: "Pas de notes. Pas de limites. Juste des séries.", de: "Keine Noten. Keine Grenzen. Nur Serien.", es: "Sin notas. Sin límites. Solo rachas." },
 
   "onboarding.name_label": { en: "What do we call you?", sv: "Vad ska vi kalla dig?", fr: "Comment on t'appelle ?", de: "Wie sollen wir dich nennen?", es: "¿Cómo te llamamos?" },
   "onboarding.name_placeholder": { en: "Your name", sv: "Ditt namn", fr: "Ton prénom", de: "Dein Name", es: "Tu nombre" },

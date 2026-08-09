@@ -41,13 +41,11 @@ function renderProfileList() {
     list.appendChild(btn);
   });
 
-  if (Storage.canCreateProfile()) {
-    const addBtn = document.createElement("button");
-    addBtn.className = "profile-chip profile-chip-add";
-    addBtn.textContent = I18n.t("btn.new_profile");
-    addBtn.addEventListener("click", startOnboarding);
-    list.appendChild(addBtn);
-  }
+  const addBtn = document.createElement("button");
+  addBtn.className = "profile-chip profile-chip-add";
+  addBtn.textContent = I18n.t("btn.new_profile");
+  addBtn.addEventListener("click", startOnboarding);
+  list.appendChild(addBtn);
 }
 
 // ---------- Language picker ----------
