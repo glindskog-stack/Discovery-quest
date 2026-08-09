@@ -1,49 +1,76 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Rocket Lab mascot: a cream labrador in sunglasses with its tongue out">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Rocket Lab mascot: a cream labrador with pixel sunglasses, a bandana, and its tongue out">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#FFE8C4" />
       <stop offset="100%" stop-color="#FFC98A" />
     </linearGradient>
-    <linearGradient id="lens" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#3A4452" />
-      <stop offset="100%" stop-color="#0D0F12" />
-    </linearGradient>
   </defs>
 
   <rect x="0" y="0" width="512" height="512" rx="112" fill="url(#bg)" />
 
-  <!-- ears (behind head) — same cream as the coat, just a touch deeper for shape -->
-  <ellipse cx="132" cy="272" rx="60" ry="110" fill="#EEDFBC" transform="rotate(-22 132 272)" />
-  <ellipse cx="380" cy="272" rx="60" ry="110" fill="#EEDFBC" transform="rotate(22 380 272)" />
+  <!-- everything below tilts together for a cocky, jaunty pose -->
+  <g transform="rotate(-6 256 288)">
 
-  <!-- head -->
-  <ellipse cx="256" cy="288" rx="152" ry="136" fill="#F7ECD6" />
+    <!-- bandana: peeking out from behind the jaw, tied on the side -->
+    <path d="M 322 378 L 374 396 L 332 428 Z" fill="#D4FF00" stroke="#0A0A0F" stroke-width="4" stroke-linejoin="round" />
+    <circle cx="330" cy="388" r="6" fill="#0A0A0F" opacity="0.85" />
 
-  <!-- brow: peeking above the shades for a bit of attitude -->
-  <path d="M 178 234 Q 203 220 228 232" stroke="#E4D3AC" stroke-width="7" fill="none" stroke-linecap="round" />
-  <path d="M 284 232 Q 309 220 334 234" stroke="#E4D3AC" stroke-width="7" fill="none" stroke-linecap="round" />
+    <!-- ears (behind head) — deepened a shade for silhouette contrast -->
+    <ellipse cx="132" cy="272" rx="60" ry="110" fill="#E5CE9C" transform="rotate(-22 132 272)" />
+    <ellipse cx="380" cy="272" rx="60" ry="110" fill="#E5CE9C" transform="rotate(22 380 272)" />
 
-  <!-- sunglasses: temple arms, lenses, bridge, gloss -->
-  <line x1="168" y1="256" x2="140" y2="244" stroke="#14171C" stroke-width="10" stroke-linecap="round" />
-  <line x1="344" y1="256" x2="372" y2="244" stroke="#14171C" stroke-width="10" stroke-linecap="round" />
-  <rect x="166" y="244" width="72" height="44" rx="18" fill="url(#lens)" />
-  <rect x="274" y="244" width="72" height="44" rx="18" fill="url(#lens)" />
-  <rect x="236" y="258" width="40" height="10" rx="5" fill="#14171C" />
-  <path d="M 178 254 L 202 254 L 182 274 L 176 274 Z" fill="#FFFFFF" opacity="0.35" />
-  <path d="M 286 254 L 310 254 L 290 274 L 284 274 Z" fill="#FFFFFF" opacity="0.35" />
+    <!-- fur tuft: spiky cowlick, drawn under the head so only the tips poke out -->
+    <path d="M 268 178 L 278 128 L 288 180 Z" fill="#E4C98A" />
+    <path d="M 284 182 L 297 106 L 310 182 Z" fill="#E4C98A" />
+    <path d="M 304 180 L 316 132 L 326 178 Z" fill="#E4C98A" />
 
-  <!-- snout -->
-  <ellipse cx="256" cy="344" rx="90" ry="68" fill="#FBF6E9" />
+    <!-- head -->
+    <ellipse cx="256" cy="288" rx="152" ry="136" fill="#F7ECD6" />
 
-  <!-- nose: dusty pink-brown, not black -->
-  <ellipse cx="256" cy="306" rx="24" ry="17" fill="#B8806C" />
-  <circle cx="248" cy="300" r="4.5" fill="#FFFFFF" opacity="0.6" />
+    <!-- brow: peeking above the shades for a bit of attitude -->
+    <path d="M 178 234 Q 203 220 228 232" stroke="#E4D3AC" stroke-width="7" fill="none" stroke-linecap="round" />
+    <path d="M 284 232 Q 309 220 334 234" stroke="#E4D3AC" stroke-width="7" fill="none" stroke-linecap="round" />
 
-  <!-- mouth -->
-  <path d="M 256 323 L 256 338 Q 256 354 226 360 Q 200 364 190 350" stroke="#8A5A46" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-  <path d="M 256 338 Q 256 354 286 360 Q 312 364 322 350" stroke="#8A5A46" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+    <!-- sunglasses: pixel / "deal with it" meme style, 8-bit block lenses -->
+    <line x1="146" y1="247" x2="120" y2="236" stroke="#14171C" stroke-width="10" stroke-linecap="round" />
+    <line x1="366" y1="247" x2="392" y2="236" stroke="#14171C" stroke-width="10" stroke-linecap="round" />
+    <rect x="234" y="263" width="34" height="10" fill="#14171C" />
 
-  <!-- tongue, hanging out -->
-  <path d="M 238 352 Q 238 412 256 418 Q 274 412 274 352 Z" fill="#FA92A8" />
-  <line x1="256" y1="360" x2="256" y2="406" stroke="#E4728A" stroke-width="4" stroke-linecap="round" />
+    <!-- left lens: pixel-stepped silhouette -->
+    <rect x="168" y="236" width="55" height="11" fill="#14171C" />
+    <rect x="157" y="247" width="77" height="11" fill="#14171C" />
+    <rect x="146" y="258" width="22" height="11" fill="#14171C" />
+    <rect x="168" y="258" width="11" height="11" fill="#FFFFFF" />
+    <rect x="179" y="258" width="66" height="11" fill="#14171C" />
+    <rect x="146" y="269" width="99" height="11" fill="#14171C" />
+    <rect x="146" y="280" width="99" height="11" fill="#14171C" />
+    <rect x="157" y="291" width="77" height="11" fill="#14171C" />
+    <rect x="168" y="302" width="55" height="11" fill="#14171C" />
+
+    <!-- right lens: mirrored pixel-stepped silhouette -->
+    <rect x="289" y="236" width="55" height="11" fill="#14171C" />
+    <rect x="278" y="247" width="77" height="11" fill="#14171C" />
+    <rect x="267" y="258" width="66" height="11" fill="#14171C" />
+    <rect x="333" y="258" width="11" height="11" fill="#FFFFFF" />
+    <rect x="344" y="258" width="22" height="11" fill="#14171C" />
+    <rect x="267" y="269" width="99" height="11" fill="#14171C" />
+    <rect x="267" y="280" width="99" height="11" fill="#14171C" />
+    <rect x="278" y="291" width="77" height="11" fill="#14171C" />
+    <rect x="289" y="302" width="55" height="11" fill="#14171C" />
+
+    <!-- snout -->
+    <ellipse cx="256" cy="344" rx="90" ry="68" fill="#FBF6E9" />
+
+    <!-- nose: dusty pink-brown, not black -->
+    <ellipse cx="256" cy="306" rx="24" ry="17" fill="#B8806C" />
+    <circle cx="248" cy="300" r="4.5" fill="#FFFFFF" opacity="0.6" />
+
+    <!-- mouth -->
+    <path d="M 256 323 L 256 338 Q 256 354 226 360 Q 200 364 190 350" stroke="#8A5A46" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 256 338 Q 256 354 286 360 Q 312 364 322 350" stroke="#8A5A46" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+
+    <!-- tongue, hanging out -->
+    <path d="M 238 352 Q 238 412 256 418 Q 274 412 274 352 Z" fill="#FA92A8" />
+    <line x1="256" y1="360" x2="256" y2="406" stroke="#E4728A" stroke-width="4" stroke-linecap="round" />
+  </g>
 </svg>
