@@ -23,7 +23,7 @@ const Dashboard = {
     const streak = state.streak.current;
     wrap.innerHTML = `
       <div class="dash-hero-value">${streak}</div>
-      <div class="dash-hero-label">day streak${streak === 1 ? "" : "s"} — longest run: ${state.streak.longest}</div>
+      <div class="dash-hero-label">${I18n.plural("dashboard.day_streak", streak)} — ${I18n.t("dashboard.longest_run", { n: state.streak.longest })}</div>
     `;
     return wrap;
   },
@@ -34,9 +34,9 @@ const Dashboard = {
     const totalPrompts = Object.values(state.xp).length ? state.answeredIds.length : 0;
     const sessions = state.sessionHistory.length;
     wrap.innerHTML = `
-      <div class="stat-tile"><div class="stat-value">${formatDuration(state.totalTimeMs)}</div><div class="stat-label">time invested</div></div>
-      <div class="stat-tile"><div class="stat-value">${sessions}</div><div class="stat-label">session${sessions === 1 ? "" : "s"}</div></div>
-      <div class="stat-tile"><div class="stat-value">${totalPrompts}</div><div class="stat-label">prompts logged</div></div>
+      <div class="stat-tile"><div class="stat-value">${formatDuration(state.totalTimeMs)}</div><div class="stat-label">${I18n.t("dashboard.time_invested")}</div></div>
+      <div class="stat-tile"><div class="stat-value">${sessions}</div><div class="stat-label">${I18n.plural("dashboard.sessions", sessions)}</div></div>
+      <div class="stat-tile"><div class="stat-value">${totalPrompts}</div><div class="stat-label">${I18n.t("dashboard.prompts_logged")}</div></div>
     `;
     return wrap;
   },
@@ -46,7 +46,7 @@ const Dashboard = {
     wrap.className = "dash-domains";
     const title = document.createElement("h3");
     title.className = "dash-section-title";
-    title.textContent = "Skill tree";
+    title.textContent = I18n.t("dashboard.skill_tree");
     wrap.appendChild(title);
 
     DOMAIN_ORDER.forEach((domainId) => {
@@ -78,15 +78,15 @@ const Dashboard = {
     wrap.className = "dash-records";
     const title = document.createElement("h3");
     title.className = "dash-section-title";
-    title.textContent = "Personal bests";
+    title.textContent = I18n.t("dashboard.personal_bests");
     wrap.appendChild(title);
 
     const row = document.createElement("div");
     row.className = "dash-stat-row";
     row.innerHTML = `
-      <div class="stat-tile"><div class="stat-value">${state.records.bestCorrectStreak}</div><div class="stat-label">best streak</div></div>
-      <div class="stat-tile"><div class="stat-value">${state.records.bestSessionXP}</div><div class="stat-label">best session XP</div></div>
-      <div class="stat-tile"><div class="stat-value">${state.goalsCompletedCount}</div><div class="stat-label">goals crushed</div></div>
+      <div class="stat-tile"><div class="stat-value">${state.records.bestCorrectStreak}</div><div class="stat-label">${I18n.t("dashboard.best_streak")}</div></div>
+      <div class="stat-tile"><div class="stat-value">${state.records.bestSessionXP}</div><div class="stat-label">${I18n.t("dashboard.best_session_xp")}</div></div>
+      <div class="stat-tile"><div class="stat-value">${state.goalsCompletedCount}</div><div class="stat-label">${I18n.t("dashboard.goals_crushed")}</div></div>
     `;
     wrap.appendChild(row);
     return wrap;
@@ -97,17 +97,18 @@ const Dashboard = {
     wrap.className = "dash-trophies";
     const title = document.createElement("h3");
     title.className = "dash-section-title";
-    title.textContent = `Trophy case — ${state.achievements.length}/${Object.keys(ACHIEVEMENTS).length}`;
+    title.textContent = I18n.t("dashboard.trophy_case", { unlocked: state.achievements.length, total: Object.keys(ACHIEVEMENTS).length });
     wrap.appendChild(title);
 
     const grid = document.createElement("div");
     grid.className = "trophy-grid";
+    const locked = I18n.t("dashboard.locked");
     Object.entries(ACHIEVEMENTS).forEach(([id, a]) => {
       const unlocked = Storage.hasAchievement(state, id);
       const cell = document.createElement("div");
       cell.className = "trophy-cell" + (unlocked ? " trophy-unlocked" : "");
-      cell.title = unlocked ? a.desc : "???";
-      cell.innerHTML = `<div class="trophy-icon">${unlocked ? a.icon : "🔒"}</div><div class="trophy-label">${unlocked ? a.label : "???"}</div>`;
+      cell.title = unlocked ? a.desc : locked;
+      cell.innerHTML = `<div class="trophy-icon">${unlocked ? a.icon : "🔒"}</div><div class="trophy-label">${unlocked ? a.label : locked}</div>`;
       grid.appendChild(cell);
     });
     wrap.appendChild(grid);
@@ -120,9 +121,9 @@ const Dashboard = {
     const top = DOMAIN_ORDER.map((id) => [id, state.affinity.domain[id]]).sort((a, b) => b[1] - a[1])[0];
     if (top && state.answeredIds.length >= 3) {
       const domain = DOMAINS[top[0]];
-      wrap.innerHTML = `<span class="domain-icon" style="color:${domain.accent}">${domain.icon}</span> Lately you're gravitating toward <strong>${domain.label}</strong>.`;
+      wrap.innerHTML = `<span class="domain-icon" style="color:${domain.accent}">${domain.icon}</span> ${I18n.t("dashboard.insight_gravitating")} <strong>${domain.label}</strong>.`;
     } else {
-      wrap.innerHTML = `Not enough signal yet — keep going and this fills in.`;
+      wrap.innerHTML = I18n.t("dashboard.insight_not_enough");
     }
     return wrap;
   },
@@ -137,13 +138,13 @@ const Dashboard = {
     wrap.className = "dash-peers";
     const title = document.createElement("h3");
     title.className = "dash-section-title";
-    title.textContent = "Vs. everyone else";
+    title.textContent = I18n.t("dashboard.vs_everyone");
     wrap.appendChild(title);
 
     if (!Cloud.isConfigured()) {
       const p = document.createElement("p");
       p.className = "dash-empty";
-      p.textContent = "Cloud sync isn't connected — turn it on to see how you stack up, anonymously.";
+      p.textContent = I18n.t("dashboard.cloud_not_connected_peers");
       wrap.appendChild(p);
       return wrap;
     }
@@ -159,11 +160,7 @@ const Dashboard = {
 
       Cloud.getPercentile(domainId, state.xp[domainId]).then((pct) => {
         const valueEl = row.querySelector(".peer-value");
-        if (pct == null) {
-          valueEl.textContent = "—";
-        } else {
-          valueEl.textContent = `ahead of ${Math.round(pct)}%`;
-        }
+        valueEl.textContent = pct == null ? "—" : I18n.t("dashboard.ahead_of_pct", { pct: Math.round(pct) });
       });
     });
     wrap.appendChild(rows);
@@ -175,13 +172,13 @@ const Dashboard = {
     wrap.className = "dash-sync";
     const title = document.createElement("h3");
     title.className = "dash-section-title";
-    title.textContent = "Cloud sync";
+    title.textContent = I18n.t("dashboard.cloud_sync_title");
     wrap.appendChild(title);
 
     if (!Cloud.isConfigured()) {
       const p = document.createElement("p");
       p.className = "dash-empty";
-      p.textContent = "Not connected — stats are staying on this device. See docs/CLOUD_SETUP.md to turn it on.";
+      p.textContent = I18n.t("dashboard.cloud_not_connected");
       wrap.appendChild(p);
       return wrap;
     }
@@ -191,11 +188,11 @@ const Dashboard = {
     const box = document.createElement("div");
     box.className = "sync-box";
     box.innerHTML = `
-      <div class="sync-code-label">Your code — enter it on another device to pull these stats in</div>
+      <div class="sync-code-label">${I18n.t("dashboard.your_code")}</div>
       <div class="sync-code">${code}</div>
       <form class="restore-form">
-        <input type="text" placeholder="Got a code? Restore it" maxlength="20" />
-        <button type="submit" class="btn btn-ghost btn-small">Restore</button>
+        <input type="text" placeholder="${I18n.t("dashboard.restore_placeholder")}" maxlength="20" />
+        <button type="submit" class="btn btn-ghost btn-small">${I18n.t("btn.restore")}</button>
       </form>
       <div class="restore-status"></div>
     `;
@@ -207,10 +204,10 @@ const Dashboard = {
       const status = box.querySelector(".restore-status");
       const value = input.value.trim();
       if (!value) return;
-      status.textContent = "Checking…";
+      status.textContent = I18n.t("dashboard.restore_checking");
       const remote = await Cloud.restoreFromCode(value);
       if (!remote) {
-        status.textContent = "No stats found for that code.";
+        status.textContent = I18n.t("dashboard.restore_not_found");
         return;
       }
       DOMAIN_ORDER.forEach((d) => {
@@ -220,7 +217,7 @@ const Dashboard = {
       state.streak.longest = Math.max(state.streak.longest, remote.streak_longest || 0);
       state.totalTimeMs = Math.max(state.totalTimeMs, remote.total_time_ms || 0);
       Storage.saveState(profile.id, state);
-      status.textContent = "Restored — merged in, nothing on this device was lost.";
+      status.textContent = I18n.t("dashboard.restore_success");
       this.render(container, profile, state);
     });
 
@@ -232,14 +229,14 @@ const Dashboard = {
     wrap.className = "dash-sessions";
     const title = document.createElement("h3");
     title.className = "dash-section-title";
-    title.textContent = "Recent sessions";
+    title.textContent = I18n.t("dashboard.recent_sessions");
     wrap.appendChild(title);
 
     const recent = [...state.sessionHistory].reverse().slice(0, 8);
     if (!recent.length) {
       const empty = document.createElement("p");
       empty.className = "dash-empty";
-      empty.textContent = "Nothing logged yet.";
+      empty.textContent = I18n.t("dashboard.nothing_logged");
       wrap.appendChild(empty);
       return wrap;
     }
@@ -255,7 +252,7 @@ const Dashboard = {
       row.innerHTML = `
         <span class="session-date">${s.date}</span>
         <span class="session-dots">${dots}</span>
-        <span class="session-meta">${s.promptsAnswered} prompt${s.promptsAnswered === 1 ? "" : "s"} · ${formatDuration(s.durationMs)}</span>
+        <span class="session-meta">${I18n.plural("dashboard.prompts", s.promptsAnswered)} · ${formatDuration(s.durationMs)}</span>
       `;
       list.appendChild(row);
     });

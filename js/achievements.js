@@ -3,21 +3,30 @@
 // personal-best *records* (streaks, session XP) are separate and can be
 // re-broken, tracked via Storage.updateRecords.
 
+// label/desc are language-dependent — localizeAchievements() (boot + every
+// language switch) fills them in from js/i18n.js's ACHIEVEMENT_I18N.
 const ACHIEVEMENTS = {
-  "first-correct": { label: "First Blood", desc: "Land your first correct/engaged answer.", icon: "🎯" },
-  "streak-3": { label: "3 in a Row", desc: "Chain 3 in a row.", icon: "🔥" },
-  "streak-7": { label: "Hot Streak", desc: "Chain 7 in a row.", icon: "🔥" },
-  "streak-15": { label: "Unstoppable", desc: "Chain 15 in a row.", icon: "⚡" },
-  polymath: { label: "Polymath", desc: "Touch all 4 domains in one session.", icon: "🧠" },
-  "domain-maxed": { label: "Maxed Out", desc: "Hit the top level in any domain.", icon: "🏆" },
-  renaissance: { label: "Renaissance Mind", desc: "Reach level 3+ in every domain.", icon: "🌟" },
-  "day-streak-7": { label: "Week One", desc: "7-day streak.", icon: "📅" },
-  "day-streak-30": { label: "Dedicated", desc: "30-day streak.", icon: "📆" },
-  "goal-crusher": { label: "Goal Crusher", desc: "Hit your daily goal.", icon: "🚀" },
-  "goal-crusher-10": { label: "Creature of Habit", desc: "Hit your daily goal 10 times.", icon: "🔁" },
-  "night-owl": { label: "Night Owl", desc: "Answer something after 11pm.", icon: "🦉" },
-  "early-bird": { label: "Early Bird", desc: "Answer something before 7am.", icon: "🐦" },
+  "first-correct": { icon: "🎯" },
+  "streak-3": { icon: "🔥" },
+  "streak-7": { icon: "🔥" },
+  "streak-15": { icon: "⚡" },
+  polymath: { icon: "🧠" },
+  "domain-maxed": { icon: "🏆" },
+  renaissance: { icon: "🌟" },
+  "day-streak-7": { icon: "📅" },
+  "day-streak-30": { icon: "📆" },
+  "goal-crusher": { icon: "🚀" },
+  "goal-crusher-10": { icon: "🔁" },
+  "night-owl": { icon: "🦉" },
+  "early-bird": { icon: "🐦" },
 };
+
+function localizeAchievements() {
+  Object.keys(ACHIEVEMENTS).forEach((id) => {
+    ACHIEVEMENTS[id].label = I18n.achievementLabel(id);
+    ACHIEVEMENTS[id].desc = I18n.achievementDesc(id);
+  });
+}
 
 const Achievements = {
   // Call after every recorded response. Returns newly-unlocked ids.

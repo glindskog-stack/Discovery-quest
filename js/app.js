@@ -43,9 +43,41 @@ function renderProfileList() {
   if (Storage.canCreateProfile()) {
     const addBtn = document.createElement("button");
     addBtn.className = "profile-chip profile-chip-add";
-    addBtn.textContent = "+ New profile";
+    addBtn.textContent = I18n.t("btn.new_profile");
     addBtn.addEventListener("click", startOnboarding);
     list.appendChild(addBtn);
+  }
+}
+
+// ---------- Language picker ----------
+
+function renderLangPicker() {
+  const wrap = $("lang-picker");
+  wrap.innerHTML = "";
+  I18N_LANGS.forEach((lang) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "lang-option" + (lang.code === I18n.current ? " selected" : "");
+    btn.textContent = lang.flag;
+    btn.title = lang.name;
+    btn.addEventListener("click", () => setLanguage(lang.code));
+    wrap.appendChild(btn);
+  });
+}
+
+function setLanguage(code) {
+  if (code === I18n.current) return;
+  I18n.setLang(code);
+  localizeDomains();
+  localizeAchievements();
+  I18n.applyStaticDOM();
+  document.documentElement.lang = code;
+  renderLangPicker();
+  renderProfileList();
+  if (activeProfile) {
+    renderActiveProfileTag();
+    renderGoalPill();
+    if (currentNode) renderNode(currentNode);
   }
 }
 
@@ -110,8 +142,8 @@ function renderOnboardingStep() {
   const stepName = ONBOARDING_STEPS[onboardingStepIndex];
   document.querySelectorAll(".onboarding-step").forEach((el) => el.classList.toggle("hidden", el.dataset.step !== stepName));
   $("onboarding-dots").innerHTML = ONBOARDING_STEPS.map((_, i) => `<span class="dot${i === onboardingStepIndex ? " active" : ""}"></span>`).join("");
-  $("onboarding-back").textContent = onboardingStepIndex === 0 ? "Cancel" : "Back";
-  $("onboarding-next").textContent = onboardingStepIndex === ONBOARDING_STEPS.length - 1 ? "Let's go" : "Next";
+  $("onboarding-back").textContent = onboardingStepIndex === 0 ? I18n.t("btn.cancel") : I18n.t("btn.back");
+  $("onboarding-next").textContent = onboardingStepIndex === ONBOARDING_STEPS.length - 1 ? I18n.t("btn.lets_go") : I18n.t("btn.next");
   if (stepName === "identity") $("new-profile-name").focus();
 }
 
@@ -195,8 +227,9 @@ function selectProfile(id) {
 function renderGoalPill() {
   const progress = Storage.sessionGoalProgress(state, sessionEntry);
   const current = progress.type === "time" ? Math.floor(progress.current) : progress.current;
-  const unit = progress.type === "time" ? "min" : "today";
-  $("goal-pill").textContent = `${progress.met ? "✅" : "🎯"} ${current}/${progress.target} ${unit}`;
+  const key = progress.type === "time" ? "goal_pill.min" : "goal_pill.today";
+  const label = I18n.t(key, { current, target: progress.target });
+  $("goal-pill").textContent = `${progress.met ? "✅" : "🎯"} ${label}`;
   $("goal-pill").classList.toggle("goal-pill-met", progress.met);
 }
 
@@ -276,9 +309,12 @@ function loadNextNode() {
   renderNode(currentNode);
 }
 
+const CHOICE_LETTERS = ["A", "B", "C", "D"];
+
 function renderNode(node) {
   const domain = DOMAINS[node.domain];
   $("domain-badge").innerHTML = `<span class="domain-icon" style="color:${domain.accent}">${domain.icon}</span> ${domain.label}`;
+  $("quest-card").style.setProperty("--domain-accent", domain.accent);
   $("quest-prompt").textContent = node.q;
   $("quest-feedback").classList.add("hidden");
   $("next-prompt").classList.add("hidden");
@@ -292,7 +328,7 @@ function renderNode(node) {
     $("freeresponse-input").value = "";
     $("freeresponse-input").disabled = false;
     $("submit-freeresponse").disabled = false;
-    $("wordcount").textContent = `0 / ${node.minWords} words`;
+    $("wordcount").textContent = I18n.t("quest.words", { n: 0, target: node.minWords });
   } else {
     $("quest-freeresponse").classList.add("hidden");
     $("quest-choices").classList.remove("hidden");
@@ -301,7 +337,7 @@ function renderNode(node) {
     node.choices.forEach((choice, i) => {
       const btn = document.createElement("button");
       btn.className = "choice-btn";
-      btn.textContent = choice;
+      btn.innerHTML = `<span class="choice-letter">${CHOICE_LETTERS[i]}</span><span>${escapeHTML(choice)}</span>`;
       btn.addEventListener("click", () => handleChoice(node, i, btn));
       choicesEl.appendChild(btn);
     });
@@ -318,6 +354,8 @@ function handleChoice(node, choiceIndex, btnEl) {
       const correctBtn = $("quest-choices").children[node.answer];
       correctBtn.classList.add("choice-correct");
     }
+    isCorrect ? Sound.correct() : Sound.wrong();
+    buzz(isCorrect ? 15 : [12, 30, 12]);
     const result = Engine.recordResponse(state, node, { choiceIndex });
     finishAnswer(node, result);
   } else if (node.next) {
@@ -330,7 +368,7 @@ function handleChoice(node, choiceIndex, btnEl) {
 
 $("freeresponse-input").addEventListener("input", () => {
   const words = $("freeresponse-input").value.trim().split(/\s+/).filter(Boolean).length;
-  $("wordcount").textContent = `${words} / ${currentNode.minWords} words`;
+  $("wordcount").textContent = I18n.t("quest.words", { n: words, target: currentNode.minWords });
 });
 
 $("submit-freeresponse").addEventListener("click", () => {
@@ -377,6 +415,8 @@ function finishAnswer(node, result, choiceIndex) {
 
   showFeedback(result, node, brokenRecords);
   renderGoalPill();
+  if (result.xpGained) popXP(result.xpGained);
+  if (result.leveledUp) Sound.levelUp();
 
   $("next-prompt").classList.remove("hidden");
   $("next-prompt").onclick = () => {
@@ -406,13 +446,16 @@ function showFeedback(result, node, brokenRecords) {
   const feedback = $("quest-feedback");
   const parts = [];
   if (result.xpGained) parts.push(`+${result.xpGained} XP`);
-  if (result.leveledUp) parts.push(`Level up`);
+  if (result.leveledUp) parts.push(I18n.t("quest.level_up"));
   if (brokenRecords && brokenRecords.includes("bestCorrectStreak") && state.correctStreak > 1) {
-    parts.push(`New best streak: ${state.correctStreak}`);
+    parts.push(I18n.t("quest.new_best_streak", { n: state.correctStreak }));
   }
   if (node.style === "rigorous") {
     if (node.explain) parts.push(node.explain);
-    if (node.source) parts.push(`Source: ${node.source}${node.verifiedAt ? " · checked " + node.verifiedAt : ""}`);
+    if (node.source) {
+      const dateSuffix = node.verifiedAt ? I18n.t("quest.source_checked", { date: node.verifiedAt }) : "";
+      parts.push(I18n.t("quest.source", { name: node.source }) + dateSuffix);
+    }
   }
   feedback.textContent = parts.join(" — ");
   feedback.classList.toggle("hidden", parts.length === 0);
@@ -422,7 +465,7 @@ function showFeedback(result, node, brokenRecords) {
       if (pct == null) return;
       const extra = document.createElement("div");
       extra.className = "level-up-percentile";
-      extra.textContent = `Now ahead of ${Math.round(pct)}% of explorers in ${DOMAINS[node.domain].shortLabel}.`;
+      extra.textContent = I18n.t("quest.ahead_of", { pct: Math.round(pct), domain: DOMAINS[node.domain].shortLabel });
       feedback.appendChild(extra);
     });
   }
@@ -444,6 +487,9 @@ function processToastQueue() {
   toast.innerHTML = `<div class="achievement-toast-icon">${a.icon}</div><div><div class="achievement-toast-label">${a.label}</div><div class="achievement-toast-desc">${a.desc}</div></div>`;
   toast.classList.remove("hidden");
   requestAnimationFrame(() => toast.classList.add("show"));
+  Sound.achievement();
+  buzz([15, 40, 15]);
+  burstConfetti();
   setTimeout(() => {
     toast.classList.remove("show");
     setTimeout(() => {
@@ -455,11 +501,57 @@ function processToastQueue() {
 }
 
 function showGoalCompleteOverlay(progress, pendingAchievementIds) {
-  const label = progress.type === "time" ? `${Math.round(progress.current)} minutes` : `${progress.current} prompts`;
-  $("goal-complete-body").textContent = `${label} in today — that's the goal. Keep going if you're into it, or call it there.`;
+  const key = progress.type === "time" ? "goal_complete.body_time" : "goal_complete.body_count";
+  const n = progress.type === "time" ? Math.round(progress.current) : progress.current;
+  $("goal-complete-body").textContent = I18n.t(key, { n });
   $("goal-complete-overlay").dataset.pending = JSON.stringify(pendingAchievementIds || []);
   $("goal-complete-overlay").classList.remove("hidden");
+  Sound.goalComplete();
+  buzz([15, 40, 15, 40, 15]);
+  burstConfetti();
 }
+
+// ---------- Juice: XP pop, confetti, haptics ----------
+
+function buzz(pattern) {
+  if (navigator.vibrate) navigator.vibrate(pattern);
+}
+
+function popXP(amount) {
+  const pop = document.createElement("div");
+  pop.className = "xp-pop";
+  pop.textContent = `+${amount} XP`;
+  $("quest-card").appendChild(pop);
+  requestAnimationFrame(() => pop.classList.add("xp-pop-animate"));
+  setTimeout(() => pop.remove(), 1200);
+}
+
+const CONFETTI_COLORS = ["#d4ff00", "#ef06b1", "#0098c7", "#719f04", "#bd8005"];
+
+function burstConfetti() {
+  const container = document.createElement("div");
+  container.className = "confetti-burst";
+  for (let i = 0; i < 26; i++) {
+    const piece = document.createElement("span");
+    piece.className = "confetti-piece";
+    const angle = Math.random() * Math.PI * 2;
+    const distance = 90 + Math.random() * 140;
+    piece.style.setProperty("--x", `${Math.cos(angle) * distance}px`);
+    piece.style.setProperty("--y", `${Math.abs(Math.sin(angle)) * distance + 60}px`);
+    piece.style.setProperty("--rot", `${Math.random() * 720 - 360}deg`);
+    piece.style.setProperty("--delay", `${Math.random() * 0.12}s`);
+    piece.style.background = CONFETTI_COLORS[i % CONFETTI_COLORS.length];
+    container.appendChild(piece);
+  }
+  document.body.appendChild(container);
+  setTimeout(() => container.remove(), 1500);
+}
+
+$("toggle-sound").addEventListener("click", () => {
+  const muted = Sound.toggleMute();
+  $("toggle-sound").textContent = muted ? "🔇" : "🔊";
+  if (!muted) Sound.tap();
+});
 
 $("goal-complete-dismiss").addEventListener("click", () => {
   $("goal-complete-overlay").classList.add("hidden");
@@ -576,13 +668,13 @@ function renderSubjectRequests() {
   [...state.requestedSubjects].reverse().forEach((r) => {
     const row = document.createElement("div");
     row.className = "subject-request-item";
-    row.innerHTML = `<span class="domain-icon" style="color:${DOMAINS[r.domain].accent}">${DOMAINS[r.domain].icon}</span> <span>${escapeHTML(r.text)}</span> <span class="subject-request-status">queued</span>`;
+    row.innerHTML = `<span class="domain-icon" style="color:${DOMAINS[r.domain].accent}">${DOMAINS[r.domain].icon}</span> <span>${escapeHTML(r.text)}</span> <span class="subject-request-status">${I18n.t("focus.queued")}</span>`;
     list.appendChild(row);
   });
   if (!state.requestedSubjects.length) {
     const empty = document.createElement("p");
     empty.className = "dash-empty";
-    empty.textContent = "Nothing queued yet.";
+    empty.textContent = I18n.t("focus.nothing_queued");
     list.appendChild(empty);
   }
 }
@@ -615,6 +707,12 @@ $("close-dashboard").addEventListener("click", () => {
 // ---------- Boot ----------
 
 function boot() {
+  document.documentElement.lang = I18n.current;
+  localizeDomains();
+  localizeAchievements();
+  I18n.applyStaticDOM();
+  renderLangPicker();
+  $("toggle-sound").textContent = Sound.isMuted() ? "🔇" : "🔊";
   renderProfileList();
   const lastId = Storage.getActiveProfileId();
   const profiles = Storage.listProfiles();

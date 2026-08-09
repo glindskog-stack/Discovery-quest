@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Rocket Lab mascot: a sand labrador with its tongue out">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Rocket Lab mascot: a cream labrador with its tongue out">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#FFE8C4" />
@@ -8,39 +8,35 @@
 
   <rect x="0" y="0" width="512" height="512" rx="112" fill="url(#bg)" />
 
-  <!-- ears (behind head) -->
-  <ellipse cx="136" cy="266" rx="58" ry="112" fill="#C98A46" transform="rotate(-24 136 266)" />
-  <ellipse cx="376" cy="266" rx="58" ry="112" fill="#C98A46" transform="rotate(24 376 266)" />
+  <!-- ears (behind head) — same cream as the coat, just a touch deeper for shape -->
+  <ellipse cx="132" cy="272" rx="60" ry="110" fill="#EEDFBC" transform="rotate(-22 132 272)" />
+  <ellipse cx="380" cy="272" rx="60" ry="110" fill="#EEDFBC" transform="rotate(22 380 272)" />
 
   <!-- head -->
-  <ellipse cx="256" cy="288" rx="152" ry="136" fill="#EFC08A" />
-
-  <!-- blush -->
-  <circle cx="170" cy="322" r="20" fill="#FF9EB0" opacity="0.35" />
-  <circle cx="342" cy="322" r="20" fill="#FF9EB0" opacity="0.35" />
+  <ellipse cx="256" cy="288" rx="152" ry="136" fill="#F7ECD6" />
 
   <!-- eyes -->
-  <circle cx="203" cy="266" r="17" fill="#3A2415" />
-  <circle cx="309" cy="266" r="17" fill="#3A2415" />
+  <circle cx="203" cy="266" r="16" fill="#3A2415" />
+  <circle cx="309" cy="266" r="16" fill="#3A2415" />
   <circle cx="197" cy="260" r="5.5" fill="#FFFFFF" opacity="0.85" />
   <circle cx="303" cy="260" r="5.5" fill="#FFFFFF" opacity="0.85" />
 
-  <!-- eyebrows: happy upward arcs -->
-  <path d="M 178 236 Q 203 220 228 234" stroke="#C98A46" stroke-width="7" fill="none" stroke-linecap="round" />
-  <path d="M 284 234 Q 309 220 334 236" stroke="#C98A46" stroke-width="7" fill="none" stroke-linecap="round" />
+  <!-- brow shading: soft, same-family tone, not a hard marking -->
+  <path d="M 180 238 Q 203 224 226 236" stroke="#E4D3AC" stroke-width="7" fill="none" stroke-linecap="round" />
+  <path d="M 286 236 Q 309 224 332 238" stroke="#E4D3AC" stroke-width="7" fill="none" stroke-linecap="round" />
 
   <!-- snout -->
-  <ellipse cx="256" cy="342" rx="88" ry="66" fill="#F7DCB4" />
+  <ellipse cx="256" cy="344" rx="90" ry="68" fill="#FBF6E9" />
 
-  <!-- nose -->
-  <ellipse cx="256" cy="304" rx="23" ry="17" fill="#3A2415" />
-  <circle cx="248" cy="298" r="4.5" fill="#FFFFFF" opacity="0.7" />
+  <!-- nose: dusty pink-brown, not black -->
+  <ellipse cx="256" cy="306" rx="24" ry="17" fill="#B8806C" />
+  <circle cx="248" cy="300" r="4.5" fill="#FFFFFF" opacity="0.6" />
 
   <!-- mouth -->
-  <path d="M 256 321 L 256 336 Q 256 352 226 358 Q 200 362 190 348" stroke="#3A2415" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-  <path d="M 256 336 Q 256 352 286 358 Q 312 362 322 348" stroke="#3A2415" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M 256 323 L 256 338 Q 256 354 226 360 Q 200 364 190 350" stroke="#8A5A46" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M 256 338 Q 256 354 286 360 Q 312 364 322 350" stroke="#8A5A46" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
 
   <!-- tongue, hanging out -->
-  <path d="M 238 350 Q 238 410 256 416 Q 274 410 274 350 Z" fill="#FF9EB0" />
-  <line x1="256" y1="358" x2="256" y2="404" stroke="#E4728A" stroke-width="4" stroke-linecap="round" />
+  <path d="M 238 352 Q 238 412 256 418 Q 274 412 274 352 Z" fill="#FA92A8" />
+  <line x1="256" y1="360" x2="256" y2="406" stroke="#E4728A" stroke-width="4" stroke-linecap="round" />
 </svg>

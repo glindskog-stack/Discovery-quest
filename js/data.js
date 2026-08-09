@@ -33,44 +33,25 @@
 // re-running the validator.
 const DOMAIN_ORDER = ["math", "coding", "writing", "trivia"];
 
+// label/shortLabel/tagline/levels are intentionally absent here — they're
+// language-dependent, so localizeDomains() (called at boot and on every
+// language switch) fills them in from js/i18n.js. Everything in this
+// object that ISN'T language-dependent (icon, accent) stays put.
 const DOMAINS = {
-  math: {
-    id: "math",
-    label: "Math & Science",
-    shortLabel: "Math/Sci",
-    icon: "🧪",
-    tagline: "Break things down until they make sense.",
-    accent: "#0098c7", // azure
-    levels: ["Static", "Signal", "Charged", "Singularity", "Unstable Genius"],
-  },
-  writing: {
-    id: "writing",
-    label: "Creative Writing",
-    shortLabel: "Writing",
-    icon: "🖋️",
-    tagline: "Choices branch the story. There's no wrong draft.",
-    accent: "#ef06b1", // magenta
-    levels: ["Draft Zero", "Ink Slinger", "Plot Twister", "Cult Author", "Ghostwriter of Legend"],
-  },
-  coding: {
-    id: "coding",
-    label: "Coding",
-    shortLabel: "Code",
-    icon: "⌁",
-    tagline: "Trace it, break it, rebuild it better.",
-    accent: "#719f04", // acid green
-    levels: ["Script Kid", "Byte Bender", "Stack Overflow Regular", "Root Access", "Kernel Whisperer"],
-  },
-  trivia: {
-    id: "trivia",
-    label: "Trivia",
-    shortLabel: "Trivia",
-    icon: "◈",
-    tagline: "Random knowledge. Deploy at will.",
-    accent: "#bd8005", // amber
-    levels: ["Lurker", "Deep Cut", "Rabbit Hole", "Walking Wikipedia", "Oracle"],
-  },
+  math: { id: "math", icon: "🧪", accent: "#0098c7" }, // azure
+  writing: { id: "writing", icon: "🖋️", accent: "#ef06b1" }, // magenta
+  coding: { id: "coding", icon: "⌁", accent: "#719f04" }, // acid green
+  trivia: { id: "trivia", icon: "◈", accent: "#bd8005" }, // amber
 };
+
+function localizeDomains() {
+  DOMAIN_ORDER.forEach((id) => {
+    DOMAINS[id].label = I18n.domainLabel(id);
+    DOMAINS[id].shortLabel = I18n.domainShort(id);
+    DOMAINS[id].tagline = I18n.domainTagline(id);
+    DOMAINS[id].levels = I18n.domainLevels(id);
+  });
+}
 
 const LEVEL_THRESHOLDS = [0, 100, 300, 700, 1500];
 const REGIONS = ["Europe", "Asia", "Africa", "Americas", "Oceania", "Global"];

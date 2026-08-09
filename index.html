@@ -17,10 +17,11 @@
 
     <!-- Profile picker -->
     <section id="screen-profiles" class="screen" data-screen="profiles">
+      <div id="lang-picker" class="lang-picker"></div>
       <header class="brand">
         <img src="icons/mascot.svg" alt="" class="brand-mascot" />
         <h1>Rocket Lab</h1>
-        <p class="brand-tagline">Two slots. Zero grading. Pick yours.</p>
+        <p class="brand-tagline" data-i18n="brand.tagline"></p>
       </header>
       <div id="profile-list" class="profile-list"></div>
 
@@ -28,45 +29,45 @@
         <div id="onboarding-dots" class="onboarding-dots"></div>
 
         <div class="onboarding-step" data-step="identity">
-          <label for="new-profile-name">What do we call you?</label>
-          <input id="new-profile-name" maxlength="24" placeholder="Your name" autocomplete="off" />
+          <label for="new-profile-name" data-i18n="onboarding.name_label"></label>
+          <input id="new-profile-name" maxlength="24" data-i18n-placeholder="onboarding.name_placeholder" autocomplete="off" />
           <div id="emoji-picker" class="emoji-picker"></div>
         </div>
 
         <div class="onboarding-step hidden" data-step="age">
-          <label for="onboarding-age">How old are you?</label>
-          <input id="onboarding-age" type="number" inputmode="numeric" min="10" max="19" placeholder="e.g. 16" />
-          <p class="focus-hint">Just for tuning content — stays on this device.</p>
+          <label for="onboarding-age" data-i18n="onboarding.age_label"></label>
+          <input id="onboarding-age" type="number" inputmode="numeric" min="10" max="19" data-i18n-placeholder="onboarding.age_placeholder" />
+          <p class="focus-hint" data-i18n="onboarding.age_hint"></p>
         </div>
 
         <div class="onboarding-step hidden" data-step="difficulty">
-          <label>Starting difficulty</label>
+          <label data-i18n="onboarding.difficulty_label"></label>
           <div id="difficulty-choice" class="choice-row">
-            <button type="button" class="choice-btn-lg" data-value="1">Easy<span>ease into it</span></button>
-            <button type="button" class="choice-btn-lg" data-value="2">Medium<span>right in the mix</span></button>
-            <button type="button" class="choice-btn-lg" data-value="3">Hard<span>throw me in</span></button>
+            <button type="button" class="choice-btn-lg" data-value="1"><span data-i18n="difficulty.easy.title"></span><span data-i18n="difficulty.easy.sub"></span></button>
+            <button type="button" class="choice-btn-lg" data-value="2"><span data-i18n="difficulty.medium.title"></span><span data-i18n="difficulty.medium.sub"></span></button>
+            <button type="button" class="choice-btn-lg" data-value="3"><span data-i18n="difficulty.hard.title"></span><span data-i18n="difficulty.hard.sub"></span></button>
           </div>
         </div>
 
         <div class="onboarding-step hidden" data-step="interests">
-          <label>Areas you want to improve</label>
+          <label data-i18n="onboarding.interests_label"></label>
           <div id="interests-choice" class="choice-row"></div>
-          <p class="focus-hint">Pick as many as you want — change this anytime in Focus.</p>
+          <p class="focus-hint" data-i18n="onboarding.interests_hint"></p>
         </div>
 
         <div class="onboarding-step hidden" data-step="goal">
-          <label>Daily goal</label>
+          <label data-i18n="onboarding.goal_label"></label>
           <div id="goal-choice" class="choice-row">
-            <button type="button" class="choice-btn-lg" data-type="count" data-value="10">Daily 10<span>10 prompts</span></button>
-            <button type="button" class="choice-btn-lg" data-type="count" data-value="20">Daily 20<span>20 prompts</span></button>
-            <button type="button" class="choice-btn-lg" data-type="time" data-value="10">10 min<span>timed</span></button>
-            <button type="button" class="choice-btn-lg" data-type="time" data-value="20">20 min<span>timed</span></button>
+            <button type="button" class="choice-btn-lg" data-type="count" data-value="10"><span data-i18n="goal.count10.title"></span><span data-i18n="goal.count10.sub"></span></button>
+            <button type="button" class="choice-btn-lg" data-type="count" data-value="20"><span data-i18n="goal.count20.title"></span><span data-i18n="goal.count20.sub"></span></button>
+            <button type="button" class="choice-btn-lg" data-type="time" data-value="10"><span data-i18n="goal.time10.title"></span><span data-i18n="goal.time10.sub"></span></button>
+            <button type="button" class="choice-btn-lg" data-type="time" data-value="20"><span data-i18n="goal.time20.title"></span><span data-i18n="goal.time20.sub"></span></button>
           </div>
         </div>
 
         <div class="form-actions">
-          <button type="button" id="onboarding-back" class="btn btn-ghost">Back</button>
-          <button type="button" id="onboarding-next" class="btn btn-primary">Next</button>
+          <button type="button" id="onboarding-back" class="btn btn-ghost" data-i18n="btn.cancel"></button>
+          <button type="button" id="onboarding-next" class="btn btn-primary" data-i18n="btn.next"></button>
         </div>
       </div>
     </section>
@@ -74,15 +75,16 @@
     <!-- Main quest loop -->
     <section id="screen-quest" class="screen hidden" data-screen="quest">
       <header class="quest-header">
-        <button id="switch-profile" class="btn btn-ghost btn-small" title="Switch profile">⇄</button>
+        <button id="switch-profile" class="btn btn-ghost btn-small" data-i18n-title="btn.switch_profile_title">⇄</button>
         <div id="active-profile-tag" class="active-profile-tag"></div>
         <div class="quest-header-actions">
-          <button id="open-focus" class="btn btn-ghost btn-small" title="Choose what to drill into">Focus</button>
-          <button id="open-dashboard" class="btn btn-ghost btn-small">Stats</button>
+          <button id="toggle-sound" class="btn btn-ghost btn-small" data-i18n-title="btn.sound_title">🔊</button>
+          <button id="open-focus" class="btn btn-ghost btn-small" data-i18n="btn.focus" data-i18n-title="btn.focus_title"></button>
+          <button id="open-dashboard" class="btn btn-ghost btn-small" data-i18n="btn.stats"></button>
         </div>
       </header>
 
-      <button id="goal-pill" class="goal-pill" title="Tap to change your daily goal"></button>
+      <button id="goal-pill" class="goal-pill" data-i18n-title="goal_pill.title"></button>
 
       <div id="domain-badge" class="domain-badge"></div>
 
@@ -90,12 +92,12 @@
         <p id="quest-prompt" class="quest-prompt"></p>
         <div id="quest-choices" class="quest-choices"></div>
         <div id="quest-freeresponse" class="quest-freeresponse hidden">
-          <textarea id="freeresponse-input" rows="4" placeholder="Type here. No wrong answers."></textarea>
+          <textarea id="freeresponse-input" rows="4" data-i18n-placeholder="quest.freeresponse_placeholder"></textarea>
           <div id="wordcount" class="wordcount"></div>
-          <button id="submit-freeresponse" class="btn btn-primary">Submit</button>
+          <button id="submit-freeresponse" class="btn btn-primary" data-i18n="btn.submit"></button>
         </div>
         <div id="enjoyment-picker" class="enjoyment-picker hidden">
-          <p>How was that?</p>
+          <p data-i18n="quest.how_was_that"></p>
           <div class="enjoyment-options">
             <button class="btn enjoyment-btn" data-value="1">🥱</button>
             <button class="btn enjoyment-btn" data-value="2">🙂</button>
@@ -107,15 +109,15 @@
       </div>
 
       <div class="quest-footer">
-        <button id="next-prompt" class="btn btn-primary hidden">Next</button>
-        <button id="skip-prompt" class="btn btn-ghost btn-small">Skip this one</button>
+        <button id="next-prompt" class="btn btn-primary hidden" data-i18n="btn.next"></button>
+        <button id="skip-prompt" class="btn btn-ghost btn-small" data-i18n="btn.skip"></button>
       </div>
     </section>
 
     <!-- Dashboard -->
     <section id="screen-dashboard" class="screen hidden" data-screen="dashboard">
       <header class="dashboard-header">
-        <button id="close-dashboard" class="btn btn-ghost btn-small">Back</button>
+        <button id="close-dashboard" class="btn btn-ghost btn-small" data-i18n="btn.back"></button>
         <h2 id="dashboard-title"></h2>
       </header>
       <div id="dashboard-content" class="dashboard-content"></div>
@@ -124,33 +126,33 @@
     <!-- Focus: what to drill into -->
     <section id="screen-focus" class="screen hidden" data-screen="focus">
       <header class="dashboard-header">
-        <button id="close-focus" class="btn btn-ghost btn-small">Back</button>
-        <h2>Focus</h2>
+        <button id="close-focus" class="btn btn-ghost btn-small" data-i18n="btn.back"></button>
+        <h2 data-i18n="focus.title"></h2>
       </header>
 
       <div class="focus-content">
         <div class="focus-block">
-          <div class="focus-block-title">Range</div>
+          <div class="focus-block-title" data-i18n="focus.range_label"></div>
           <div id="breadth-toggle" class="breadth-toggle">
-            <button class="breadth-option" data-breadth="broad">Broad<span>bounce around everything</span></button>
-            <button class="breadth-option" data-breadth="narrow">Narrow<span>drill into what's picked</span></button>
+            <button class="breadth-option" data-breadth="broad"><span data-i18n="focus.broad_title"></span><span data-i18n="focus.broad_sub"></span></button>
+            <button class="breadth-option" data-breadth="narrow"><span data-i18n="focus.narrow_title"></span><span data-i18n="focus.narrow_sub"></span></button>
           </div>
         </div>
 
         <div id="focus-topics" class="focus-block"></div>
 
         <div id="focus-regions-block" class="focus-block">
-          <div class="focus-block-title">Trivia regions</div>
+          <div class="focus-block-title" data-i18n="focus.regions_title"></div>
           <div id="focus-regions" class="chip-row"></div>
         </div>
 
         <div class="focus-block">
-          <div class="focus-block-title">Write in a subject</div>
-          <p class="focus-hint">Doesn't drop in instantly — it queues for the next content pass. See what's already queued below.</p>
+          <div class="focus-block-title" data-i18n="focus.write_subject_title"></div>
+          <p class="focus-hint" data-i18n="focus.write_subject_hint"></p>
           <form id="subject-request-form" class="subject-request-form">
             <select id="subject-domain" aria-label="Domain"></select>
-            <input id="subject-text" maxlength="80" placeholder="e.g. K-pop history, orbital mechanics, Rust" autocomplete="off" />
-            <button type="submit" class="btn btn-primary btn-small">Add</button>
+            <input id="subject-text" maxlength="80" data-i18n-placeholder="focus.write_subject_placeholder" autocomplete="off" />
+            <button type="submit" class="btn btn-primary btn-small" data-i18n="btn.add"></button>
           </form>
           <div id="subject-requests-list" class="subject-requests-list"></div>
         </div>
@@ -163,34 +165,36 @@
     <div id="goal-complete-overlay" class="overlay hidden">
       <div class="overlay-card">
         <img src="icons/mascot.svg" alt="" class="overlay-mascot" />
-        <h3 id="goal-complete-title">Daily goal crushed!</h3>
+        <h3 id="goal-complete-title" data-i18n="goal_complete.title"></h3>
         <p id="goal-complete-body" class="overlay-body"></p>
-        <button id="goal-complete-dismiss" class="btn btn-primary">Keep going</button>
+        <button id="goal-complete-dismiss" class="btn btn-primary" data-i18n="btn.keep_going"></button>
       </div>
     </div>
 
     <div id="goal-picker-overlay" class="overlay hidden">
       <div class="overlay-card">
-        <h3>Daily goal</h3>
+        <h3 data-i18n="onboarding.goal_label"></h3>
         <div id="goal-picker-choice" class="choice-row">
-          <button type="button" class="choice-btn-lg" data-type="count" data-value="10">Daily 10<span>10 prompts</span></button>
-          <button type="button" class="choice-btn-lg" data-type="count" data-value="20">Daily 20<span>20 prompts</span></button>
-          <button type="button" class="choice-btn-lg" data-type="time" data-value="10">10 min<span>timed</span></button>
-          <button type="button" class="choice-btn-lg" data-type="time" data-value="20">20 min<span>timed</span></button>
+          <button type="button" class="choice-btn-lg" data-type="count" data-value="10"><span data-i18n="goal.count10.title"></span><span data-i18n="goal.count10.sub"></span></button>
+          <button type="button" class="choice-btn-lg" data-type="count" data-value="20"><span data-i18n="goal.count20.title"></span><span data-i18n="goal.count20.sub"></span></button>
+          <button type="button" class="choice-btn-lg" data-type="time" data-value="10"><span data-i18n="goal.time10.title"></span><span data-i18n="goal.time10.sub"></span></button>
+          <button type="button" class="choice-btn-lg" data-type="time" data-value="20"><span data-i18n="goal.time20.title"></span><span data-i18n="goal.time20.sub"></span></button>
         </div>
-        <button id="goal-picker-close" class="btn btn-ghost">Close</button>
+        <button id="goal-picker-close" class="btn btn-ghost" data-i18n="btn.close"></button>
       </div>
     </div>
 
   </div>
 
   <script src="js/config.js"></script>
+  <script src="js/i18n.js"></script>
   <script src="js/data.js"></script>
   <script src="js/storage.js"></script>
   <script src="js/achievements.js"></script>
   <script src="js/engine.js"></script>
   <script src="js/dashboard.js"></script>
   <script src="js/cloud.js"></script>
+  <script src="js/sound.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
