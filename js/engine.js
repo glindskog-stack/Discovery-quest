@@ -35,9 +35,11 @@ const Engine = {
     const beforeLevel = Storage.levelForXP(state.xp[domain]);
     let xpGained = 0;
     let correct = null; // true/false for rigorous, null for creative (no such thing)
+    let goodOutcome = false; // correct rigorous answer, or a completed+enjoyed creative one — drives correctStreak/achievements
 
     if (node.style === "rigorous") {
       correct = response.choiceIndex === node.answer;
+      goodOutcome = correct;
       const tier = state.tier[domain];
       if (correct) {
         xpGained = 10 + tier * 5;
@@ -57,6 +59,7 @@ const Engine = {
       if (response.completed) {
         xpGained = 10 + tier * 5;
         const enjoyment = response.enjoyment ?? 3; // 1-4 scale
+        goodOutcome = enjoyment >= 3;
         if (enjoyment >= 3) {
           state.tier[domain] = clamp(tier + 1, 1, 3);
           state.affinity.domain[domain] = clamp(state.affinity.domain[domain] + 0.25 + enjoyment * 0.08, MIN_WEIGHT, MAX_WEIGHT);
@@ -73,12 +76,13 @@ const Engine = {
     }
 
     state.xp[domain] += xpGained;
+    state.correctStreak = goodOutcome ? state.correctStreak + 1 : 0;
     Storage.recordAnswered(state, node.id);
     Storage.bumpStreak(state);
     state.lastDomain = domain;
     state.lastNodeId = node.id;
 
-    return { xpGained, correct, leveledUp: Storage.levelForXP(state.xp[domain]) > beforeLevel };
+    return { xpGained, correct, goodOutcome, leveledUp: Storage.levelForXP(state.xp[domain]) > beforeLevel };
   },
 
   // Follows an explicit writing branch if the just-answered node has one.

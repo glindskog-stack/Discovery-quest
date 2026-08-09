@@ -9,6 +9,8 @@ const Dashboard = {
     container.appendChild(this.buildHero(state));
     container.appendChild(this.buildStatRow(state));
     container.appendChild(this.buildDomainBars(state));
+    container.appendChild(this.buildRecords(state));
+    container.appendChild(this.buildTrophyCase(state));
     container.appendChild(this.buildInsight(state));
     container.appendChild(this.buildPeersCard(profile, state));
     container.appendChild(this.buildSyncCard(profile, state, container));
@@ -68,6 +70,47 @@ const Dashboard = {
       `;
       wrap.appendChild(row);
     });
+    return wrap;
+  },
+
+  buildRecords(state) {
+    const wrap = document.createElement("div");
+    wrap.className = "dash-records";
+    const title = document.createElement("h3");
+    title.className = "dash-section-title";
+    title.textContent = "Personal bests";
+    wrap.appendChild(title);
+
+    const row = document.createElement("div");
+    row.className = "dash-stat-row";
+    row.innerHTML = `
+      <div class="stat-tile"><div class="stat-value">${state.records.bestCorrectStreak}</div><div class="stat-label">best streak</div></div>
+      <div class="stat-tile"><div class="stat-value">${state.records.bestSessionXP}</div><div class="stat-label">best session XP</div></div>
+      <div class="stat-tile"><div class="stat-value">${state.goalsCompletedCount}</div><div class="stat-label">goals crushed</div></div>
+    `;
+    wrap.appendChild(row);
+    return wrap;
+  },
+
+  buildTrophyCase(state) {
+    const wrap = document.createElement("div");
+    wrap.className = "dash-trophies";
+    const title = document.createElement("h3");
+    title.className = "dash-section-title";
+    title.textContent = `Trophy case — ${state.achievements.length}/${Object.keys(ACHIEVEMENTS).length}`;
+    wrap.appendChild(title);
+
+    const grid = document.createElement("div");
+    grid.className = "trophy-grid";
+    Object.entries(ACHIEVEMENTS).forEach(([id, a]) => {
+      const unlocked = Storage.hasAchievement(state, id);
+      const cell = document.createElement("div");
+      cell.className = "trophy-cell" + (unlocked ? " trophy-unlocked" : "");
+      cell.title = unlocked ? a.desc : "???";
+      cell.innerHTML = `<div class="trophy-icon">${unlocked ? a.icon : "🔒"}</div><div class="trophy-label">${unlocked ? a.label : "???"}</div>`;
+      grid.appendChild(cell);
+    });
+    wrap.appendChild(grid);
     return wrap;
   },
 

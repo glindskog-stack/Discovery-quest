@@ -3,10 +3,11 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Discovery Quest</title>
+  <title>Rocket Lab</title>
   <meta name="description" content="An adaptive curiosity app for math/science, writing, code, and trivia. No grading, just leveling up." />
   <meta name="theme-color" content="#0a0a0f" />
   <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icons/mascot.svg" type="image/svg+xml" />
   <link rel="icon" href="icons/icon-192.png" />
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
   <link rel="stylesheet" href="css/styles.css" />
@@ -17,19 +18,57 @@
     <!-- Profile picker -->
     <section id="screen-profiles" class="screen" data-screen="profiles">
       <header class="brand">
-        <h1>Discovery Quest</h1>
+        <img src="icons/mascot.svg" alt="" class="brand-mascot" />
+        <h1>Rocket Lab</h1>
         <p class="brand-tagline">Two slots. Zero grading. Pick yours.</p>
       </header>
       <div id="profile-list" class="profile-list"></div>
-      <form id="new-profile-form" class="new-profile-form hidden">
-        <label for="new-profile-name">Name</label>
-        <input id="new-profile-name" name="name" maxlength="24" placeholder="What do we call you?" autocomplete="off" required />
-        <div id="emoji-picker" class="emoji-picker"></div>
-        <div class="form-actions">
-          <button type="button" id="cancel-new-profile" class="btn btn-ghost">Cancel</button>
-          <button type="submit" class="btn btn-primary">Let's go</button>
+
+      <div id="onboarding" class="onboarding hidden">
+        <div id="onboarding-dots" class="onboarding-dots"></div>
+
+        <div class="onboarding-step" data-step="identity">
+          <label for="new-profile-name">What do we call you?</label>
+          <input id="new-profile-name" maxlength="24" placeholder="Your name" autocomplete="off" />
+          <div id="emoji-picker" class="emoji-picker"></div>
         </div>
-      </form>
+
+        <div class="onboarding-step hidden" data-step="age">
+          <label for="onboarding-age">How old are you?</label>
+          <input id="onboarding-age" type="number" inputmode="numeric" min="10" max="19" placeholder="e.g. 16" />
+          <p class="focus-hint">Just for tuning content — stays on this device.</p>
+        </div>
+
+        <div class="onboarding-step hidden" data-step="difficulty">
+          <label>Starting difficulty</label>
+          <div id="difficulty-choice" class="choice-row">
+            <button type="button" class="choice-btn-lg" data-value="1">Easy<span>ease into it</span></button>
+            <button type="button" class="choice-btn-lg" data-value="2">Medium<span>right in the mix</span></button>
+            <button type="button" class="choice-btn-lg" data-value="3">Hard<span>throw me in</span></button>
+          </div>
+        </div>
+
+        <div class="onboarding-step hidden" data-step="interests">
+          <label>Areas you want to improve</label>
+          <div id="interests-choice" class="choice-row"></div>
+          <p class="focus-hint">Pick as many as you want — change this anytime in Focus.</p>
+        </div>
+
+        <div class="onboarding-step hidden" data-step="goal">
+          <label>Daily goal</label>
+          <div id="goal-choice" class="choice-row">
+            <button type="button" class="choice-btn-lg" data-type="count" data-value="10">Daily 10<span>10 prompts</span></button>
+            <button type="button" class="choice-btn-lg" data-type="count" data-value="20">Daily 20<span>20 prompts</span></button>
+            <button type="button" class="choice-btn-lg" data-type="time" data-value="10">10 min<span>timed</span></button>
+            <button type="button" class="choice-btn-lg" data-type="time" data-value="20">20 min<span>timed</span></button>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" id="onboarding-back" class="btn btn-ghost">Back</button>
+          <button type="button" id="onboarding-next" class="btn btn-primary">Next</button>
+        </div>
+      </div>
     </section>
 
     <!-- Main quest loop -->
@@ -42,6 +81,8 @@
           <button id="open-dashboard" class="btn btn-ghost btn-small">Stats</button>
         </div>
       </header>
+
+      <button id="goal-pill" class="goal-pill" title="Tap to change your daily goal"></button>
 
       <div id="domain-badge" class="domain-badge"></div>
 
@@ -116,11 +157,37 @@
       </div>
     </section>
 
+    <!-- Overlays: achievement toast, goal-complete celebration, goal picker -->
+    <div id="achievement-toast" class="achievement-toast hidden"></div>
+
+    <div id="goal-complete-overlay" class="overlay hidden">
+      <div class="overlay-card">
+        <img src="icons/mascot.svg" alt="" class="overlay-mascot" />
+        <h3 id="goal-complete-title">Daily goal crushed!</h3>
+        <p id="goal-complete-body" class="overlay-body"></p>
+        <button id="goal-complete-dismiss" class="btn btn-primary">Keep going</button>
+      </div>
+    </div>
+
+    <div id="goal-picker-overlay" class="overlay hidden">
+      <div class="overlay-card">
+        <h3>Daily goal</h3>
+        <div id="goal-picker-choice" class="choice-row">
+          <button type="button" class="choice-btn-lg" data-type="count" data-value="10">Daily 10<span>10 prompts</span></button>
+          <button type="button" class="choice-btn-lg" data-type="count" data-value="20">Daily 20<span>20 prompts</span></button>
+          <button type="button" class="choice-btn-lg" data-type="time" data-value="10">10 min<span>timed</span></button>
+          <button type="button" class="choice-btn-lg" data-type="time" data-value="20">20 min<span>timed</span></button>
+        </div>
+        <button id="goal-picker-close" class="btn btn-ghost">Close</button>
+      </div>
+    </div>
+
   </div>
 
   <script src="js/config.js"></script>
   <script src="js/data.js"></script>
   <script src="js/storage.js"></script>
+  <script src="js/achievements.js"></script>
   <script src="js/engine.js"></script>
   <script src="js/dashboard.js"></script>
   <script src="js/cloud.js"></script>

@@ -1,4 +1,4 @@
-// Content bank + config for Discovery Quest.
+// Content bank + config for Rocket Lab.
 //
 // Every prompt is tagged { domain, topic, style, tier }:
 //   - style: "rigorous" (has a correct answer) or "creative" (open response,

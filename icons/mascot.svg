@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Rocket Lab mascot: a sand labrador with its tongue out">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFE8C4" />
+      <stop offset="100%" stop-color="#FFC98A" />
+    </linearGradient>
+  </defs>
+
+  <rect x="0" y="0" width="512" height="512" rx="112" fill="url(#bg)" />
+
+  <!-- ears (behind head) -->
+  <ellipse cx="136" cy="266" rx="58" ry="112" fill="#C98A46" transform="rotate(-24 136 266)" />
+  <ellipse cx="376" cy="266" rx="58" ry="112" fill="#C98A46" transform="rotate(24 376 266)" />
+
+  <!-- head -->
+  <ellipse cx="256" cy="288" rx="152" ry="136" fill="#EFC08A" />
+
+  <!-- blush -->
+  <circle cx="170" cy="322" r="20" fill="#FF9EB0" opacity="0.35" />
+  <circle cx="342" cy="322" r="20" fill="#FF9EB0" opacity="0.35" />
+
+  <!-- eyes -->
+  <circle cx="203" cy="266" r="17" fill="#3A2415" />
+  <circle cx="309" cy="266" r="17" fill="#3A2415" />
+  <circle cx="197" cy="260" r="5.5" fill="#FFFFFF" opacity="0.85" />
+  <circle cx="303" cy="260" r="5.5" fill="#FFFFFF" opacity="0.85" />
+
+  <!-- eyebrows: happy upward arcs -->
+  <path d="M 178 236 Q 203 220 228 234" stroke="#C98A46" stroke-width="7" fill="none" stroke-linecap="round" />
+  <path d="M 284 234 Q 309 220 334 236" stroke="#C98A46" stroke-width="7" fill="none" stroke-linecap="round" />
+
+  <!-- snout -->
+  <ellipse cx="256" cy="342" rx="88" ry="66" fill="#F7DCB4" />
+
+  <!-- nose -->
+  <ellipse cx="256" cy="304" rx="23" ry="17" fill="#3A2415" />
+  <circle cx="248" cy="298" r="4.5" fill="#FFFFFF" opacity="0.7" />
+
+  <!-- mouth -->
+  <path d="M 256 321 L 256 336 Q 256 352 226 358 Q 200 362 190 348" stroke="#3A2415" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M 256 336 Q 256 352 286 358 Q 312 362 322 348" stroke="#3A2415" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+
+  <!-- tongue, hanging out -->
+  <path d="M 238 350 Q 238 410 256 416 Q 274 410 274 350 Z" fill="#FF9EB0" />
+  <line x1="256" y1="358" x2="256" y2="404" stroke="#E4728A" stroke-width="4" stroke-linecap="round" />
+</svg>

@@ -3,6 +3,7 @@
 // anything about how affinity math works internally.
 
 const AVATAR_EMOJI = ["🦊", "🐙", "🦂", "🐍", "🦇", "🐺", "🦅", "🐲", "👾", "🛸"];
+const ONBOARDING_STEPS = ["identity", "age", "difficulty", "interests", "goal"];
 
 const els = {};
 let activeProfile = null;
@@ -11,6 +12,10 @@ let currentNode = null;
 let sessionEntry = null;
 let sessionTimer = null;
 let pendingFreeResponse = null; // { node, wordCount } while waiting on enjoyment tap
+let onboardingStepIndex = 0;
+let onboardingDraft = {};
+let toastQueue = [];
+let toastShowing = false;
 
 function $(id) {
   return document.getElementById(id);
@@ -39,13 +44,112 @@ function renderProfileList() {
     const addBtn = document.createElement("button");
     addBtn.className = "profile-chip profile-chip-add";
     addBtn.textContent = "+ New profile";
-    addBtn.addEventListener("click", () => {
-      list.classList.add("hidden");
-      $("new-profile-form").classList.remove("hidden");
-      buildEmojiPicker();
-    });
+    addBtn.addEventListener("click", startOnboarding);
     list.appendChild(addBtn);
   }
+}
+
+// ---------- Onboarding wizard ----------
+
+function startOnboarding() {
+  onboardingStepIndex = 0;
+  onboardingDraft = { age: null, difficulty: 2, interests: [], goalType: "count", goalValue: 10 };
+  $("profile-list").classList.add("hidden");
+  $("onboarding").classList.remove("hidden");
+  $("new-profile-name").value = "";
+  $("onboarding-age").value = "";
+  buildEmojiPicker();
+  buildInterestsChoice();
+  wireChoiceRow($("difficulty-choice"), (btn) => {
+    onboardingDraft.difficulty = Number(btn.dataset.value);
+  });
+  wireChoiceRow($("goal-choice"), (btn) => {
+    onboardingDraft.goalType = btn.dataset.type;
+    onboardingDraft.goalValue = Number(btn.dataset.value);
+  });
+  applyDefaultSelection($("difficulty-choice"), (btn) => Number(btn.dataset.value) === onboardingDraft.difficulty);
+  applyDefaultSelection($("goal-choice"), (btn) => btn.dataset.type === onboardingDraft.goalType && Number(btn.dataset.value) === onboardingDraft.goalValue);
+  renderOnboardingStep();
+}
+
+function wireChoiceRow(container, onSelect) {
+  container.querySelectorAll(".choice-btn-lg").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      container.querySelectorAll(".choice-btn-lg").forEach((b) => b.classList.remove("selected"));
+      btn.classList.add("selected");
+      onSelect(btn);
+    });
+  });
+}
+
+function applyDefaultSelection(container, matchFn) {
+  container.querySelectorAll(".choice-btn-lg").forEach((b) => b.classList.toggle("selected", matchFn(b)));
+}
+
+function buildInterestsChoice() {
+  const wrap = $("interests-choice");
+  wrap.innerHTML = "";
+  DOMAIN_ORDER.forEach((domainId) => {
+    const domain = DOMAINS[domainId];
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "choice-btn-lg choice-btn-domain";
+    btn.dataset.value = domainId;
+    btn.innerHTML = `<span class="domain-icon" style="color:${domain.accent}">${domain.icon}</span> ${domain.shortLabel}`;
+    btn.addEventListener("click", () => {
+      const i = onboardingDraft.interests.indexOf(domainId);
+      if (i === -1) onboardingDraft.interests.push(domainId);
+      else onboardingDraft.interests.splice(i, 1);
+      btn.classList.toggle("selected");
+    });
+    wrap.appendChild(btn);
+  });
+}
+
+function renderOnboardingStep() {
+  const stepName = ONBOARDING_STEPS[onboardingStepIndex];
+  document.querySelectorAll(".onboarding-step").forEach((el) => el.classList.toggle("hidden", el.dataset.step !== stepName));
+  $("onboarding-dots").innerHTML = ONBOARDING_STEPS.map((_, i) => `<span class="dot${i === onboardingStepIndex ? " active" : ""}"></span>`).join("");
+  $("onboarding-back").textContent = onboardingStepIndex === 0 ? "Cancel" : "Back";
+  $("onboarding-next").textContent = onboardingStepIndex === ONBOARDING_STEPS.length - 1 ? "Let's go" : "Next";
+  if (stepName === "identity") $("new-profile-name").focus();
+}
+
+$("onboarding-back").addEventListener("click", () => {
+  if (onboardingStepIndex === 0) {
+    $("onboarding").classList.add("hidden");
+    $("profile-list").classList.remove("hidden");
+    return;
+  }
+  onboardingStepIndex -= 1;
+  renderOnboardingStep();
+});
+
+$("onboarding-next").addEventListener("click", () => {
+  const stepName = ONBOARDING_STEPS[onboardingStepIndex];
+  if (stepName === "identity" && !$("new-profile-name").value.trim()) {
+    $("new-profile-name").focus();
+    return;
+  }
+  if (stepName === "age") {
+    const age = Number($("onboarding-age").value);
+    onboardingDraft.age = age > 0 ? age : null;
+  }
+  if (onboardingStepIndex === ONBOARDING_STEPS.length - 1) {
+    completeOnboarding();
+    return;
+  }
+  onboardingStepIndex += 1;
+  renderOnboardingStep();
+});
+
+function completeOnboarding() {
+  const name = $("new-profile-name").value.trim();
+  const emoji = $("emoji-picker").getSelected();
+  const profile = Storage.createProfile(name, emoji, onboardingDraft);
+  $("onboarding").classList.add("hidden");
+  $("profile-list").classList.remove("hidden");
+  selectProfile(profile.id);
 }
 
 function buildEmojiPicker() {
@@ -79,39 +183,32 @@ function selectProfile(id) {
   Storage.setActiveProfileId(id);
   state = Storage.getState(id);
   sessionEntry = Storage.startSessionEntry(state);
+  sessionEntry.xpGained = 0;
   Storage.saveState(id, state);
   startSessionTimer();
   showScreen("quest");
   renderActiveProfileTag();
+  renderGoalPill();
   loadNextNode();
+}
+
+function renderGoalPill() {
+  const progress = Storage.sessionGoalProgress(state, sessionEntry);
+  const current = progress.type === "time" ? Math.floor(progress.current) : progress.current;
+  const unit = progress.type === "time" ? "min" : "today";
+  $("goal-pill").textContent = `${progress.met ? "✅" : "🎯"} ${current}/${progress.target} ${unit}`;
+  $("goal-pill").classList.toggle("goal-pill-met", progress.met);
 }
 
 function renderActiveProfileTag() {
   $("active-profile-tag").innerHTML = `<span class="profile-emoji">${activeProfile.emoji}</span> ${escapeHTML(activeProfile.name)}`;
 }
 
-$("new-profile-form").addEventListener("submit", (e) => {
-  e.preventDefault();
-  const name = $("new-profile-name").value.trim();
-  if (!name) return;
-  const emoji = $("emoji-picker").getSelected();
-  const profile = Storage.createProfile(name, emoji);
-  $("new-profile-form").reset();
-  $("new-profile-form").classList.add("hidden");
-  $("profile-list").classList.remove("hidden");
-  selectProfile(profile.id);
-});
-
-$("cancel-new-profile").addEventListener("click", () => {
-  $("new-profile-form").classList.add("hidden");
-  $("profile-list").classList.remove("hidden");
-});
-
 $("switch-profile").addEventListener("click", () => {
   endSession();
   activeProfile = null;
   showScreen("profiles");
-  $("new-profile-form").classList.add("hidden");
+  $("onboarding").classList.add("hidden");
   $("profile-list").classList.remove("hidden");
   renderProfileList();
 });
@@ -120,12 +217,42 @@ $("switch-profile").addEventListener("click", () => {
 
 function startSessionTimer() {
   if (sessionTimer) clearInterval(sessionTimer);
-  sessionTimer = setInterval(() => flushSessionTime(), 15000);
+  sessionTimer = setInterval(() => {
+    flushSessionTime();
+    renderGoalPill();
+  }, 15000);
   window.addEventListener("beforeunload", flushSessionTime);
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "hidden") flushSessionTime();
   });
 }
+
+// ---------- Session goal picker ----------
+
+$("goal-pill").addEventListener("click", () => {
+  markGoalChoiceSelected($("goal-picker-choice"), state.sessionGoal);
+  $("goal-picker-overlay").classList.remove("hidden");
+});
+
+$("goal-picker-close").addEventListener("click", () => {
+  $("goal-picker-overlay").classList.add("hidden");
+});
+
+function markGoalChoiceSelected(container, goal) {
+  container.querySelectorAll(".choice-btn-lg").forEach((b) => {
+    b.classList.toggle("selected", b.dataset.type === goal.type && Number(b.dataset.value) === goal.value);
+  });
+}
+
+$("goal-picker-choice").querySelectorAll(".choice-btn-lg").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    state.sessionGoal = { type: btn.dataset.type, value: Number(btn.dataset.value) };
+    Storage.saveState(activeProfile.id, state);
+    markGoalChoiceSelected($("goal-picker-choice"), state.sessionGoal);
+    renderGoalPill();
+    $("goal-picker-overlay").classList.add("hidden");
+  });
+});
 
 function flushSessionTime() {
   if (!sessionEntry || !state) return;
@@ -239,34 +366,106 @@ $("skip-prompt").addEventListener("click", () => {
 });
 
 function finishAnswer(node, result, choiceIndex) {
-  trackAnswered(node);
-  showFeedback(result, node);
+  trackAnswered(node, result.xpGained);
+
+  const brokenRecords = Storage.updateRecords(state, {
+    correctStreak: state.correctStreak,
+    sessionXP: sessionEntry.xpGained,
+    sessionPrompts: sessionEntry.promptsAnswered,
+  });
+  let unlockedAchievements = Achievements.evaluate(state, { sessionEntry, goodOutcome: result.goodOutcome });
+
+  showFeedback(result, node, brokenRecords);
+  renderGoalPill();
+
   $("next-prompt").classList.remove("hidden");
   $("next-prompt").onclick = () => {
     const branchNext = Engine.followBranch(node, choiceIndex ?? 0);
     currentNode = branchNext || Engine.pickNextNode(state);
     renderNode(currentNode);
   };
-  Storage.saveState(activeProfile.id, state);
+
+  const progress = Storage.sessionGoalProgress(state, sessionEntry);
+  if (progress.met && Storage.markGoalCompletedToday(state)) {
+    unlockedAchievements = unlockedAchievements.concat(Achievements.evaluateGoalCompletion(state));
+    Storage.saveState(activeProfile.id, state);
+    showGoalCompleteOverlay(progress, unlockedAchievements);
+  } else {
+    Storage.saveState(activeProfile.id, state);
+    if (unlockedAchievements.length) queueAchievementToasts(unlockedAchievements);
+  }
 }
 
-function trackAnswered(node) {
+function trackAnswered(node, xpGained) {
   sessionEntry.promptsAnswered += 1;
+  sessionEntry.xpGained = (sessionEntry.xpGained || 0) + xpGained;
   if (!sessionEntry.domainsTouched.includes(node.domain)) sessionEntry.domainsTouched.push(node.domain);
 }
 
-function showFeedback(result, node) {
+function showFeedback(result, node, brokenRecords) {
   const feedback = $("quest-feedback");
   const parts = [];
   if (result.xpGained) parts.push(`+${result.xpGained} XP`);
   if (result.leveledUp) parts.push(`Level up`);
+  if (brokenRecords && brokenRecords.includes("bestCorrectStreak") && state.correctStreak > 1) {
+    parts.push(`New best streak: ${state.correctStreak}`);
+  }
   if (node.style === "rigorous") {
     if (node.explain) parts.push(node.explain);
     if (node.source) parts.push(`Source: ${node.source}${node.verifiedAt ? " · checked " + node.verifiedAt : ""}`);
   }
   feedback.textContent = parts.join(" — ");
   feedback.classList.toggle("hidden", parts.length === 0);
+
+  if (result.leveledUp && Cloud.isConfigured()) {
+    Cloud.getPercentile(node.domain, state.xp[node.domain]).then((pct) => {
+      if (pct == null) return;
+      const extra = document.createElement("div");
+      extra.className = "level-up-percentile";
+      extra.textContent = `Now ahead of ${Math.round(pct)}% of explorers in ${DOMAINS[node.domain].shortLabel}.`;
+      feedback.appendChild(extra);
+    });
+  }
 }
+
+// ---------- Achievement toasts + goal-complete overlay ----------
+
+function queueAchievementToasts(ids) {
+  toastQueue.push(...ids);
+  processToastQueue();
+}
+
+function processToastQueue() {
+  if (toastShowing || !toastQueue.length) return;
+  toastShowing = true;
+  const id = toastQueue.shift();
+  const a = ACHIEVEMENTS[id];
+  const toast = $("achievement-toast");
+  toast.innerHTML = `<div class="achievement-toast-icon">${a.icon}</div><div><div class="achievement-toast-label">${a.label}</div><div class="achievement-toast-desc">${a.desc}</div></div>`;
+  toast.classList.remove("hidden");
+  requestAnimationFrame(() => toast.classList.add("show"));
+  setTimeout(() => {
+    toast.classList.remove("show");
+    setTimeout(() => {
+      toast.classList.add("hidden");
+      toastShowing = false;
+      processToastQueue();
+    }, 300);
+  }, 2600);
+}
+
+function showGoalCompleteOverlay(progress, pendingAchievementIds) {
+  const label = progress.type === "time" ? `${Math.round(progress.current)} minutes` : `${progress.current} prompts`;
+  $("goal-complete-body").textContent = `${label} in today — that's the goal. Keep going if you're into it, or call it there.`;
+  $("goal-complete-overlay").dataset.pending = JSON.stringify(pendingAchievementIds || []);
+  $("goal-complete-overlay").classList.remove("hidden");
+}
+
+$("goal-complete-dismiss").addEventListener("click", () => {
+  $("goal-complete-overlay").classList.add("hidden");
+  const pending = JSON.parse($("goal-complete-overlay").dataset.pending || "[]");
+  if (pending.length) queueAchievementToasts(pending);
+});
 
 // ---------- Focus: what to drill into ----------
 

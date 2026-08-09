@@ -38,13 +38,36 @@ const Storage = {
     return this.listProfiles().length < MAX_PROFILES;
   },
 
-  createProfile(name, emoji) {
+  // `onboarding` (all optional): { age, difficulty: 1|2|3, interests: [domainId],
+  // goalType: "count"|"time", goalValue: number }. Age/difficulty/interests are
+  // recorded on the profile for reference; their *effects* (starting tier,
+  // domain affinity, daily goal) get baked into the state once, at creation —
+  // the adaptive engine takes over from there.
+  createProfile(name, emoji, onboarding = {}) {
     const profiles = this.listProfiles();
     if (profiles.length >= MAX_PROFILES) throw new Error("Profile slots full");
-    const profile = { id: crypto.randomUUID(), name: name.trim().slice(0, 24), emoji, createdAt: Date.now() };
+    const profile = {
+      id: crypto.randomUUID(),
+      name: name.trim().slice(0, 24),
+      emoji,
+      age: onboarding.age || null,
+      difficulty: onboarding.difficulty || 2,
+      interests: onboarding.interests || [],
+      createdAt: Date.now(),
+    };
     profiles.push(profile);
     writeJSON(PROFILES_KEY, profiles);
-    writeJSON(stateKey(profile.id), this.defaultState());
+
+    const state = this.defaultState();
+    const tier = onboarding.difficulty || 2;
+    Object.keys(state.tier).forEach((d) => (state.tier[d] = tier));
+    (onboarding.interests || []).forEach((d) => {
+      if (state.affinity.domain[d] !== undefined) state.affinity.domain[d] += 1.5;
+    });
+    if (onboarding.goalType && onboarding.goalValue) {
+      state.sessionGoal = { type: onboarding.goalType, value: onboarding.goalValue };
+    }
+    writeJSON(stateKey(profile.id), state);
     return profile;
   },
 
@@ -86,6 +109,12 @@ const Storage = {
       },
       requestedSubjects: [], // [{id, domain, text, createdAt}] — "write a subject to add" queue, synced to cloud when configured
       cloudSyncedAt: null,
+      sessionGoal: { type: "count", value: 10 }, // "count" prompts or "time" minutes — editable anytime from the goal pill
+      goalsCompletedCount: 0,
+      lastGoalCompletedDate: null,
+      correctStreak: 0, // current consecutive-correct run, resets on a miss/bail
+      achievements: [], // [{id, unlockedAt}] — one-time unlocks, see js/achievements.js
+      records: { bestCorrectStreak: 0, bestSessionXP: 0, bestSessionPrompts: 0 },
       createdAt: Date.now(),
       updatedAt: Date.now(),
     };
@@ -113,6 +142,8 @@ const Storage = {
         topics: { ...fallback.focus.topics, ...(state.focus && state.focus.topics) },
         regions: (state.focus && state.focus.regions) || fallback.focus.regions,
       },
+      sessionGoal: { ...fallback.sessionGoal, ...state.sessionGoal },
+      records: { ...fallback.records, ...state.records },
     };
   },
 
@@ -178,5 +209,55 @@ const Storage = {
     const ceilRaw = LEVEL_THRESHOLDS[level];
     const ceil = ceilRaw === undefined ? floor + 1000 : ceilRaw;
     return { level, floor, ceil, progress: (xp - floor) / (ceil - floor) };
+  },
+
+  hasAchievement(state, id) {
+    return state.achievements.some((a) => a.id === id);
+  },
+
+  unlockAchievement(state, id) {
+    if (this.hasAchievement(state, id)) return false;
+    state.achievements.push({ id, unlockedAt: Date.now() });
+    return true;
+  },
+
+  // Updates personal bests in place; returns the list of record keys that
+  // were just broken, so the UI can show a "new record" moment.
+  updateRecords(state, { correctStreak, sessionXP, sessionPrompts }) {
+    const broken = [];
+    if (correctStreak !== undefined && correctStreak > state.records.bestCorrectStreak) {
+      state.records.bestCorrectStreak = correctStreak;
+      broken.push("bestCorrectStreak");
+    }
+    if (sessionXP !== undefined && sessionXP > state.records.bestSessionXP) {
+      state.records.bestSessionXP = sessionXP;
+      broken.push("bestSessionXP");
+    }
+    if (sessionPrompts !== undefined && sessionPrompts > state.records.bestSessionPrompts) {
+      state.records.bestSessionPrompts = sessionPrompts;
+      broken.push("bestSessionPrompts");
+    }
+    return broken;
+  },
+
+  // { current, target, type, met } — "count" compares prompts answered this
+  // session against the goal; "time" compares elapsed minutes.
+  sessionGoalProgress(state, sessionEntry) {
+    const goal = state.sessionGoal;
+    if (goal.type === "time") {
+      const minutes = (Date.now() - sessionEntry.startedAt) / 60000;
+      return { current: minutes, target: goal.value, type: "time", met: minutes >= goal.value };
+    }
+    return { current: sessionEntry.promptsAnswered, target: goal.value, type: "count", met: sessionEntry.promptsAnswered >= goal.value };
+  },
+
+  // Returns true only the first time the goal is completed on a given day —
+  // callers use that to fire the celebration once, not on every prompt after.
+  markGoalCompletedToday(state) {
+    const today = todayStr();
+    if (state.lastGoalCompletedDate === today) return false;
+    state.lastGoalCompletedDate = today;
+    state.goalsCompletedCount += 1;
+    return true;
   },
 };
