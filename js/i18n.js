@@ -195,6 +195,11 @@ const I18N_STRINGS = {
   "rocket.mission_complete_title": { en: "Mission complete!", sv: "Uppdrag slutfört!", fr: "Mission accomplie !", de: "Mission abgeschlossen!", es: "¡Misión completa!" },
   "rocket.mission_complete_body": { en: "Your capsule made it to orbit. Every stage was a strategy — nothing carried longer than it needed to be.", sv: "Din kapsel nådde omloppsbana. Varje steg var en strategi — inget bars längre än det behövde.", fr: "Ta capsule a atteint l'orbite. Chaque étape était une stratégie — rien transporté plus longtemps que nécessaire.", de: "Deine Kapsel hat die Umlaufbahn erreicht. Jede Stufe war eine Strategie — nichts wurde länger mitgeführt als nötig.", es: "Tu cápsula llegó a órbita. Cada etapa fue una estrategia — nada se cargó más de lo necesario." },
   "rocket.part_dropped": { en: "Part dropped — lighter and faster.", sv: "Del släppt — lättare och snabbare.", fr: "Partie larguée — plus léger, plus rapide.", de: "Teil abgeworfen — leichter und schneller.", es: "Parte soltada — más ligero y rápido." },
+
+  "quest.combo_label": { en: "🔥 Combo ×{mult}", sv: "🔥 Kombo ×{mult}", fr: "🔥 Combo ×{mult}", de: "🔥 Combo ×{mult}", es: "🔥 Combo ×{mult}" },
+  "quest.daily_bonus_label": { en: "🎁 Daily Bonus ×{mult}", sv: "🎁 Dagens bonus ×{mult}", fr: "🎁 Bonus du jour ×{mult}", de: "🎁 Tagesbonus ×{mult}", es: "🎁 Bono diario ×{mult}" },
+  "streak.freeze_used_label": { en: "Streak Saved!", sv: "Sviten räddad!", fr: "Série sauvée !", de: "Serie gerettet!", es: "¡Racha salvada!" },
+  "streak.freeze_used_desc": { en: "Missed a day, but a freeze covered you — {n}-day streak continues.", sv: "Missade en dag, men en frysning täckte dig — {n} dagars svit fortsätter.", fr: "Un jour manqué, mais un gel t'a couvert — la série de {n} jours continue.", de: "Einen Tag verpasst, aber ein Freeze hat dich gedeckt — {n}-Tage-Serie geht weiter.", es: "Te perdiste un día, pero un congelamiento te cubrió — la racha de {n} días continúa." },
 };
 
 const ACHIEVEMENT_I18N = {

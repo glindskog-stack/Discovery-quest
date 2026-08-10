@@ -104,7 +104,8 @@ const Storage = {
       affinity: {
         domain: { math: 1, writing: 1, coding: 1, trivia: 1 },
       },
-      streak: { current: 0, longest: 0, lastActiveDate: null },
+      streak: { current: 0, longest: 0, lastActiveDate: null, freezesAvailable: 1, freezeUsedAt: null, freezeJustUsed: false },
+      dailyBonus: { lastAwardedDate: null }, // first goodOutcome answer each day gets a surprise XP multiplier — see Engine.recordResponse
       totalTimeMs: 0,
       sessionHistory: [], // [{date, startedAt, durationMs, domainsTouched, promptsAnswered}]
       answerLog: [], // [{nodeId, domain, style, question, answer, correct, completed, enjoyment, xpGained, at}] — full history, capped; see appendAnswerLog
@@ -166,6 +167,8 @@ const Storage = {
         styleMix: (state.focus && typeof state.focus.styleMix === "number") ? state.focus.styleMix : fallback.focus.styleMix,
       },
       rocketCourse: { ...fallback.rocketCourse, ...state.rocketCourse },
+      streak: { ...fallback.streak, ...state.streak },
+      dailyBonus: { ...fallback.dailyBonus, ...state.dailyBonus },
       sessionGoal: { ...fallback.sessionGoal, ...state.sessionGoal },
       records: { ...fallback.records, ...state.records },
     };
@@ -211,11 +214,31 @@ const Storage = {
     writeJSON(PROFILES_KEY, profiles);
   },
 
+  // A missed single day doesn't zero the streak if a freeze is available —
+  // one freeze charge is granted, then recharges 7 days after it's spent
+  // (a rolling cooldown, not a calendar-week reset). state.streak.freezeJustUsed
+  // is a one-shot flag the UI reads once to show "streak saved!", then clears.
   bumpStreak(state) {
     const today = todayStr();
     if (state.streak.lastActiveDate === today) return; // already counted today
+
+    if (state.streak.freezesAvailable < 1 && state.streak.freezeUsedAt && Date.now() - state.streak.freezeUsedAt >= 7 * 86400000) {
+      state.streak.freezesAvailable = 1;
+    }
+
     const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
-    state.streak.current = state.streak.lastActiveDate === yesterday ? state.streak.current + 1 : 1;
+    const dayBeforeYesterday = new Date(Date.now() - 2 * 86400000).toISOString().slice(0, 10);
+
+    if (state.streak.lastActiveDate === yesterday) {
+      state.streak.current += 1;
+    } else if (state.streak.lastActiveDate === dayBeforeYesterday && state.streak.freezesAvailable >= 1) {
+      state.streak.current += 1;
+      state.streak.freezesAvailable -= 1;
+      state.streak.freezeUsedAt = Date.now();
+      state.streak.freezeJustUsed = true;
+    } else {
+      state.streak.current = 1;
+    }
     state.streak.longest = Math.max(state.streak.longest, state.streak.current);
     state.streak.lastActiveDate = today;
   },

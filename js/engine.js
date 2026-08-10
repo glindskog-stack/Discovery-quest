@@ -15,6 +15,19 @@ function clamp(n, lo, hi) {
   return Math.max(lo, Math.min(hi, n));
 }
 
+// Streak-based XP multiplier — a skill-driven reward loop distinct from the
+// daily bonus below (which is chance-driven). Never stacks with it: a
+// correct/completed answer gets at most one multiplier story.
+const COMBO_TIERS = [
+  { min: 10, mult: 3 },
+  { min: 6, mult: 2 },
+  { min: 3, mult: 1.5 },
+];
+function comboMultiplierFor(streak) {
+  const tier = COMBO_TIERS.find((t) => streak >= t.min);
+  return tier ? tier.mult : 1;
+}
+
 function weightedPick(weightMap, downweightKey) {
   const entries = Object.entries(weightMap).map(([k, w]) => [k, k === downweightKey ? w * 0.45 : w]);
   const total = entries.reduce((sum, [, w]) => sum + w, 0);
@@ -71,15 +84,42 @@ const Engine = {
       }
     }
 
+    const newCorrectStreak = goodOutcome ? state.correctStreak + 1 : 0;
+
+    // One multiplier story per answer, never both: the daily bonus (chance-
+    // driven, first good answer of the day) takes priority over the combo
+    // (skill-driven, from a running correct streak) if both would apply.
+    let comboMult = null;
+    let dailyBonusMult = null;
+    if (goodOutcome) {
+      const today = new Date().toISOString().slice(0, 10);
+      if (state.dailyBonus.lastAwardedDate !== today) {
+        dailyBonusMult = Math.round((1.5 + Math.random() * 1.5) * 10) / 10; // 1.5x-3x
+        state.dailyBonus.lastAwardedDate = today;
+      } else {
+        const mult = comboMultiplierFor(newCorrectStreak);
+        if (mult > 1) comboMult = mult;
+      }
+    }
+    const multiplier = dailyBonusMult || comboMult || 1;
+    if (multiplier > 1) xpGained = Math.round(xpGained * multiplier);
+
     state.xp[domain] += xpGained;
-    state.correctStreak = goodOutcome ? state.correctStreak + 1 : 0;
+    state.correctStreak = newCorrectStreak;
     Storage.recordAnswered(state, node.id);
+    state.streak.freezeJustUsed = false;
     Storage.bumpStreak(state);
+    const streakFreezeUsed = state.streak.freezeJustUsed;
+    state.streak.freezeJustUsed = false;
     state.lastDomain = domain;
     state.lastNodeId = node.id;
 
     const completed = node.style === "rigorous" ? true : !!response.completed;
-    return { xpGained, correct, goodOutcome, completed, leveledUp: Storage.levelForXP(state.xp[domain]) > beforeLevel };
+    return {
+      xpGained, correct, goodOutcome, completed,
+      leveledUp: Storage.levelForXP(state.xp[domain]) > beforeLevel,
+      combo: comboMult, dailyBonus: dailyBonusMult, streakFreezeUsed,
+    };
   },
 
   // Follows an explicit writing branch if the just-answered node has one.

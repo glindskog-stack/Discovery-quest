@@ -72,6 +72,15 @@ const Sound = {
     [523, 659, 784, 988, 1318].forEach((f, i) => this.tone(f, 0.2, "triangle", 0.13, i * 0.07));
   },
 
+  combo() {
+    this.tone(740, 0.09, "square", 0.1);
+    this.tone(988, 0.12, "square", 0.1, 0.06);
+  },
+
+  bonus() {
+    [660, 880, 1108, 1318, 1568].forEach((f, i) => this.tone(f, 0.14, "triangle", 0.12, i * 0.055));
+  },
+
   tap() {
     this.tone(440, 0.05, "square", 0.03);
   },

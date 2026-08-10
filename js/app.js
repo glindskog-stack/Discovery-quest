@@ -490,8 +490,24 @@ function finishAnswer(node, result, opts = {}) {
 
   showFeedback(result, node, brokenRecords, aiFeedback);
   renderGoalPill();
-  if (result.xpGained) popXP(result.xpGained);
+  if (result.dailyBonus) {
+    popXP(result.xpGained, I18n.t("quest.daily_bonus_label", { mult: result.dailyBonus }));
+    Sound.bonus();
+  } else if (result.combo) {
+    popXP(result.xpGained, I18n.t("quest.combo_label", { mult: result.combo }));
+    Sound.combo();
+  } else if (result.xpGained) {
+    popXP(result.xpGained);
+  }
   if (result.leveledUp) Sound.levelUp();
+  if (result.streakFreezeUsed) {
+    queueLightToast({
+      icon: "🧊",
+      label: I18n.t("streak.freeze_used_label"),
+      desc: I18n.t("streak.freeze_used_desc", { n: state.streak.current }),
+      sound: () => Sound.achievement(),
+    });
+  }
 
   $("next-prompt").classList.remove("hidden");
   $("next-prompt").onclick = () => {
@@ -597,22 +613,35 @@ function showFeedback(result, node, brokenRecords, aiFeedback) {
 // ---------- Achievement toasts + goal-complete overlay ----------
 
 function queueAchievementToasts(ids) {
-  toastQueue.push(...ids);
+  ids.forEach((id) => toastQueue.push(id));
+  processToastQueue();
+}
+
+// Same toast element/queue as real achievements, but for lighter, repeatable
+// moments (streak freeze used) that shouldn't trigger the full
+// confetti+achievement-fanfare treatment every time.
+function queueLightToast({ icon, label, desc, sound }) {
+  toastQueue.push({ icon, label, desc, sound, light: true });
   processToastQueue();
 }
 
 function processToastQueue() {
   if (toastShowing || !toastQueue.length) return;
   toastShowing = true;
-  const id = toastQueue.shift();
-  const a = ACHIEVEMENTS[id];
+  const item = toastQueue.shift();
+  const a = typeof item === "string" ? ACHIEVEMENTS[item] : item;
   const toast = $("achievement-toast");
   toast.innerHTML = `<div class="achievement-toast-icon">${a.icon}</div><div><div class="achievement-toast-label">${a.label}</div><div class="achievement-toast-desc">${a.desc}</div></div>`;
   toast.classList.remove("hidden");
   requestAnimationFrame(() => toast.classList.add("show"));
-  Sound.achievement();
-  buzz([15, 40, 15]);
-  burstConfetti();
+  if (typeof item === "string") {
+    Sound.achievement();
+    buzz([15, 40, 15]);
+    burstConfetti();
+  } else {
+    if (a.sound) a.sound();
+    buzz(15);
+  }
   setTimeout(() => {
     toast.classList.remove("show");
     setTimeout(() => {
@@ -640,13 +669,17 @@ function buzz(pattern) {
   if (navigator.vibrate) navigator.vibrate(pattern);
 }
 
-function popXP(amount) {
+function popXP(amount, bonusLabel) {
   const pop = document.createElement("div");
-  pop.className = "xp-pop";
-  pop.textContent = `+${amount} XP`;
+  pop.className = "xp-pop" + (bonusLabel ? " xp-pop-bonus" : "");
+  if (bonusLabel) {
+    pop.innerHTML = `<div>+${amount} XP</div><div class="xp-pop-label">${escapeHTML(bonusLabel)}</div>`;
+  } else {
+    pop.textContent = `+${amount} XP`;
+  }
   $("quest-card").appendChild(pop);
   requestAnimationFrame(() => pop.classList.add("xp-pop-animate"));
-  setTimeout(() => pop.remove(), 1200);
+  setTimeout(() => pop.remove(), 1400);
 }
 
 const CONFETTI_COLORS = ["#d4ff00", "#ef06b1", "#0098c7", "#719f04", "#bd8005"];
