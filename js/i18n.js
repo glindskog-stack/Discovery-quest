@@ -47,6 +47,7 @@ const I18N_STRINGS = {
   "btn.stats": { en: "Stats", sv: "Statistik", fr: "Stats", de: "Statistik", es: "Estadísticas" },
   "btn.switch_profile_title": { en: "Switch profile", sv: "Byt profil", fr: "Changer de profil", de: "Profil wechseln", es: "Cambiar de perfil" },
   "btn.sound_title": { en: "Sound", sv: "Ljud", fr: "Son", de: "Ton", es: "Sonido" },
+  "btn.language_title": { en: "Language", sv: "Språk", fr: "Langue", de: "Sprache", es: "Idioma" },
   "btn.submit": { en: "Submit", sv: "Skicka", fr: "Envoyer", de: "Absenden", es: "Enviar" },
   "btn.add": { en: "Add", sv: "Lägg till", fr: "Ajouter", de: "Hinzufügen", es: "Añadir" },
   "btn.close": { en: "Close", sv: "Stäng", fr: "Fermer", de: "Schließen", es: "Cerrar" },

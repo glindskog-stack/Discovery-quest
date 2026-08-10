@@ -2,7 +2,7 @@
 // visited. Content is entirely client-side (no API calls), so this is a
 // simple shell cache, not a data-sync worker. Bump CACHE_NAME on any
 // asset change to force a refresh.
-const CACHE_NAME = "discovery-quest-v17";
+const CACHE_NAME = "discovery-quest-v18";
 const SHELL_ASSETS = [
   "./",
   "./index.html",
@@ -11,6 +11,7 @@ const SHELL_ASSETS = [
   "./js/config.js",
   "./js/i18n.js",
   "./js/data.js",
+  "./js/questions-i18n.js",
   "./js/storage.js",
   "./js/achievements.js",
   "./js/engine.js",

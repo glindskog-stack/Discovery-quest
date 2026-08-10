@@ -50,25 +50,45 @@ function renderProfileList() {
 
 // ---------- Language picker ----------
 
+// Populates every language picker on the page (profile screen's is always
+// visible; the quest header's is a popover) so switching works from
+// wherever the player currently is, not just before picking a profile.
 function renderLangPicker() {
-  const wrap = $("lang-picker");
-  wrap.innerHTML = "";
-  I18N_LANGS.forEach((lang) => {
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "lang-option" + (lang.code === I18n.current ? " selected" : "");
-    btn.textContent = lang.flag;
-    btn.title = lang.name;
-    btn.addEventListener("click", () => setLanguage(lang.code));
-    wrap.appendChild(btn);
+  document.querySelectorAll(".lang-picker").forEach((wrap) => {
+    wrap.innerHTML = "";
+    I18N_LANGS.forEach((lang) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "lang-option" + (lang.code === I18n.current ? " selected" : "");
+      btn.textContent = lang.flag;
+      btn.title = lang.name;
+      btn.addEventListener("click", () => {
+        setLanguage(lang.code);
+        $("lang-picker-quest").classList.add("hidden");
+      });
+      wrap.appendChild(btn);
+    });
   });
 }
+
+$("toggle-lang").addEventListener("click", (e) => {
+  e.stopPropagation();
+  $("lang-picker-quest").classList.toggle("hidden");
+});
+
+document.addEventListener("click", (e) => {
+  const popover = $("lang-picker-quest");
+  if (!popover.classList.contains("hidden") && !popover.contains(e.target) && e.target.id !== "toggle-lang") {
+    popover.classList.add("hidden");
+  }
+});
 
 function setLanguage(code) {
   if (code === I18n.current) return;
   I18n.setLang(code);
   localizeDomains();
   localizeAchievements();
+  localizeQuestions();
   I18n.applyStaticDOM();
   fitTaglineToOneLine();
   document.documentElement.lang = code;
@@ -893,6 +913,7 @@ function boot() {
   document.documentElement.lang = I18n.current;
   localizeDomains();
   localizeAchievements();
+  localizeQuestions();
   I18n.applyStaticDOM();
   fitTaglineToOneLine();
   window.addEventListener("resize", fitTaglineToOneLine);

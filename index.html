@@ -85,6 +85,10 @@
         <div id="active-profile-tag" class="active-profile-tag"></div>
         <div class="quest-header-actions">
           <button id="toggle-sound" class="btn btn-ghost btn-small" data-i18n-title="btn.sound_title">🔊</button>
+          <div class="lang-toggle-wrap">
+            <button id="toggle-lang" class="btn btn-ghost btn-small" data-i18n-title="btn.language_title">🌐</button>
+            <div id="lang-picker-quest" class="lang-picker lang-picker-popover hidden"></div>
+          </div>
           <button id="open-focus" class="btn btn-ghost btn-small" data-i18n="btn.focus" data-i18n-title="btn.focus_title"></button>
           <button id="open-dashboard" class="btn btn-ghost btn-small" data-i18n="btn.stats"></button>
         </div>
@@ -223,6 +227,7 @@
   <script src="js/config.js"></script>
   <script src="js/i18n.js"></script>
   <script src="js/data.js"></script>
+  <script src="js/questions-i18n.js"></script>
   <script src="js/storage.js"></script>
   <script src="js/achievements.js"></script>
   <script src="js/engine.js"></script>
