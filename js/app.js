@@ -422,21 +422,26 @@ $("freeresponse-input").addEventListener("input", () => {
   $("wordcount").textContent = I18n.t("quest.words", { n: words, target: currentNode.minWords });
 });
 
-$("submit-freeresponse").addEventListener("click", () => {
+$("submit-freeresponse").addEventListener("click", async () => {
+  const node = currentNode;
   const text = $("freeresponse-input").value.trim();
-  const wordCount = text.split(/\s+/).filter(Boolean).length;
-  const completed = wordCount >= currentNode.minWords;
   $("freeresponse-input").disabled = true;
   $("submit-freeresponse").disabled = true;
 
   if (!text) {
     // Nothing written — count it as a pass, no enjoyment ask, no guilt trip.
-    const result = Engine.recordResponse(state, currentNode, { completed: false });
-    finishAnswer(currentNode, result, {});
+    const result = Engine.recordResponse(state, node, { completed: false });
+    finishAnswer(node, result, {});
     return;
   }
 
-  pendingFreeResponse = { node: currentNode, completed, text };
+  $("wordcount").textContent = I18n.t("quest.grading");
+  const grade = await Grading.gradeFreeResponse({ question: node.q, answer: text, language: I18n.current });
+  if (currentNode !== node) return; // user skipped away while grading was in flight
+  const wordCount = text.split(/\s+/).filter(Boolean).length;
+  const completed = grade ? grade.pass : wordCount >= node.minWords;
+
+  pendingFreeResponse = { node, completed, text, aiFeedback: grade ? grade.feedback : null };
   $("enjoyment-picker").classList.remove("hidden");
 });
 
@@ -444,9 +449,9 @@ document.querySelectorAll(".enjoyment-btn").forEach((btn) => {
   btn.addEventListener("click", () => {
     const enjoyment = Number(btn.dataset.value);
     $("enjoyment-picker").classList.add("hidden");
-    const { node, completed, text } = pendingFreeResponse;
+    const { node, completed, text, aiFeedback } = pendingFreeResponse;
     const result = Engine.recordResponse(state, node, { completed, enjoyment });
-    finishAnswer(node, result, { answerText: text, enjoyment });
+    finishAnswer(node, result, { answerText: text, enjoyment, aiFeedback });
   });
 });
 
@@ -455,7 +460,7 @@ $("skip-prompt").addEventListener("click", () => {
 });
 
 function finishAnswer(node, result, opts = {}) {
-  const { choiceIndex, answerText, enjoyment } = opts;
+  const { choiceIndex, answerText, enjoyment, aiFeedback } = opts;
   trackAnswered(node, result.xpGained);
 
   Storage.appendAnswerLog(state, {
@@ -478,7 +483,7 @@ function finishAnswer(node, result, opts = {}) {
   });
   let unlockedAchievements = Achievements.evaluate(state, { sessionEntry, goodOutcome: result.goodOutcome });
 
-  showFeedback(result, node, brokenRecords);
+  showFeedback(result, node, brokenRecords, aiFeedback);
   renderGoalPill();
   if (result.xpGained) popXP(result.xpGained);
   if (result.leveledUp) Sound.levelUp();
@@ -511,7 +516,7 @@ function trackAnswered(node, xpGained) {
 // a one-sentence body: the "explain" fact for rigorous questions, nothing
 // extra needed for creative ones since the headline itself is the
 // affirmation. XP/level/streak land in a separate, quieter meta line.
-function showFeedback(result, node, brokenRecords) {
+function showFeedback(result, node, brokenRecords, aiFeedback) {
   const feedback = $("quest-feedback");
   feedback.innerHTML = "";
 
@@ -531,16 +536,19 @@ function showFeedback(result, node, brokenRecords) {
     }
   } else if (!result.completed) {
     toneClass = "feedback-neutral";
-    icon = "⏭️";
-    headline = I18n.t("feedback.creative_skipped");
+    icon = aiFeedback ? "🔁" : "⏭️";
+    headline = aiFeedback ? I18n.t("feedback.creative_retry") : I18n.t("feedback.creative_skipped");
+    if (aiFeedback) bodyParts.push(aiFeedback);
   } else if (result.goodOutcome) {
     toneClass = "feedback-good";
     icon = "✨";
     headline = I18n.tRandom("feedback.creative_good", 5);
+    if (aiFeedback) bodyParts.push(aiFeedback);
   } else {
     toneClass = "feedback-creative";
     icon = "📝";
     headline = I18n.tRandom("feedback.creative_meh", 3);
+    if (aiFeedback) bodyParts.push(aiFeedback);
   }
 
   feedback.className = `quest-feedback ${toneClass}`;

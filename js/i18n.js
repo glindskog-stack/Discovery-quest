@@ -58,6 +58,7 @@ const I18N_STRINGS = {
 
   "quest.freeresponse_placeholder": { en: "Type here. No wrong answers.", sv: "Skriv här. Inga fel svar.", fr: "Écris ici. Pas de mauvaise réponse.", de: "Schreib hier. Es gibt keine falsche Antwort.", es: "Escribe aquí. No hay respuestas incorrectas." },
   "quest.words": { en: "{n} / {target} words", sv: "{n} / {target} ord", fr: "{n} / {target} mots", de: "{n} / {target} Wörter", es: "{n} / {target} palabras" },
+  "quest.grading": { en: "Reading your answer…", sv: "Läser ditt svar…", fr: "Lecture de ta réponse…", de: "Lese deine Antwort…", es: "Leyendo tu respuesta…" },
   "quest.how_was_that": { en: "How was that?", sv: "Hur kändes det?", fr: "C'était comment ?", de: "Wie war's?", es: "¿Qué tal estuvo?" },
   "quest.new_best_streak": { en: "New best streak: {n}", sv: "Ny bästa svit: {n}", fr: "Nouveau record de série : {n}", de: "Neue Bestserie: {n}", es: "Nueva mejor racha: {n}" },
   "quest.level_up": { en: "Level up", sv: "Ny nivå", fr: "Niveau supérieur", de: "Level-Aufstieg", es: "Subiste de nivel" },
@@ -86,6 +87,7 @@ const I18N_STRINGS = {
   "feedback.creative_meh.1": { en: "Logged. On to the next one.", sv: "Loggat. Vidare till nästa.", fr: "Enregistré. On passe à la suite.", de: "Notiert. Weiter geht's.", es: "Registrado. A por el siguiente." },
   "feedback.creative_meh.2": { en: "Appreciate you giving it a shot.", sv: "Tack för att du gav det ett försök.", fr: "Merci d'avoir tenté le coup.", de: "Danke, dass du es versucht hast.", es: "Gracias por intentarlo." },
   "feedback.creative_skipped": { en: "No worries — skipped. Next one:", sv: "Inga problem — hoppade över. Nästa:", fr: "Pas de souci — passé. Suivant :", de: "Kein Problem — übersprungen. Weiter:", es: "Sin problema — omitido. Siguiente:" },
+  "feedback.creative_retry": { en: "Almost — give it a real shot:", sv: "Nästan — ge det ett riktigt försök:", fr: "Presque — retente pour de vrai :", de: "Fast — versuch's noch mal richtig:", es: "Casi — inténtalo de verdad:" },
 
   "btn.start_quest": { en: "Start quest", sv: "Starta questet", fr: "Lancer la quête", de: "Quest starten", es: "Empezar la misión" },
   "focus.first_run_hint": { en: "Quick pick before we dive in — choose what to focus on, or just hit Start.", sv: "Snabbval innan vi kör igång — välj vad du vill fokusera på, eller tryck bara Starta.", fr: "Petit choix avant de plonger — choisis ce qui t'intéresse, ou lance-toi directement.", de: "Kurze Auswahl, bevor's losgeht — wähle deinen Fokus oder starte direkt.", es: "Elección rápida antes de empezar — elige tu enfoque o simplemente pulsa Empezar." },
