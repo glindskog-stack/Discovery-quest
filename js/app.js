@@ -89,6 +89,7 @@ function setLanguage(code) {
   localizeDomains();
   localizeAchievements();
   localizeQuestions();
+  localizeRocketCourse();
   I18n.applyStaticDOM();
   fitTaglineToOneLine();
   document.documentElement.lang = code;
@@ -98,6 +99,10 @@ function setLanguage(code) {
     renderActiveProfileTag();
     renderGoalPill();
     if (currentNode) renderNode(currentNode);
+    if (!$("screen-rocket").classList.contains("hidden")) {
+      if (!$("rocket-stage-list-view").classList.contains("hidden")) renderRocketStageList();
+      if (!$("rocket-play-view").classList.contains("hidden")) renderRocketNode();
+    }
   }
   $("close-focus").textContent = I18n.t(firstRunFocus ? "btn.start_quest" : "btn.back");
   $("focus-start-bottom").textContent = I18n.t(firstRunFocus ? "btn.start_quest" : "btn.back");
@@ -969,6 +974,271 @@ $("close-dashboard").addEventListener("click", () => {
   showScreen("quest");
 });
 
+// ---------- Rocket Science ----------
+// Fixed 3-stage curriculum (js/rocket.js), not the adaptive engine — a
+// linear course, not a random pick pool. Finishing a stage drops that
+// stage's rocket part (see .rocket-part-dropped in styles.css); finishing
+// all three leaves just the capsule and unlocks "mission-complete".
+
+$("open-rocket").addEventListener("click", () => {
+  $("rocket-play-view").classList.add("hidden");
+  $("rocket-mission-complete-view").classList.add("hidden");
+  $("rocket-stage-list-view").classList.remove("hidden");
+  renderRocketStageList();
+  showScreen("rocket");
+});
+
+$("close-rocket").addEventListener("click", () => showScreen("quest"));
+
+function renderRocketIllustration() {
+  ROCKET_COURSE.forEach((stage) => {
+    if (!stage.part) return; // the capsule (last stage) never drops
+    $(`rocket-part-${stage.part}`).classList.toggle("rocket-part-dropped", state.rocketCourse.stagesCompleted.includes(stage.id));
+  });
+}
+
+function renderRocketStageList() {
+  renderRocketIllustration();
+  const wrap = $("rocket-stage-cards");
+  wrap.innerHTML = "";
+  const completed = state.rocketCourse.stagesCompleted;
+  ROCKET_COURSE.forEach((stage, i) => {
+    const isComplete = completed.includes(stage.id);
+    const isLocked = i > 0 && !completed.includes(ROCKET_COURSE[i - 1].id);
+    const inProgress = state.rocketCourse.stageIndex === i && state.rocketCourse.nodeIndex > 0 && !isComplete;
+
+    const card = document.createElement("div");
+    card.className = "rocket-stage-card" + (isComplete ? " rocket-stage-card-complete" : "") + (isLocked ? " rocket-stage-card-locked" : "");
+
+    const iconEl = document.createElement("div");
+    iconEl.className = "rocket-stage-card-icon";
+    iconEl.textContent = isComplete ? "✅" : isLocked ? "🔒" : "🚀";
+    card.appendChild(iconEl);
+
+    const body = document.createElement("div");
+    body.className = "rocket-stage-card-body";
+    const title = document.createElement("div");
+    title.className = "rocket-stage-card-title";
+    title.textContent = stage.title;
+    const subtitle = document.createElement("div");
+    subtitle.className = "rocket-stage-card-subtitle";
+    subtitle.textContent = isLocked ? I18n.t("rocket.stage_locked") : stage.subtitle;
+    body.appendChild(title);
+    body.appendChild(subtitle);
+    card.appendChild(body);
+
+    const action = document.createElement("div");
+    action.className = "rocket-stage-card-action";
+    if (!isComplete && !isLocked) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "btn btn-primary btn-small";
+      btn.textContent = I18n.t(inProgress ? "rocket.stage_continue" : "rocket.stage_start");
+      btn.addEventListener("click", () => startRocketStage(i));
+      action.appendChild(btn);
+    }
+    card.appendChild(action);
+
+    wrap.appendChild(card);
+  });
+}
+
+function startRocketStage(stageIndex) {
+  if (state.rocketCourse.stageIndex !== stageIndex) {
+    state.rocketCourse.stageIndex = stageIndex;
+    state.rocketCourse.nodeIndex = 0;
+  }
+  Storage.saveState(activeProfile.id, state);
+  $("rocket-stage-list-view").classList.add("hidden");
+  $("rocket-play-view").classList.remove("hidden");
+  renderRocketNode();
+}
+
+$("rocket-back-to-stages").addEventListener("click", () => {
+  $("rocket-play-view").classList.add("hidden");
+  $("rocket-stage-list-view").classList.remove("hidden");
+  renderRocketStageList();
+});
+
+function currentRocketNode() {
+  const stage = ROCKET_COURSE[state.rocketCourse.stageIndex];
+  return stage.nodes[state.rocketCourse.nodeIndex];
+}
+
+function renderRocketNode() {
+  const stage = ROCKET_COURSE[state.rocketCourse.stageIndex];
+  const node = currentRocketNode();
+  $("rocket-progress").textContent = I18n.t("rocket.stage_progress", { n: state.rocketCourse.nodeIndex + 1, total: stage.nodes.length });
+  $("rocket-prompt").textContent = node.q;
+  $("rocket-feedback").classList.add("hidden");
+  $("rocket-next").classList.add("hidden");
+
+  if (node.freeResponse) {
+    $("rocket-choices").classList.add("hidden");
+    $("rocket-choices").innerHTML = "";
+    $("rocket-freeresponse").classList.remove("hidden");
+    $("rocket-freeresponse-input").value = "";
+    $("rocket-freeresponse-input").disabled = false;
+    $("rocket-submit-freeresponse").disabled = false;
+    $("rocket-wordcount").textContent = I18n.t("quest.words", { n: 0, target: node.minWords });
+  } else {
+    $("rocket-freeresponse").classList.add("hidden");
+    $("rocket-choices").classList.remove("hidden");
+    const choicesEl = $("rocket-choices");
+    choicesEl.innerHTML = "";
+    node.choices.forEach((choice, i) => {
+      const btn = document.createElement("button");
+      btn.className = "choice-btn";
+      btn.innerHTML = `<span class="choice-letter">${CHOICE_LETTERS[i]}</span><span>${escapeHTML(choice)}</span>`;
+      btn.addEventListener("click", () => handleRocketChoice(node, i, btn));
+      choicesEl.appendChild(btn);
+    });
+  }
+}
+
+function handleRocketChoice(node, choiceIndex, btnEl) {
+  document.querySelectorAll("#rocket-choices .choice-btn").forEach((b) => (b.disabled = true));
+  const isCorrect = choiceIndex === node.answer;
+  btnEl.classList.add(isCorrect ? "choice-correct" : "choice-wrong");
+  if (!isCorrect) $("rocket-choices").children[node.answer].classList.add("choice-correct");
+  isCorrect ? Sound.correct() : Sound.wrong();
+  buzz(isCorrect ? 15 : [12, 30, 12]);
+  logRocketAnswer(node, { answerText: node.choices[choiceIndex], correct: isCorrect, completed: true });
+  showRocketFeedback(node, { correct: isCorrect, completed: true });
+}
+
+$("rocket-freeresponse-input").addEventListener("input", () => {
+  const node = currentRocketNode();
+  const words = $("rocket-freeresponse-input").value.trim().split(/\s+/).filter(Boolean).length;
+  $("rocket-wordcount").textContent = I18n.t("quest.words", { n: words, target: node.minWords });
+});
+
+$("rocket-submit-freeresponse").addEventListener("click", async () => {
+  const node = currentRocketNode();
+  const text = $("rocket-freeresponse-input").value.trim();
+  $("rocket-freeresponse-input").disabled = true;
+  $("rocket-submit-freeresponse").disabled = true;
+
+  if (!text) {
+    logRocketAnswer(node, { answerText: null, correct: null, completed: false });
+    showRocketFeedback(node, { completed: false });
+    return;
+  }
+
+  $("rocket-wordcount").textContent = I18n.t("quest.grading");
+  const grade = await Grading.gradeFreeResponse({ question: node.q, answer: text, language: I18n.current });
+  if (currentRocketNode() !== node) return; // navigated away while grading was in flight
+  const wordCount = text.split(/\s+/).filter(Boolean).length;
+  const completed = grade ? grade.pass : wordCount >= node.minWords;
+  logRocketAnswer(node, { answerText: text, correct: null, completed });
+  showRocketFeedback(node, { completed, aiFeedback: grade ? grade.feedback : null });
+});
+
+function logRocketAnswer(node, { answerText, correct, completed }) {
+  Storage.appendAnswerLog(state, {
+    nodeId: node.id,
+    domain: "rocket",
+    style: node.style,
+    question: node.q,
+    answer: answerText ?? null,
+    correct,
+    completed,
+    enjoyment: null,
+    xpGained: 0,
+  });
+  Cloud.logAnswer(activeProfile, state.answerLog[state.answerLog.length - 1]);
+}
+
+function showRocketFeedback(node, { correct, completed, aiFeedback } = {}) {
+  const feedback = $("rocket-feedback");
+  feedback.innerHTML = "";
+  let toneClass, icon, headline;
+  const bodyParts = [];
+
+  if (node.style === "rigorous") {
+    toneClass = correct ? "feedback-good" : "feedback-miss";
+    icon = correct ? "✅" : "💡";
+    headline = correct ? I18n.tRandom("feedback.correct", 5) : I18n.tRandom("feedback.incorrect", 5);
+    if (node.explain) bodyParts.push(node.explain);
+    if (node.source) {
+      const dateSuffix = node.verifiedAt ? I18n.t("quest.source_checked", { date: node.verifiedAt }) : "";
+      bodyParts.push(I18n.t("quest.source", { name: node.source }) + dateSuffix);
+    }
+  } else if (!completed) {
+    toneClass = "feedback-neutral";
+    icon = aiFeedback ? "🔁" : "⏭️";
+    headline = aiFeedback ? I18n.t("feedback.creative_retry") : I18n.t("feedback.creative_skipped");
+    if (aiFeedback) bodyParts.push(aiFeedback);
+  } else {
+    toneClass = "feedback-good";
+    icon = "✨";
+    headline = I18n.tRandom("feedback.creative_good", 5);
+    if (aiFeedback) bodyParts.push(aiFeedback);
+  }
+
+  feedback.className = `quest-feedback ${toneClass}`;
+  const head = document.createElement("div");
+  head.className = "feedback-headline";
+  head.textContent = `${icon} ${headline}`;
+  feedback.appendChild(head);
+  if (bodyParts.length) {
+    const body = document.createElement("div");
+    body.className = "feedback-body";
+    body.textContent = bodyParts.join(" ");
+    feedback.appendChild(body);
+  }
+  feedback.classList.remove("hidden");
+
+  $("rocket-next").classList.remove("hidden");
+  $("rocket-next").onclick = () => advanceRocketCourse();
+}
+
+function advanceRocketCourse() {
+  const stageIndex = state.rocketCourse.stageIndex;
+  const stage = ROCKET_COURSE[stageIndex];
+  const nextNodeIndex = state.rocketCourse.nodeIndex + 1;
+
+  if (nextNodeIndex < stage.nodes.length) {
+    state.rocketCourse.nodeIndex = nextNodeIndex;
+    Storage.saveState(activeProfile.id, state);
+    renderRocketNode();
+    return;
+  }
+
+  if (!state.rocketCourse.stagesCompleted.includes(stage.id)) {
+    state.rocketCourse.stagesCompleted.push(stage.id);
+  }
+  const isLastStage = stageIndex === ROCKET_COURSE.length - 1;
+  state.rocketCourse.stageIndex = isLastStage ? stageIndex : stageIndex + 1;
+  state.rocketCourse.nodeIndex = 0;
+
+  let unlocked = [];
+  if (isLastStage) {
+    unlocked = Storage.unlockAchievement(state, "mission-complete") ? ["mission-complete"] : [];
+  }
+  Storage.saveState(activeProfile.id, state);
+
+  $("rocket-play-view").classList.add("hidden");
+  renderRocketIllustration();
+
+  if (isLastStage) {
+    burstConfetti();
+    Sound.levelUp();
+    $("rocket-mission-complete-view").classList.remove("hidden");
+    if (unlocked.length) queueAchievementToasts(unlocked);
+  } else {
+    Sound.correct();
+    $("rocket-stage-list-view").classList.remove("hidden");
+    renderRocketStageList();
+  }
+}
+
+$("rocket-mission-done").addEventListener("click", () => {
+  $("rocket-mission-complete-view").classList.add("hidden");
+  $("rocket-stage-list-view").classList.remove("hidden");
+  renderRocketStageList();
+});
+
 // ---------- Boot ----------
 
 function boot() {
@@ -976,6 +1246,7 @@ function boot() {
   localizeDomains();
   localizeAchievements();
   localizeQuestions();
+  localizeRocketCourse();
   I18n.applyStaticDOM();
   fitTaglineToOneLine();
   window.addEventListener("resize", fitTaglineToOneLine);

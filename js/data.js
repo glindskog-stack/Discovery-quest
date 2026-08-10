@@ -42,6 +42,11 @@ const DOMAINS = {
   writing: { id: "writing", icon: "🖋️", accent: "#ef06b1" }, // magenta
   coding: { id: "coding", icon: "⌁", accent: "#719f04" }, // acid green
   trivia: { id: "trivia", icon: "◈", accent: "#bd8005" }, // amber
+  // Not in DOMAIN_ORDER on purpose — the adaptive engine, Focus subject
+  // toggles, and per-domain dashboard cards never see it. Exists only so
+  // js/dashboard.js's answer-history rows have an icon/accent to render
+  // for Rocket Science log entries (js/rocket.js).
+  rocket: { id: "rocket", icon: "🚀", accent: "#d4ff00" },
 };
 
 function localizeDomains() {

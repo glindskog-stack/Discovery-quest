@@ -90,6 +90,7 @@
             <div id="lang-picker-quest" class="lang-picker lang-picker-popover hidden"></div>
           </div>
           <button id="open-focus" class="btn btn-ghost btn-small" data-i18n="btn.focus" data-i18n-title="btn.focus_title"></button>
+          <button id="open-rocket" class="btn btn-ghost btn-small" data-i18n-title="btn.rocket_title">🚀</button>
           <button id="open-dashboard" class="btn btn-ghost btn-small" data-i18n="btn.stats"></button>
         </div>
       </header>
@@ -214,6 +215,64 @@
       </div>
     </section>
 
+    <!-- Rocket Science: fixed 3-stage curriculum, not the adaptive engine -->
+    <section id="screen-rocket" class="screen hidden" data-screen="rocket">
+      <header class="dashboard-header">
+        <button id="close-rocket" class="btn btn-ghost btn-small" data-i18n="btn.back"></button>
+        <h2 data-i18n="rocket.title"></h2>
+      </header>
+
+      <div class="rocket-content">
+        <div class="rocket-illustration">
+          <svg viewBox="0 0 120 240" class="rocket-svg" aria-hidden="true">
+            <g id="rocket-part-capsule" class="rocket-part">
+              <path class="rocket-capsule-body" d="M35,58 Q35,10 60,8 Q85,10 85,58 Z" />
+              <circle class="rocket-capsule-window" cx="60" cy="42" r="8" />
+            </g>
+            <g id="rocket-part-body" class="rocket-part">
+              <rect class="rocket-tank-body" x="32" y="58" width="56" height="95" rx="10" />
+              <rect class="rocket-tank-stripe" x="32" y="98" width="56" height="8" />
+            </g>
+            <g id="rocket-part-booster" class="rocket-part">
+              <polygon class="rocket-booster-fin" points="36,178 12,218 36,206" />
+              <polygon class="rocket-booster-fin" points="84,178 108,218 84,206" />
+              <rect class="rocket-booster-body" x="36" y="153" width="48" height="45" rx="6" />
+              <polygon class="rocket-flame" points="48,198 60,232 72,198" />
+            </g>
+          </svg>
+        </div>
+
+        <div id="rocket-stage-list-view">
+          <p class="rocket-intro" data-i18n="rocket.intro"></p>
+          <div id="rocket-stage-cards" class="rocket-stage-cards"></div>
+        </div>
+
+        <div id="rocket-play-view" class="hidden">
+          <div class="rocket-play-header">
+            <button id="rocket-back-to-stages" class="btn btn-ghost btn-small" data-i18n="rocket.back_to_stages"></button>
+            <div id="rocket-progress" class="rocket-progress"></div>
+          </div>
+          <div id="rocket-card" class="quest-card">
+            <p id="rocket-prompt" class="quest-prompt"></p>
+            <div id="rocket-choices" class="quest-choices"></div>
+            <div id="rocket-freeresponse" class="quest-freeresponse hidden">
+              <textarea id="rocket-freeresponse-input" rows="4" data-i18n-placeholder="quest.freeresponse_placeholder"></textarea>
+              <div id="rocket-wordcount" class="wordcount"></div>
+              <button id="rocket-submit-freeresponse" class="btn btn-primary" data-i18n="btn.submit"></button>
+            </div>
+            <div id="rocket-feedback" class="quest-feedback hidden"></div>
+          </div>
+          <button id="rocket-next" class="btn btn-primary hidden" data-i18n="btn.next"></button>
+        </div>
+
+        <div id="rocket-mission-complete-view" class="hidden">
+          <h3 data-i18n="rocket.mission_complete_title"></h3>
+          <p data-i18n="rocket.mission_complete_body"></p>
+          <button id="rocket-mission-done" class="btn btn-primary" data-i18n="rocket.back_to_stages"></button>
+        </div>
+      </div>
+    </section>
+
     <!-- Overlays: achievement toast, goal-complete celebration, goal picker -->
     <div id="achievement-toast" class="achievement-toast hidden"></div>
 
@@ -244,6 +303,7 @@
   <script src="js/config.js"></script>
   <script src="js/i18n.js"></script>
   <script src="js/data.js"></script>
+  <script src="js/rocket.js"></script>
   <script src="js/questions-i18n.js"></script>
   <script src="js/storage.js"></script>
   <script src="js/achievements.js"></script>

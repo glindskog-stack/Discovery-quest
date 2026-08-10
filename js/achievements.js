@@ -19,6 +19,7 @@ const ACHIEVEMENTS = {
   "goal-crusher-10": { icon: "🔁" },
   "night-owl": { icon: "🦉" },
   "early-bird": { icon: "🐦" },
+  "mission-complete": { icon: "🛰️" },
 };
 
 function localizeAchievements() {

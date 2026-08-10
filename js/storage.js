@@ -118,6 +118,7 @@ const Storage = {
         domains: [...DOMAIN_ORDER], // enabled domains — hard filter, always >= 1
         styleMix: 25, // 0-100, % chance of a creative/writing prompt vs rigorous multiple-choice
       },
+      rocketCourse: { stageIndex: 0, nodeIndex: 0, stagesCompleted: [] }, // fixed 3-stage curriculum (js/rocket.js), not the adaptive engine
       requestedSubjects: [], // [{id, domain, text, createdAt}] — "write a subject to add" queue, synced to cloud when configured
       cloudSyncedAt: null,
       sessionGoal: { type: "count", value: 10 }, // "count" prompts or "time" minutes — editable anytime from the goal pill
@@ -164,6 +165,7 @@ const Storage = {
         domains: hasDomainsField ? state.focus.domains : domainsDefault,
         styleMix: (state.focus && typeof state.focus.styleMix === "number") ? state.focus.styleMix : fallback.focus.styleMix,
       },
+      rocketCourse: { ...fallback.rocketCourse, ...state.rocketCourse },
       sessionGoal: { ...fallback.sessionGoal, ...state.sessionGoal },
       records: { ...fallback.records, ...state.records },
     };

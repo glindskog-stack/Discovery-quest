@@ -176,6 +176,25 @@ const I18N_STRINGS = {
   "goal_complete.body_time": { en: "{n} minutes in today — that's the goal. Keep going if you're into it, or call it there.", sv: "{n} minuter idag — det var målet. Fortsätt om du är taggad, eller avsluta där.", fr: "{n} minutes aujourd'hui — objectif atteint. Continue si tu es lancé·e, ou arrête-toi là.", de: "{n} Minuten heute — das war das Ziel. Mach weiter, wenn du Lust hast, oder hör hier auf.", es: "{n} minutos hoy — esa era la meta. Sigue si te apetece, o déjalo ahí." },
 
   "lang.picker_title": { en: "Language", sv: "Språk", fr: "Langue", de: "Sprache", es: "Idioma" },
+
+  "btn.rocket_title": { en: "Rocket Science", sv: "Raketvetenskap", fr: "Science des fusées", de: "Raketenwissenschaft", es: "Ciencia de cohetes" },
+  "rocket.title": { en: "Rocket Science", sv: "Raketvetenskap", fr: "Science des fusées", de: "Raketenwissenschaft", es: "Ciencia de cohetes" },
+  "rocket.intro": { en: "Three real stages of rocketry. Clear one and your rocket sheds a part — booster, then body, until only the capsule reaches orbit.", sv: "Tre riktiga raketsteg. Klara ett så tappar raketen en del — boostern, sen kroppen, tills bara kapseln når omloppsbana.", fr: "Trois vraies étapes de la fuséologie. Termine une étape et ta fusée perd une partie — le booster, puis le corps, jusqu'à ce que seule la capsule atteigne l'orbite.", de: "Drei echte Raketenstufen. Schließe eine ab und deine Rakete verliert ein Teil — Booster, dann Rumpf, bis nur die Kapsel die Umlaufbahn erreicht.", es: "Tres etapas reales de la cohetería. Completa una y tu cohete pierde una parte — el propulsor, luego el cuerpo, hasta que solo la cápsula llega a órbita." },
+  "rocket.stage1_title": { en: "Off the Pad", sv: "Upp från rampen", fr: "Décollage", de: "Vom Startplatz", es: "Despegue" },
+  "rocket.stage1_subtitle": { en: "Thrust, Newton's third law, and why boosters get dropped", sv: "Dragkraft, Newtons tredje lag och varför boostrar släpps", fr: "Poussée, 3e loi de Newton, et pourquoi on largue les boosters", de: "Schub, Newtons drittes Gesetz und warum Booster abgeworfen werden", es: "Empuje, la tercera ley de Newton y por qué se sueltan los propulsores" },
+  "rocket.stage2_title": { en: "Reaching Orbit", sv: "Nå omloppsbana", fr: "Atteindre l'orbite", de: "Die Umlaufbahn erreichen", es: "Llegar a la órbita" },
+  "rocket.stage2_subtitle": { en: "Orbital velocity, staging, and budgeting your delta-v", sv: "Omloppshastighet, stegning och att budgetera din delta-v", fr: "Vitesse orbitale, étagement, et budgétiser son delta-v", de: "Orbitalgeschwindigkeit, Stufung und dein Delta-v budgetieren", es: "Velocidad orbital, etapas y presupuestar tu delta-v" },
+  "rocket.stage3_title": { en: "Splashdown", sv: "Havslandning", fr: "Amerrissage", de: "Wasserlandung", es: "Amerizaje" },
+  "rocket.stage3_subtitle": { en: "Re-entry, heat shields, and planning a real mission", sv: "Återinträde, värmesköldar och att planera ett riktigt uppdrag", fr: "Rentrée atmosphérique, boucliers thermiques, et planifier une vraie mission", de: "Wiedereintritt, Hitzeschilde und eine echte Mission planen", es: "Reentrada, escudos térmicos y planear una misión real" },
+  "rocket.stage_locked": { en: "Finish the stage above first", sv: "Klara steget ovanför först", fr: "Termine d'abord l'étape au-dessus", de: "Schließe zuerst die Stufe darüber ab", es: "Completa antes la etapa de arriba" },
+  "rocket.stage_complete": { en: "Complete", sv: "Klart", fr: "Terminé", de: "Abgeschlossen", es: "Completo" },
+  "rocket.stage_start": { en: "Start stage", sv: "Starta steget", fr: "Démarrer l'étape", de: "Stufe starten", es: "Empezar etapa" },
+  "rocket.stage_continue": { en: "Continue", sv: "Fortsätt", fr: "Continuer", de: "Weiter", es: "Continuar" },
+  "rocket.stage_progress": { en: "{n} / {total}", sv: "{n} / {total}", fr: "{n} / {total}", de: "{n} / {total}", es: "{n} / {total}" },
+  "rocket.back_to_stages": { en: "Back to stages", sv: "Tillbaka till stegen", fr: "Retour aux étapes", de: "Zurück zu den Stufen", es: "Volver a las etapas" },
+  "rocket.mission_complete_title": { en: "Mission complete!", sv: "Uppdrag slutfört!", fr: "Mission accomplie !", de: "Mission abgeschlossen!", es: "¡Misión completa!" },
+  "rocket.mission_complete_body": { en: "Your capsule made it to orbit. Every stage was a strategy — nothing carried longer than it needed to be.", sv: "Din kapsel nådde omloppsbana. Varje steg var en strategi — inget bars längre än det behövde.", fr: "Ta capsule a atteint l'orbite. Chaque étape était une stratégie — rien transporté plus longtemps que nécessaire.", de: "Deine Kapsel hat die Umlaufbahn erreicht. Jede Stufe war eine Strategie — nichts wurde länger mitgeführt als nötig.", es: "Tu cápsula llegó a órbita. Cada etapa fue una estrategia — nada se cargó más de lo necesario." },
+  "rocket.part_dropped": { en: "Part dropped — lighter and faster.", sv: "Del släppt — lättare och snabbare.", fr: "Partie larguée — plus léger, plus rapide.", de: "Teil abgeworfen — leichter und schneller.", es: "Parte soltada — más ligero y rápido." },
 };
 
 const ACHIEVEMENT_I18N = {
@@ -192,6 +211,7 @@ const ACHIEVEMENT_I18N = {
   "goal-crusher-10": { label: { en: "Creature of Habit", sv: "Vanedjur", fr: "Créature d'habitude", de: "Gewohnheitstier", es: "Animal de costumbres" }, desc: { en: "Hit your daily goal 10 times.", sv: "Nå ditt dagliga mål 10 gånger.", fr: "Atteins ton objectif quotidien 10 fois.", de: "Erreiche dein Tagesziel 10-mal.", es: "Alcanza tu meta diaria 10 veces." } },
   "night-owl": { label: { en: "Night Owl", sv: "Nattuggla", fr: "Oiseau de nuit", de: "Nachteule", es: "Ave nocturna" }, desc: { en: "Answer something after 11pm.", sv: "Svara på något efter 23.", fr: "Réponds à quelque chose après 23h.", de: "Antworte auf etwas nach 23 Uhr.", es: "Responde algo después de las 23 h." } },
   "early-bird": { label: { en: "Early Bird", sv: "Morgonpigg", fr: "Lève-tôt", de: "Frühaufsteher", es: "Madrugador" }, desc: { en: "Answer something before 7am.", sv: "Svara på något innan 7.", fr: "Réponds à quelque chose avant 7h.", de: "Antworte auf etwas vor 7 Uhr.", es: "Responde algo antes de las 7 h." } },
+  "mission-complete": { label: { en: "Mission Complete", sv: "Uppdrag slutfört", fr: "Mission accomplie", de: "Mission abgeschlossen", es: "Misión completa" }, desc: { en: "Finished Rocket Science — capsule reached orbit.", sv: "Klarade Raketvetenskap — kapseln nådde omloppsbana.", fr: "Terminé Science des fusées — la capsule a atteint l'orbite.", de: "Raketenwissenschaft abgeschlossen — die Kapsel erreichte die Umlaufbahn.", es: "Completaste Ciencia de cohetes — la cápsula alcanzó la órbita." } },
 };
 
 const DOMAIN_I18N = {

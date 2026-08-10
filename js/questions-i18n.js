@@ -437,25 +437,118 @@ const QUESTIONS_I18N = {
     es: { q: "Escribe cuatro líneas sobre un lugar en el que nunca has estado." },
     sv: { q: "Skriv fyra rader om en plats du aldrig varit på." },
   },
+
+  // ---------- rocket science (js/rocket.js) ----------
+  "rc1-1": {
+    fr: { q: "Une fusée décolle en projetant du gaz chaud d'un côté, ce qui la pousse de l'autre côté. De quelle loi du mouvement s'agit-il ?", choices: ["La première loi de Newton", "La deuxième loi de Newton", "La troisième loi de Newton", "Le principe de Bernoulli"], explain: "À chaque action correspond une réaction égale et opposée — le gaz part vers le bas, la fusée monte." },
+    de: { q: "Eine Rakete startet, indem sie heißes Gas in eine Richtung ausstößt, was sie in die andere Richtung schiebt. Um welches Bewegungsgesetz handelt es sich?", choices: ["Newtons erstes Gesetz", "Newtons zweites Gesetz", "Newtons drittes Gesetz", "Das Bernoulli-Prinzip"], explain: "Jede Aktion hat eine gleich große, entgegengesetzte Reaktion — das Abgas geht runter, die Rakete geht hoch." },
+    es: { q: "Un cohete despega expulsando gas caliente hacia un lado, lo que lo empuja hacia el otro. ¿Qué ley del movimiento es esa?", choices: ["La primera ley de Newton", "La segunda ley de Newton", "La tercera ley de Newton", "El principio de Bernoulli"], explain: "Toda acción tiene una reacción igual y opuesta — el escape sale hacia abajo, el cohete sube." },
+    sv: { q: "En raket lyfter genom att skjuta ut het gas åt ena hållet, vilket knuffar raketen åt andra hållet. Vilken rörelselag är det?", choices: ["Newtons första lag", "Newtons andra lag", "Newtons tredje lag", "Bernoullis princip"], explain: "Varje kraft har en lika stor motriktad kraft — avgaserna går ner, raketen går upp." },
+  },
+  "rc1-2": {
+    fr: { q: "Pour qu'une fusée décolle vraiment du pas de tir, sa poussée doit être supérieure à quoi ?", choices: ["La vitesse du son", "Son propre poids", "La pression de l'air", "La taille du réservoir"], explain: "Le rapport poussée/poids doit dépasser 1, sinon la fusée reste au sol en brûlant du carburant." },
+    de: { q: "Damit eine Rakete tatsächlich von der Startrampe abhebt, muss ihr Schub größer sein als was?", choices: ["Die Schallgeschwindigkeit", "Ihr eigenes Gewicht", "Der Luftdruck", "Die Größe des Tanks"], explain: "Das Schub-Gewichts-Verhältnis muss über 1 liegen, sonst bleibt die Rakete einfach stehen und verbrennt Treibstoff." },
+    es: { q: "Para que un cohete realmente despegue de la plataforma, su empuje debe ser mayor que ¿qué?", choices: ["La velocidad del sonido", "Su propio peso", "La presión del aire", "El tamaño del tanque"], explain: "La relación empuje-peso tiene que superar 1, o el cohete simplemente se queda ahí quemando combustible." },
+    sv: { q: "För att en raket verkligen ska lyfta från rampen måste dess dragkraft vara större än vad?", choices: ["Ljudhastigheten", "Sin egen vikt", "Lufttrycket", "Bränsletankens storlek"], explain: "Förhållandet dragkraft/vikt måste vara över 1, annars står raketen bara kvar och bränner bränsle." },
+  },
+  "rc1-3": {
+    fr: { q: "Des fusées comme Falcon 9 larguent leur premier étage (le booster) une fois son carburant épuisé. Pourquoi ?", choices: ["Pour le garder pour plus tard", "C'est un poids mort dont la fusée n'a plus besoin pour continuer d'accélérer", "C'est une obligation légale", "Pour ralentir la fusée"], explain: "Traîner un réservoir vide et des moteurs épuisés jusqu'au bout gaspille du carburant — les larguer, c'est comme décrocher une remorque devenue inutile." },
+    de: { q: "Raketen wie die Falcon 9 werfen ihre erste Stufe (den Booster) ab, sobald dessen Treibstoff verbraucht ist. Warum?", choices: ["Um sie für später aufzuheben", "Es ist totes Gewicht, das die Rakete nicht mehr braucht, um weiter zu beschleunigen", "Das ist gesetzlich vorgeschrieben", "Um die Rakete abzubremsen"], explain: "Einen leeren Tank und verbrauchte Triebwerke den ganzen Weg mitzuschleppen verschwendet Treibstoff — sie abzuwerfen ist, als würde man einen nicht mehr benötigten Anhänger abkoppeln." },
+    es: { q: "Cohetes como el Falcon 9 sueltan su primera etapa (el propulsor) una vez que se le acaba el combustible. ¿Por qué?", choices: ["Para guardarlo para después", "Es peso muerto que el cohete ya no necesita para seguir acelerando", "Es obligatorio por ley", "Para frenar el cohete"], explain: "Cargar un tanque vacío y motores gastados todo el camino desperdicia combustible — soltarlos es como desenganchar un remolque que ya no hace falta." },
+    sv: { q: "Raketer som Falcon 9 släpper sitt första steg (boostern) när bränslet är slut. Varför?", choices: ["För att spara den till senare", "Det är dödvikt som raketen inte längre behöver för att fortsätta accelerera", "Det är lagstadgat", "För att sakta ner raketen"], explain: "Att släpa en tom tank och förbrukade motorer hela vägen slösar bränsle — att släppa dem är som att koppla loss ett släp man inte längre behöver." },
+  },
+  "rc1-4": {
+    fr: { q: "Que brûlent réellement les moteurs de fusée pour produire une poussée ?", choices: ["Juste du carburant", "Du carburant et un comburant", "De l'air comprimé", "De l'électricité uniquement"], explain: "Contrairement à un moteur de voiture, une fusée doit transporter son propre comburant — il n'y a pas d'air pour brûler le carburant une fois hors de l'atmosphère." },
+    de: { q: "Was verbrennen Raketentriebwerke eigentlich, um Schub zu erzeugen?", choices: ["Nur Treibstoff", "Treibstoff und ein Oxidationsmittel", "Druckluft", "Nur Elektrizität"], explain: "Anders als ein Automotor muss eine Rakete ihr eigenes Oxidationsmittel mitführen — sobald man die Atmosphäre verlässt, gibt es keine Luft mehr, um Treibstoff zu verbrennen." },
+    es: { q: "¿Qué queman realmente los motores de cohete para producir empuje?", choices: ["Solo combustible", "Combustible y un oxidante", "Aire comprimido", "Solo electricidad"], explain: "A diferencia de un motor de coche, un cohete tiene que llevar su propio oxidante — no hay aire para quemar combustible una vez que sales de la atmósfera." },
+    sv: { q: "Vad bränner raketmotorer egentligen för att skapa dragkraft?", choices: ["Bara bränsle", "Bränsle och ett oxidationsmedel", "Komprimerad luft", "Bara elektricitet"], explain: "Till skillnad från en bilmotor måste en raket bära sitt eget oxidationsmedel — det finns ingen luft att bränna bränsle med utanför atmosfären." },
+  },
+  "rc1-5": {
+    fr: { q: "Tu conçois l'étage du booster pour une toute nouvelle fusée. Quelle est une caractéristique créative qu'il possède, et quel problème résout-elle ?" },
+    de: { q: "Du entwirfst die Boosterstufe für eine brandneue Rakete. Was ist ein kreatives Merkmal, das sie hat, und welches Problem löst es?" },
+    es: { q: "Estás diseñando la etapa propulsora de un cohete completamente nuevo. ¿Cuál es una característica creativa que tiene, y qué problema resuelve?" },
+    sv: { q: "Du designar boostersteget för en helt ny raket. Vad är en kreativ egenskap den har, och vilket problem löser den?" },
+  },
+  "rc2-1": {
+    fr: { q: "Pour rester en orbite, un vaisseau n'a pas tant besoin d'aller 'vers le haut' que de...", choices: ["Aller sur le côté, assez vite pour continuer à rater le sol en tombant", "Aller tout droit vers le haut puis s'arrêter", "Aller à l'envers par rapport à la rotation de la Terre", "Rien — l'orbite signifie juste être très haut"], explain: "C'est l'idée du boulet de canon de Newton : l'orbite est une chute contrôlée qui n'atterrit jamais, car on va assez vite sur le côté pour continuer à dépasser l'horizon en courbe." },
+    de: { q: "Um in der Umlaufbahn zu bleiben, muss ein Raumfahrzeug nicht so sehr 'nach oben' fliegen, sondern eher...", choices: ["Seitwärts, schnell genug, um beim Fallen ständig den Boden zu verfehlen", "Geradeaus nach oben und dann anhalten", "Rückwärts relativ zur Erdrotation", "Nirgendwohin — Umlaufbahn bedeutet nur sehr hoch oben"], explain: "Das ist Newtons Kanonenkugel-Idee: Umlaufbahn ist ein kontrollierter Fall, der nie landet, weil man schnell genug seitwärts fliegt, um immer wieder über den Horizont hinauszukurven." },
+    es: { q: "Para mantenerse en órbita, una nave no necesita tanto ir 'hacia arriba' como...", choices: ["Ir hacia los lados, lo bastante rápido para seguir sin tocar el suelo mientras cae", "Ir recto hacia arriba y detenerse", "Ir hacia atrás respecto a la rotación de la Tierra", "A ningún sitio — órbita solo significa estar muy alto"], explain: "Esta es la idea del cañón de Newton: la órbita es una caída controlada que nunca aterriza, porque vas lo bastante rápido de lado como para seguir superando el horizonte en una curva." },
+    sv: { q: "För att stanna i omloppsbana behöver ett rymdskepp inte så mycket åka 'uppåt' som att...", choices: ["Åka i sidled, tillräckligt snabbt för att hela tiden missa marken när det faller", "Åka rakt upp och stanna", "Åka bakåt i förhållande till jordens rotation", "Ingenstans — omloppsbana betyder bara att vara väldigt högt uppe"], explain: "Det här är Newtons kanonkulsidé: en omloppsbana är ett kontrollerat fall som aldrig landar, eftersom man rör sig tillräckligt snabbt i sidled för att hela tiden kurva förbi horisonten." },
+  },
+  "rc2-2": {
+    fr: { q: "Environ à quelle vitesse un vaisseau doit-il voyager pour rester en orbite terrestre basse ?", choices: ["Environ 100 km/h", "Environ 1 000 km/h", "Environ 28 000 km/h", "Environ 300 000 km/h"], explain: "C'est environ 7,8 km/s — assez vite pour que la courbe de sa chute corresponde à la courbe de la Terre." },
+    de: { q: "Wie schnell muss ein Raumfahrzeug ungefähr fliegen, um in der niedrigen Erdumlaufbahn zu bleiben?", choices: ["Etwa 100 km/h", "Etwa 1.000 km/h", "Etwa 28.000 km/h", "Etwa 300.000 km/h"], explain: "Das sind etwa 7,8 km/s — schnell genug, dass die Kurve seines Falls mit der Krümmung der Erde übereinstimmt." },
+    es: { q: "¿Aproximadamente a qué velocidad necesita viajar una nave para mantenerse en órbita terrestre baja?", choices: ["Unos 100 km/h", "Unos 1.000 km/h", "Unos 28.000 km/h", "Unos 300.000 km/h"], explain: "Son unos 7,8 km/s — lo bastante rápido para que la curva de su caída coincida con la curva de la Tierra." },
+    sv: { q: "Ungefär hur fort måste ett rymdskepp färdas för att stanna i låg omloppsbana runt jorden?", choices: ["Cirka 100 km/h", "Cirka 1 000 km/h", "Cirka 28 000 km/h", "Cirka 300 000 km/h"], explain: "Det är ungefär 7,8 km/s — tillräckligt snabbt för att kurvan av dess fall ska matcha jordens krökning." },
+  },
+  "rc2-3": {
+    fr: { q: "Pourquoi les fusées utilisent-elles plusieurs étages plutôt qu'une seule fusée géante à un étage ?", choices: ["Plusieurs petites fusées coûtent moins cher à peindre", "Chaque étage devient plus léger une fois le poids mort de l'étage précédent largué, ce qui gaspille moins de carburant", "C'est plus facile de lancer trois fusées qu'une seule", "Les fusées à un étage sont interdites au-dessus de l'atmosphère"], explain: "Traîner des réservoirs vides jusqu'en orbite est un gaspillage — l'étagement permet à chaque phase de la montée de ne transporter que ce dont elle a encore besoin." },
+    de: { q: "Warum verwenden Raketen mehrere Stufen statt einer einzigen riesigen einstufigen Rakete?", choices: ["Mehrere kleinere Raketen sind billiger zu bemalen", "Jede Stufe wird leichter, sobald das tote Gewicht der vorherigen Stufe abgeworfen ist, wodurch weniger Treibstoff verschwendet wird", "Es ist einfacher, drei Raketen zu starten als eine", "Einstufige Raketen sind oberhalb der Atmosphäre nicht erlaubt"], explain: "Leere Tanks bis zur Umlaufbahn zu schleppen ist Verschwendung — durch Stufung trägt jede Phase des Aufstiegs nur das, was sie noch braucht." },
+    es: { q: "¿Por qué los cohetes usan varias etapas en vez de un solo cohete gigante de una etapa?", choices: ["Varios cohetes más pequeños son más baratos de pintar", "Cada etapa se vuelve más ligera una vez soltado el peso muerto de la etapa anterior, así se desperdicia menos combustible", "Es más fácil lanzar tres cohetes que uno", "Los cohetes de una sola etapa no están permitidos sobre la atmósfera"], explain: "Arrastrar tanques vacíos hasta la órbita es un desperdicio — usar etapas permite que cada fase de la subida cargue solo lo que todavía necesita." },
+    sv: { q: "Varför använder raketer flera steg istället för en enda jättelik enstegsraket?", choices: ["Flera mindre raketer är billigare att måla", "Varje steg blir lättare när föregående stegs dödvikt släpps, vilket slösar mindre bränsle", "Det är enklare att skjuta upp tre raketer än en", "Enstegsraketer är förbjudna ovanför atmosfären"], explain: "Att släpa tomma tankar hela vägen till omloppsbana är slöseri — stegning låter varje fas av uppstigningen bara bära det den fortfarande behöver." },
+  },
+  "rc2-4": {
+    fr: { q: "Comment appelle-t-on la 'poussée' totale qu'il reste à une fusée pour changer de vitesse ou de direction — son budget carburant, en gros, mesuré en vitesse ?", choices: ["Delta-v", "Vitesse de libération", "Force g", "Apogée"], explain: "Les planificateurs de mission budgétisent le delta-v (en km/s) comme on budgétiserait de l'argent — chaque manœuvre en consomme une partie." },
+    de: { q: "Wie heißt der gesamte 'Schub', den eine Rakete noch hat, um ihre Geschwindigkeit oder Richtung zu ändern — im Grunde ihr Treibstoffbudget, gemessen in Geschwindigkeit?", choices: ["Delta-v", "Fluchtgeschwindigkeit", "G-Kraft", "Apogäum"], explain: "Missionsplaner budgetieren Delta-v (in km/s) genauso wie man Geld budgetiert — jedes Manöver verbraucht einen Teil davon." },
+    es: { q: "¿Cómo se llama el 'empuje' total que le queda a un cohete para cambiar su velocidad o dirección — básicamente su presupuesto de combustible, medido en velocidad?", choices: ["Delta-v", "Velocidad de escape", "Fuerza g", "Apogeo"], explain: "Los planificadores de misión presupuestan el delta-v (en km/s) igual que presupuestarían dinero — cada maniobra gasta parte de él." },
+    sv: { q: "Vad kallas den totala 'knuff' en raket har kvar för att ändra hastighet eller riktning — i praktiken dess bränslebudget, mätt i hastighet?", choices: ["Delta-v", "Flykthastighet", "G-kraft", "Apogeum"], explain: "Uppdragsplanerare budgeterar delta-v (i km/s) precis som man skulle budgetera pengar — varje manöver spenderar en del av den." },
+  },
+  "rc2-5": {
+    fr: { q: "Ta fusée vient d'atteindre l'orbite, et le réservoir du deuxième étage est vide et sur le point d'être largué. Écris ce moment du point de vue du pilote." },
+    de: { q: "Deine Rakete hat gerade die Umlaufbahn erreicht, und der Tank der zweiten Stufe ist leer und wird gleich abgeworfen. Schreibe diesen Moment aus der Sicht der Pilotin." },
+    es: { q: "Tu cohete acaba de llegar a órbita, y el tanque de combustible de la segunda etapa está vacío y a punto de soltarse. Escribe ese momento desde el punto de vista del piloto." },
+    sv: { q: "Din raket har precis nått omloppsbana, och andra stegets bränsletank är tom och ska strax släppas. Skriv det ögonblicket ur pilotens perspektiv." },
+  },
+  "rc3-1": {
+    fr: { q: "Pourquoi la capsule d'équipage est-elle tellement plus petite que le reste de la fusée ?", choices: ["C'est moins cher à construire en petit", "Tout le reste servait de carburant et de moteurs juste pour la mettre en mouvement — seule la capsule doit survivre à tout le trajet", "Les petites capsules volent plus vite", "Des règlements limitent la taille des capsules"], explain: "Le booster et le réservoir ont fait leur travail et ont été largués — la capsule est la seule partie qui a vraiment besoin d'un support de vie et doit revenir." },
+    de: { q: "Warum ist die Besatzungskapsel so viel kleiner als der Rest der Rakete?", choices: ["Es ist billiger, sie klein zu bauen", "Alles andere war nur Treibstoff und Triebwerke, um sie in Bewegung zu bringen — nur die Kapsel muss die ganze Reise überstehen", "Kleinere Kapseln fliegen schneller", "Vorschriften begrenzen die Kapselgröße"], explain: "Booster und Tank haben ihre Aufgabe erfüllt und wurden abgeworfen — die Kapsel ist der einzige Teil, der wirklich Lebenserhaltung braucht und zurückkehren muss." },
+    es: { q: "¿Por qué la cápsula de la tripulación es mucho más pequeña que el resto del cohete?", choices: ["Es más barato construirla pequeña", "Todo lo demás era solo combustible y motores para ponerla en movimiento — solo la cápsula necesita sobrevivir todo el viaje", "Las cápsulas pequeñas vuelan más rápido", "Las normas limitan el tamaño de la cápsula"], explain: "El propulsor y el tanque hicieron su trabajo y se soltaron — la cápsula es la única parte que realmente necesita soporte vital y tiene que volver." },
+    sv: { q: "Varför är besättningskapseln så mycket mindre än resten av raketen?", choices: ["Det är billigare att bygga den liten", "Allt annat var bara bränsle och motorer för att få den i rörelse — bara kapseln behöver överleva hela resan", "Mindre kapslar flyger snabbare", "Regler begränsar kapselns storlek"], explain: "Boostern och tanken gjorde sitt jobb och släpptes — kapseln är den enda delen som verkligen behöver livsuppehållande system och måste ta sig hem." },
+  },
+  "rc3-2": {
+    fr: { q: "Quand une capsule rentre dans l'atmosphère à grande vitesse, la majeure partie de cette vitesse se transforme en...", choices: ["Chaleur, due à la friction et à la compression de l'air", "Son uniquement", "Vitesse supplémentaire", "Lumière, sans chaleur"], explain: "Le rôle d'un bouclier thermique est de gérer cette chaleur pour qu'elle n'atteigne pas l'équipage." },
+    de: { q: "Wenn eine Kapsel mit hoher Geschwindigkeit in die Atmosphäre eintritt, verwandelt sich der Großteil dieser Geschwindigkeit in...", choices: ["Hitze, durch Luftreibung und -kompression", "Nur Schall", "Zusätzliche Geschwindigkeit", "Licht, ohne Hitze"], explain: "Die ganze Aufgabe eines Hitzeschilds besteht darin, diese Hitze so zu bewältigen, dass sie die Besatzung nicht erreicht." },
+    es: { q: "Cuando una cápsula reingresa a la atmósfera a alta velocidad, la mayor parte de esa velocidad se convierte en...", choices: ["Calor, por la fricción y compresión del aire", "Solo sonido", "Velocidad extra", "Luz, sin calor"], explain: "El trabajo de un escudo térmico es gestionar ese calor para que no llegue a la tripulación." },
+    sv: { q: "När en kapsel återinträder atmosfären i hög hastighet omvandlas det mesta av hastigheten till...", choices: ["Värme, från luftfriktion och kompression", "Bara ljud", "Extra hastighet", "Ljus, utan värme"], explain: "En värmesköld hela uppgift är att hantera den värmen så att den inte når besättningen." },
+  },
+  "rc3-3": {
+    fr: { q: "Qu'est-ce qu'un bouclier thermique 'ablatif' est conçu pour faire ?", choices: ["Réfléchir toute la chaleur instantanément", "Brûler et s'éroder volontairement, emportant la chaleur avec lui", "Rester parfaitement intact pendant la rentrée", "Refroidir la capsule à l'azote liquide"], explain: "Les boucliers AVCOAT d'Apollo et PICA-X de Dragon sont tous deux ablatifs — ils sont conçus pour se carboniser et s'écailler, emportant la chaleur avec eux." },
+    de: { q: "Was soll ein 'ablativer' Hitzeschild bewirken?", choices: ["Sofort alle Hitze reflektieren", "Absichtlich verbrennen und erodieren und dabei Hitze mitnehmen", "Beim Wiedereintritt völlig intakt bleiben", "Die Kapsel mit flüssigem Stickstoff kühlen"], explain: "Apollos AVCOAT- und Dragons PICA-X-Schilde sind beide ablativ — sie sollen verkohlen und abblättern und dabei Hitze mit sich nehmen." },
+    es: { q: "¿Qué está diseñado para hacer un escudo térmico 'ablativo'?", choices: ["Reflejar todo el calor al instante", "Quemarse y erosionarse a propósito, llevándose el calor consigo", "Mantenerse perfectamente intacto durante la reentrada", "Enfriar la cápsula con nitrógeno líquido"], explain: "Los escudos AVCOAT del Apollo y PICA-X del Dragon son ambos ablativos — están hechos para carbonizarse y desprenderse, llevándose el calor con ellos." },
+    sv: { q: "Vad är en 'ablativ' värmesköld designad att göra?", choices: ["Reflektera all värme direkt", "Brinna och eroderas med avsikt, och ta med sig värmen när den gör det", "Förbli helt intakt genom återinträdet", "Kyla kapseln med flytande kväve"], explain: "Apollos AVCOAT och Dragons PICA-X-sköldar är båda ablativa — de är gjorda för att förkolna och flagna av, och ta värmen med sig." },
+  },
+  "rc3-4": {
+    fr: { q: "Quelle famille de fusées a rendu les boosters réutilisables — capables de revenir se poser à la verticale — courants dans les lancements orbitaux ?", choices: ["Falcon 9", "Saturn V", "Soyouz", "Navette spatiale"], explain: "Les boosters Falcon 9 de SpaceX atterrissent et revolent, ce qui explique en grande partie pourquoi les lancements sont devenus moins chers." },
+    de: { q: "Welche Raketenfamilie machte wiederverwendbare Booster — die selbstständig zurückfliegen und aufrecht landen — zu einem routinemäßigen Teil orbitaler Starts?", choices: ["Falcon 9", "Saturn V", "Sojus", "Space Shuttle"], explain: "SpaceX' Falcon-9-Booster landen und fliegen erneut, was ein großer Grund dafür ist, dass Starts günstiger wurden." },
+    es: { q: "¿Qué familia de cohetes hizo que los propulsores reutilizables — volando de vuelta y aterrizando en posición vertical — fueran algo rutinario en los lanzamientos orbitales?", choices: ["Falcon 9", "Saturn V", "Soyuz", "Transbordador espacial"], explain: "Los propulsores Falcon 9 de SpaceX aterrizan y vuelven a volar, lo cual es una gran razón por la que los lanzamientos se abarataron." },
+    sv: { q: "Vilken raketfamilj gjorde återanvändbara boostrar — som flyger tillbaka själva och landar upprätt — till en rutinmässig del av omloppsbanan uppskjutningar?", choices: ["Falcon 9", "Saturn V", "Sojuz", "Rymdfärjan"], explain: "SpaceX Falcon 9-boostrar landar och flyger igen, vilket är en stor anledning till att uppskjutningar blev billigare." },
+  },
+  "rc3-5": {
+    fr: { q: "Planifie une mission spatiale réaliste : où va-t-elle, quelle est la taille de l'équipage, et quel est le plus gros risque à prendre en compte dans la conception ?" },
+    de: { q: "Plane eine realistische Weltraummission: Wohin geht sie, wie groß ist die Besatzung, und was ist das größte Risiko, das du einplanen müsstest?" },
+    es: { q: "Planea una misión espacial realista: ¿adónde va, cuál es el tamaño de la tripulación, y cuál es el mayor riesgo para el que tendrías que diseñar?" },
+    sv: { q: "Planera ett realistiskt rymduppdrag: vart är det på väg, hur stor är besättningen, och vad är den största risken du skulle behöva designa för?" },
+  },
 };
 
 // Snapshots each node's original English on first run (so re-localizing to
 // English, or falling back when a language has no entry, always has the
 // real source text to return to), then applies the current language's
 // override in place. Same call sites as localizeDomains()/localizeAchievements().
+function localizeQuestionNode(node, lang) {
+  if (!node._baseQ) {
+    node._baseQ = node.q;
+    node._baseChoices = node.choices;
+    node._baseExplain = node.explain;
+  }
+  const tr = QUESTIONS_I18N[node.id] && QUESTIONS_I18N[node.id][lang];
+  node.q = (tr && tr.q) || node._baseQ;
+  if (node._baseChoices) node.choices = (tr && tr.choices) || node._baseChoices;
+  if (node._baseExplain) node.explain = (tr && tr.explain) || node._baseExplain;
+}
+
 function localizeQuestions() {
   const lang = I18n.current;
-  Object.values(QUESTIONS).forEach((pool) => {
-    pool.forEach((node) => {
-      if (!node._baseQ) {
-        node._baseQ = node.q;
-        node._baseChoices = node.choices;
-        node._baseExplain = node.explain;
-      }
-      const tr = QUESTIONS_I18N[node.id] && QUESTIONS_I18N[node.id][lang];
-      node.q = (tr && tr.q) || node._baseQ;
-      if (node._baseChoices) node.choices = (tr && tr.choices) || node._baseChoices;
-      if (node._baseExplain) node.explain = (tr && tr.explain) || node._baseExplain;
-    });
-  });
+  Object.values(QUESTIONS).forEach((pool) => pool.forEach((node) => localizeQuestionNode(node, lang)));
+  ROCKET_COURSE.forEach((stage) => stage.nodes.forEach((node) => localizeQuestionNode(node, lang)));
 }

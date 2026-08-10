@@ -1302,6 +1302,173 @@ button {
   animation: shake 0.4s ease;
 }
 
+/* ---------- Rocket Science ---------- */
+
+.rocket-content {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.rocket-illustration {
+  display: flex;
+  justify-content: center;
+  padding: 4px 0 8px;
+}
+
+.rocket-svg {
+  width: 108px;
+  height: 216px;
+}
+
+.rocket-part {
+  transition: none;
+}
+
+.rocket-part-dropped {
+  animation: rocket-part-fall 0.7s cubic-bezier(0.5, 0, 0.75, 0) forwards;
+}
+
+@keyframes rocket-part-fall {
+  0% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(90px); opacity: 0; }
+}
+
+.rocket-capsule-body {
+  fill: var(--text-primary);
+}
+
+.rocket-capsule-window {
+  fill: var(--bg);
+}
+
+.rocket-tank-body {
+  fill: var(--surface-3);
+  stroke: var(--border);
+  stroke-width: 1;
+}
+
+.rocket-tank-stripe {
+  fill: var(--brand);
+}
+
+.rocket-booster-body {
+  fill: var(--surface-3);
+  stroke: var(--border);
+  stroke-width: 1;
+}
+
+.rocket-booster-fin {
+  fill: var(--text-secondary);
+}
+
+.rocket-flame {
+  fill: var(--status-miss);
+  opacity: 0.85;
+}
+
+.rocket-intro {
+  color: var(--text-secondary);
+  font-size: 13.5px;
+  line-height: 1.5;
+  text-align: center;
+  margin: 0;
+}
+
+.rocket-stage-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.rocket-stage-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.rocket-stage-card-icon {
+  font-size: 22px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--surface-2);
+  flex-shrink: 0;
+}
+
+.rocket-stage-card-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.rocket-stage-card-title {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.rocket-stage-card-subtitle {
+  color: var(--text-muted);
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.rocket-stage-card-complete {
+  border-color: var(--status-good);
+}
+
+.rocket-stage-card-complete .rocket-stage-card-icon {
+  background: color-mix(in srgb, var(--status-good) 22%, var(--surface-2));
+}
+
+.rocket-stage-card-locked {
+  opacity: 0.5;
+}
+
+.rocket-stage-card-action {
+  flex-shrink: 0;
+}
+
+.rocket-play-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rocket-progress {
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+#rocket-mission-complete-view {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+}
+
+#rocket-mission-complete-view h3 {
+  margin: 0;
+  font-size: 20px;
+}
+
+#rocket-mission-complete-view p {
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+  max-width: 380px;
+}
+
 .focus-hint {
   font-size: 13px;
   color: var(--text-muted);
