@@ -59,6 +59,12 @@ const Storage = {
     (onboarding.interests || []).forEach((d) => {
       if (state.affinity.domain[d] !== undefined) state.affinity.domain[d] += 1.5;
     });
+    // Stated interests are a hard filter from day one, not just a soft nudge —
+    // otherwise a player who only picked "Math" still sees Coding in the mix.
+    // They can always widen it again from Focus > Subjects.
+    if (onboarding.interests && onboarding.interests.length) {
+      state.focus.domains = onboarding.interests.filter((d) => DOMAIN_ORDER.includes(d));
+    }
     if (onboarding.goalType && onboarding.goalValue) {
       state.sessionGoal = { type: onboarding.goalType, value: onboarding.goalValue };
     }
@@ -97,7 +103,6 @@ const Storage = {
       tier: { math: 1, writing: 1, coding: 1, trivia: 1 },
       affinity: {
         domain: { math: 1, writing: 1, coding: 1, trivia: 1 },
-        style: { rigorous: 1, creative: 1 },
       },
       streak: { current: 0, longest: 0, lastActiveDate: null },
       totalTimeMs: 0,
@@ -110,6 +115,8 @@ const Storage = {
         breadth: "broad", // "broad" | "narrow" — read by Engine.pickNextNode
         topics: { math: [], writing: [], coding: [], trivia: [] }, // selected topic tags per domain; empty = no filter
         regions: [], // selected trivia regions; empty = no filter
+        domains: [...DOMAIN_ORDER], // enabled domains — hard filter, always >= 1
+        styleMix: 25, // 0-100, % chance of a creative/writing prompt vs rigorous multiple-choice
       },
       requestedSubjects: [], // [{id, domain, text, createdAt}] — "write a subject to add" queue, synced to cloud when configured
       cloudSyncedAt: null,
@@ -131,6 +138,16 @@ const Storage = {
       writeJSON(stateKey(profileId), fallback);
       return fallback;
     }
+    // One-time backfill for profiles saved before per-domain toggles existed:
+    // if they picked interests at onboarding, honor those as the domain
+    // filter instead of defaulting to "everything." Once focus.domains gets
+    // saved once (any saveState call), this never runs again for them.
+    const hasDomainsField = !!(state.focus && Array.isArray(state.focus.domains));
+    let domainsDefault = fallback.focus.domains;
+    if (!hasDomainsField) {
+      const profile = this.listProfiles().find((p) => p.id === profileId);
+      if (profile && profile.interests && profile.interests.length) domainsDefault = profile.interests;
+    }
     // Merge in any new default keys added since this profile was created.
     return {
       ...fallback,
@@ -139,12 +156,13 @@ const Storage = {
       tier: { ...fallback.tier, ...state.tier },
       affinity: {
         domain: { ...fallback.affinity.domain, ...(state.affinity && state.affinity.domain) },
-        style: { ...fallback.affinity.style, ...(state.affinity && state.affinity.style) },
       },
       focus: {
         breadth: (state.focus && state.focus.breadth) || fallback.focus.breadth,
         topics: { ...fallback.focus.topics, ...(state.focus && state.focus.topics) },
         regions: (state.focus && state.focus.regions) || fallback.focus.regions,
+        domains: hasDomainsField ? state.focus.domains : domainsDefault,
+        styleMix: (state.focus && typeof state.focus.styleMix === "number") ? state.focus.styleMix : fallback.focus.styleMix,
       },
       sessionGoal: { ...fallback.sessionGoal, ...state.sessionGoal },
       records: { ...fallback.records, ...state.records },

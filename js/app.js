@@ -705,6 +705,8 @@ $("focus-start-bottom").addEventListener("click", leaveFocusScreen);
 
 function renderFocusScreen() {
   $("difficulty-reset-status").classList.add("hidden");
+  renderDomainChips();
+  renderStyleMixChoice();
   renderBreadthToggle();
   renderTopicChips();
   renderRegionChips();
@@ -712,6 +714,58 @@ function renderFocusScreen() {
   renderSubjectRequests();
   renderReminderState();
 }
+
+// Hard on/off per domain — unlike topic chips (which narrow within a
+// domain), this removes a domain from the pick pool entirely. Always keeps
+// at least one enabled so the quest loop never runs dry.
+function renderDomainChips() {
+  const wrap = $("focus-domains");
+  wrap.innerHTML = "";
+  DOMAIN_ORDER.forEach((domainId) => {
+    const domain = DOMAINS[domainId];
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "chip";
+    chip.innerHTML = `<span class="domain-icon" style="color:${domain.accent}">${domain.icon}</span> ${domain.shortLabel}`;
+    chip.classList.toggle("chip-active", state.focus.domains.includes(domainId));
+    chip.addEventListener("click", () => toggleDomain(domainId, chip));
+    wrap.appendChild(chip);
+  });
+}
+
+function toggleDomain(domainId, chipEl) {
+  const list = state.focus.domains;
+  const i = list.indexOf(domainId);
+  if (i === -1) {
+    list.push(domainId);
+  } else {
+    if (list.length <= 1) {
+      chipEl.classList.remove("chip-locked");
+      void chipEl.offsetWidth; // restart animation if triggered twice in a row
+      chipEl.classList.add("chip-locked");
+      return; // never let every domain get disabled
+    }
+    list.splice(i, 1);
+  }
+  chipEl.classList.toggle("chip-active");
+  Storage.saveState(activeProfile.id, state);
+}
+
+// Direct, user-set quiz-vs-writing ratio — a single active chip out of the
+// four tiers, not an adaptive weight the engine can quietly drift away from.
+function renderStyleMixChoice() {
+  document.querySelectorAll("#style-mix-choice .chip").forEach((chip) => {
+    chip.classList.toggle("chip-active", Number(chip.dataset.value) === state.focus.styleMix);
+  });
+}
+
+document.querySelectorAll("#style-mix-choice .chip").forEach((chip) => {
+  chip.addEventListener("click", () => {
+    state.focus.styleMix = Number(chip.dataset.value);
+    Storage.saveState(activeProfile.id, state);
+    renderStyleMixChoice();
+  });
+});
 
 // ---------- Daily reminder ----------
 

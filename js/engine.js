@@ -45,12 +45,10 @@ const Engine = {
         xpGained = 10 + tier * 5;
         state.tier[domain] = clamp(tier + 1, 1, 3);
         state.affinity.domain[domain] = clamp(state.affinity.domain[domain] + 0.35, MIN_WEIGHT, MAX_WEIGHT);
-        state.affinity.style.rigorous = clamp(state.affinity.style.rigorous + 0.2, MIN_WEIGHT, MAX_WEIGHT);
       } else {
         xpGained = 2;
         state.tier[domain] = clamp(tier - 1, 1, 3);
         state.affinity.domain[domain] = clamp(state.affinity.domain[domain] - 0.1, MIN_WEIGHT, MAX_WEIGHT);
-        state.affinity.style.creative = clamp(state.affinity.style.creative + 0.15, MIN_WEIGHT, MAX_WEIGHT);
       }
     } else {
       // Creative/open: judged by completion + a self-rated "how'd that feel"
@@ -63,11 +61,9 @@ const Engine = {
         if (enjoyment >= 3) {
           state.tier[domain] = clamp(tier + 1, 1, 3);
           state.affinity.domain[domain] = clamp(state.affinity.domain[domain] + 0.25 + enjoyment * 0.08, MIN_WEIGHT, MAX_WEIGHT);
-          state.affinity.style.creative = clamp(state.affinity.style.creative + 0.25, MIN_WEIGHT, MAX_WEIGHT);
         } else {
           state.tier[domain] = clamp(tier - 1, 1, 3);
           state.affinity.domain[domain] = clamp(state.affinity.domain[domain] - 0.1, MIN_WEIGHT, MAX_WEIGHT);
-          state.affinity.style.rigorous = clamp(state.affinity.style.rigorous + 0.15, MIN_WEIGHT, MAX_WEIGHT);
         }
       } else {
         xpGained = 1;
@@ -99,36 +95,45 @@ const Engine = {
   // General weighted pick: domain -> style -> a matching, not-recently-seen
   // question at the domain's current tier (relaxing constraints if the
   // pool comes up empty). Reads state.focus for the "drill into" picks:
-  //   - breadth "narrow": hard-restricts domain choice to whatever's
-  //     focused (or, with no explicit picks, locks onto the single
-  //     strongest domain) and stops down-weighting repeats — narrow means
-  //     staying put on purpose.
+  //   - focus.domains is a hard filter (Focus > Subjects toggles) — a
+  //     disabled domain is never eligible, full stop, regardless of breadth.
+  //   - breadth "narrow": within the enabled domains, hard-restricts choice
+  //     to whatever's focused (or, with no explicit picks, locks onto the
+  //     single strongest enabled domain) and stops down-weighting repeats —
+  //     narrow means staying put on purpose.
   //   - breadth "broad": focused domains just get a weight bump, everything
-  //     stays in the mix — variety is the point.
+  //     enabled stays in the mix — variety is the point.
   //   Selected topics/regions are tried first regardless of breadth; the
   //   relax chain only drops them if nothing matches, so a pick never
   //   dead-ends the quest loop.
+  //   Style (quiz vs writing) is a direct, user-set percentage
+  //   (focus.styleMix) rather than adaptive weighting — a manual toggle
+  //   the player can trust, not one the engine quietly overrides.
   pickNextNode(state) {
-    const focus = state.focus || { breadth: "broad", topics: {}, regions: [] };
+    const focus = state.focus || { breadth: "broad", topics: {}, regions: [], domains: [], styleMix: 25 };
     const narrow = focus.breadth === "narrow";
-    const focusedDomains = DOMAIN_ORDER.filter(
+    const enabledDomains = focus.domains && focus.domains.length ? DOMAIN_ORDER.filter((d) => focus.domains.includes(d)) : DOMAIN_ORDER;
+    const focusedDomains = enabledDomains.filter(
       (d) => (focus.topics[d] || []).length > 0 || (d === "trivia" && (focus.regions || []).length > 0)
     );
 
-    let domainWeights = { ...state.affinity.domain };
+    let domainWeights;
     if (narrow) {
-      domainWeights = focusedDomains.length
-        ? Object.fromEntries(focusedDomains.map((d) => [d, state.affinity.domain[d]]))
-        : { [topAffinityDomain(state)]: 1 };
-    } else if (focusedDomains.length) {
-      domainWeights = Object.fromEntries(Object.entries(domainWeights).map(([d, w]) => [d, focusedDomains.includes(d) ? w * 2.2 : w]));
+      const narrowPool = focusedDomains.length ? focusedDomains : [topAffinityDomain(state, enabledDomains)];
+      domainWeights = Object.fromEntries(narrowPool.map((d) => [d, state.affinity.domain[d]]));
+    } else {
+      domainWeights = Object.fromEntries(
+        enabledDomains.map((d) => [d, focusedDomains.includes(d) ? state.affinity.domain[d] * 2.2 : state.affinity.domain[d]])
+      );
     }
 
     const domain = weightedPick(domainWeights, narrow ? null : state.lastDomain);
     const pool = QUESTIONS[domain];
     const availableStyles = new Set(pool.map((n) => n.style));
-    const styleWeights = Object.fromEntries(Object.entries(state.affinity.style).filter(([s]) => availableStyles.has(s)));
-    const style = weightedPick(Object.keys(styleWeights).length ? styleWeights : { creative: 1, rigorous: 1 });
+    const styleMixPct = typeof focus.styleMix === "number" ? focus.styleMix : 25;
+    const style = availableStyles.size === 1
+      ? [...availableStyles][0]
+      : Math.random() * 100 < styleMixPct ? "creative" : "rigorous";
     const targetTier = state.tier[domain];
 
     const topicFilter = focus.topics[domain] || [];
@@ -148,6 +153,8 @@ const Engine = {
   },
 };
 
-function topAffinityDomain(state) {
-  return Object.entries(state.affinity.domain).sort((a, b) => b[1] - a[1])[0][0];
+function topAffinityDomain(state, domains = DOMAIN_ORDER) {
+  return Object.entries(state.affinity.domain)
+    .filter(([d]) => domains.includes(d))
+    .sort((a, b) => b[1] - a[1])[0][0];
 }
