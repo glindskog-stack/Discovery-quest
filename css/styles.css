@@ -1,5 +1,6 @@
-/* Rocket Lab — dark-mode-only, underground-zine aesthetic.
-   No light theme: this app doesn't pretend to be a classroom tool. */
+/* Rocket Lab — underground-zine aesthetic, dark by default. A light
+   "riso print" theme is available (Focus > Appearance) for anyone who
+   doesn't want dark — same energy, paper-white instead of near-black. */
 
 @font-face {
   /* Using the system stack on purpose — no network fetch, no FOUT, and
@@ -18,8 +19,9 @@
   --text-secondary: #a6a6b8;
   --text-muted: #6c6c7c;
 
-  --brand: #d4ff00; /* acid lime — the one color that isn't a domain identity */
-  --brand-ink: #0a0a0f;
+  --brand: #d4ff00; /* acid lime — the one color that isn't a domain identity. Stays this bright in both themes: it's only ever a fill/border/glow, never body text. */
+  --brand-ink: #0a0a0f; /* text ON a brand-colored surface, e.g. primary buttons */
+  --brand-text: #d4ff00; /* brand color used AS text/glow on the page background — needs its own value per theme for contrast */
   --status-good: #9ee600;
   --status-miss: #ff5c7a;
 
@@ -29,6 +31,26 @@
   --radius: 14px;
   --radius-sm: 8px;
   color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  --bg: #f6f4ec;
+  --bg-glow: radial-gradient(ellipse 900px 500px at 50% -10%, rgba(239, 6, 177, 0.1), transparent 60%);
+  --surface: #ffffff;
+  --surface-2: #f1efe3;
+  --surface-3: #e7e3d2;
+  --border: #ddd8c4;
+
+  --text-primary: #17171c;
+  --text-secondary: #55545f;
+  --text-muted: #84808c;
+
+  --brand-ink: #0a0a0f;
+  --brand-text: #6b8f00;
+  --status-good: #4f7f00;
+  --status-miss: #d6274a;
+
+  color-scheme: light;
 }
 
 * {
@@ -431,7 +453,9 @@ button {
 .quest-header {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   justify-content: space-between;
+  row-gap: 8px;
   margin-bottom: 20px;
 }
 
@@ -442,11 +466,18 @@ button {
   font-weight: 700;
   font-size: 14px;
   color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
 }
 
 .quest-header-actions {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 8px;
+  margin-left: auto;
 }
 
 .pill-row {
@@ -531,10 +562,10 @@ button {
   font-family: var(--font-mono);
   font-weight: 800;
   font-size: 15px;
-  color: var(--brand);
+  color: var(--brand-text);
   opacity: 0;
   pointer-events: none;
-  text-shadow: 0 0 12px color-mix(in srgb, var(--brand) 60%, transparent);
+  text-shadow: 0 0 12px color-mix(in srgb, var(--brand-text) 60%, transparent);
 }
 
 .xp-pop-animate {
@@ -821,7 +852,7 @@ button {
   background: color-mix(in srgb, var(--brand) 8%, var(--surface-2));
 }
 .feedback-creative .feedback-headline {
-  color: var(--brand);
+  color: var(--brand-text);
 }
 
 .feedback-neutral .feedback-headline {
@@ -835,7 +866,7 @@ button {
 
 .level-up-percentile {
   margin-top: 8px;
-  color: var(--brand);
+  color: var(--brand-text);
 }
 
 .quest-footer {
@@ -884,8 +915,8 @@ button {
   font-size: 64px;
   font-weight: 900;
   line-height: 1;
-  color: var(--brand);
-  text-shadow: 0 0 30px rgba(212, 255, 0, 0.35);
+  color: var(--brand-text);
+  text-shadow: 0 0 30px color-mix(in srgb, var(--brand-text) 45%, transparent);
 }
 
 .dash-hero-label {
@@ -1150,7 +1181,7 @@ button {
 
 .peer-value {
   font-family: var(--font-mono);
-  color: var(--brand);
+  color: var(--brand-text);
   font-size: 13px;
 }
 
@@ -1171,7 +1202,7 @@ button {
   font-family: var(--font-mono);
   font-size: 20px;
   font-weight: 700;
-  color: var(--brand);
+  color: var(--brand-text);
   letter-spacing: 0.04em;
   margin-bottom: 16px;
   word-break: break-all;

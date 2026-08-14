@@ -180,18 +180,52 @@ const Engine = {
     const regionFilter = domain === "trivia" ? focus.regions || [] : [];
     const matchesFocus = (n) =>
       (!topicFilter.length || topicFilter.includes(n.topic)) && (!regionFilter.length || regionFilter.includes(n.region));
+    const nearTier = (n) => Math.abs(n.tier - targetTier) <= 1; // one tier either side — triples the usable pool per pick without drifting difficulty far
 
+    // Relax constraints in order until something matches, same idea as
+    // before — but the last resort is no longer "any question, repeats be
+    // damned." Once even the loosest recency-respecting search comes up
+    // empty, repeat the single question this player has gone longest
+    // without seeing, rather than a uniformly random (possibly
+    // just-answered) one — see leastRecentlySeen below.
     const candidates = (filterFn) => pool.filter((n) => !n.branchOnly && filterFn(n));
-    let matches = candidates((n) => n.style === style && n.tier === targetTier && matchesFocus(n) && !state.answeredIds.includes(n.id));
-    if (!matches.length) matches = candidates((n) => n.style === style && matchesFocus(n) && !state.answeredIds.includes(n.id));
-    if (!matches.length) matches = candidates((n) => matchesFocus(n) && !state.answeredIds.includes(n.id));
-    if (!matches.length) matches = candidates((n) => !state.answeredIds.includes(n.id));
-    if (!matches.length) matches = candidates(() => true);
-    if (!matches.length) matches = pool.filter((n) => !n.branchOnly);
+    const unseen = (n) => !state.answeredIds.includes(n.id);
+    let matches = candidates((n) => n.style === style && nearTier(n) && matchesFocus(n) && unseen(n));
+    if (!matches.length) matches = candidates((n) => n.style === style && matchesFocus(n) && unseen(n));
+    if (!matches.length) matches = candidates((n) => matchesFocus(n) && unseen(n));
+    if (!matches.length) matches = candidates((n) => unseen(n));
+    if (!matches.length) {
+      const stylePool = candidates((n) => n.style === style && matchesFocus(n));
+      const anyPool = candidates((n) => matchesFocus(n));
+      const fallbackPool = stylePool.length ? stylePool : anyPool.length ? anyPool : pool.filter((n) => !n.branchOnly);
+      matches = [leastRecentlySeen(fallbackPool, state.answeredIds)];
+    }
 
     return matches[Math.floor(Math.random() * matches.length)];
   },
 };
+
+// answeredIds is oldest-first (pushed on answer, shifted from the front
+// once over the cap) and can contain the same id more than once once
+// fallback repeats start happening — lastIndexOf (not indexOf) is what
+// finds each node's MOST RECENT appearance, so a node that just got
+// repeated correctly drops to the back of the line instead of getting
+// permanently stuck looking "oldest" forever. Used only once every
+// not-yet-seen question has been exhausted under the current filters —
+// picks the best available repeat instead of a random one.
+function leastRecentlySeen(nodes, answeredIds) {
+  let best = nodes[0];
+  let bestIdx = answeredIds.lastIndexOf(best.id);
+  for (const n of nodes) {
+    const idx = answeredIds.lastIndexOf(n.id);
+    if (idx === -1) return n; // not in the recency list at all — as good as unseen
+    if (idx < bestIdx) {
+      best = n;
+      bestIdx = idx;
+    }
+  }
+  return best;
+}
 
 function topAffinityDomain(state, domains = DOMAIN_ORDER) {
   return Object.entries(state.affinity.domain)

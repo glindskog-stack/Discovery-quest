@@ -179,9 +179,12 @@ const Storage = {
     writeJSON(stateKey(profileId), state);
   },
 
+  // Capped well above the content bank size so a full pass through every
+  // domain doesn't start evicting early answers before the pool actually
+  // runs out — see Engine.pickNextNode for how this gets used.
   recordAnswered(state, id) {
     state.answeredIds.push(id);
-    if (state.answeredIds.length > 60) state.answeredIds.shift();
+    if (state.answeredIds.length > 250) state.answeredIds.shift();
   },
 
   // Full answer history — question, what was answered/written, right or

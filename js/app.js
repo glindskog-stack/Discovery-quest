@@ -743,6 +743,7 @@ $("focus-start-bottom").addEventListener("click", leaveFocusScreen);
 
 function renderFocusScreen() {
   $("difficulty-reset-status").classList.add("hidden");
+  renderThemeToggle();
   renderDomainChips();
   renderStyleMixChoice();
   renderBreadthToggle();
@@ -882,17 +883,41 @@ document.querySelectorAll("#difficulty-reset-choice .choice-btn-lg").forEach((bt
 });
 
 function renderBreadthToggle() {
-  document.querySelectorAll(".breadth-option").forEach((btn) => {
+  document.querySelectorAll("#breadth-toggle .breadth-option").forEach((btn) => {
     btn.classList.toggle("active", btn.dataset.breadth === state.focus.breadth);
   });
 }
 
-document.querySelectorAll(".breadth-option").forEach((btn) => {
+document.querySelectorAll("#breadth-toggle .breadth-option").forEach((btn) => {
   btn.addEventListener("click", () => {
     state.focus.breadth = btn.dataset.breadth;
     Storage.saveState(activeProfile.id, state);
     renderBreadthToggle();
   });
+});
+
+// Device-level, like language/mute — applied as early as possible by an
+// inline script in index.html's <head> (before first paint, to avoid a
+// flash of the wrong theme), and re-applied instantly on toggle here.
+function getTheme() {
+  return localStorage.getItem("dq:theme") || "dark";
+}
+
+function setTheme(theme) {
+  localStorage.setItem("dq:theme", theme);
+  document.documentElement.dataset.theme = theme;
+  renderThemeToggle();
+}
+
+function renderThemeToggle() {
+  const current = getTheme();
+  document.querySelectorAll("#theme-toggle .breadth-option").forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.theme === current);
+  });
+}
+
+document.querySelectorAll("#theme-toggle .breadth-option").forEach((btn) => {
+  btn.addEventListener("click", () => setTheme(btn.dataset.theme));
 });
 
 function renderTopicChips() {

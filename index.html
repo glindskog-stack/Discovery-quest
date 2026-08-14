@@ -6,6 +6,11 @@
   <title>Rocket Lab</title>
   <meta name="description" content="An adaptive curiosity app for math/science, writing, code, and trivia. No grading, just leveling up." />
   <meta name="theme-color" content="#0a0a0f" />
+  <script>
+    // Applied before the stylesheet paints anything, so switching to the
+    // light theme never flashes dark first.
+    document.documentElement.dataset.theme = localStorage.getItem("dq:theme") || "dark";
+  </script>
   <!-- iOS Safari doesn't reliably read name/display-mode from the web
        manifest the way Android does — these make "Rocket Lab" and the
        no-browser-chrome standalone launch consistent across iOS versions. -->
@@ -146,6 +151,14 @@
 
       <div class="focus-content">
         <p id="focus-intro" class="focus-intro-hint hidden" data-i18n="focus.first_run_hint"></p>
+
+        <div class="focus-block">
+          <div class="focus-block-title" data-i18n="focus.theme_label"></div>
+          <div id="theme-toggle" class="breadth-toggle">
+            <button class="breadth-option" data-theme="dark"><span data-i18n="focus.theme_dark"></span><span data-i18n="focus.theme_dark_sub"></span></button>
+            <button class="breadth-option" data-theme="light"><span data-i18n="focus.theme_light"></span><span data-i18n="focus.theme_light_sub"></span></button>
+          </div>
+        </div>
 
         <div class="focus-block">
           <div class="focus-block-title" data-i18n="focus.difficulty_label"></div>
