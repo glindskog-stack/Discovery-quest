@@ -71,9 +71,27 @@ function renderLangPicker() {
   });
 }
 
+// The toggle button's position isn't fixed (the header can wrap onto a
+// second line depending on viewport width and profile-name length), so a
+// CSS-only right:0 anchor could push the popover halfway off-screen. Clamp
+// it in JS instead, after it's visible and has real dimensions to measure.
+function positionLangPopover() {
+  const popover = $("lang-picker-quest");
+  const wrap = popover.parentElement;
+  const wrapRect = wrap.getBoundingClientRect();
+  popover.style.right = "auto";
+  popover.style.left = "0px";
+  const popRect = popover.getBoundingClientRect();
+  const margin = 8;
+  const desiredLeftViewport = wrapRect.left + wrapRect.width / 2 - popRect.width / 2;
+  const clampedLeftViewport = Math.min(Math.max(desiredLeftViewport, margin), window.innerWidth - popRect.width - margin);
+  popover.style.left = `${clampedLeftViewport - wrapRect.left}px`;
+}
+
 $("toggle-lang").addEventListener("click", (e) => {
   e.stopPropagation();
   $("lang-picker-quest").classList.toggle("hidden");
+  if (!$("lang-picker-quest").classList.contains("hidden")) positionLangPopover();
 });
 
 document.addEventListener("click", (e) => {
@@ -461,6 +479,13 @@ document.querySelectorAll(".enjoyment-btn").forEach((btn) => {
 });
 
 $("skip-prompt").addEventListener("click", () => {
+  // A skipped question still counts as "seen" for repeat-avoidance —
+  // otherwise it just comes right back around, especially in a small
+  // pool like a single writing topic.
+  if (currentNode) {
+    Storage.recordAnswered(state, currentNode.id);
+    Storage.saveState(activeProfile.id, state);
+  }
   loadNextNode();
 });
 
@@ -990,12 +1015,12 @@ function renderSubjectDomainOptions() {
   });
 }
 
-function renderSubjectRequests() {
+function renderSubjectRequests(justAddedId) {
   const list = $("subject-requests-list");
   list.innerHTML = "";
   [...state.requestedSubjects].reverse().forEach((r) => {
     const row = document.createElement("div");
-    row.className = "subject-request-item";
+    row.className = "subject-request-item" + (r.id === justAddedId ? " subject-request-item-new" : "");
     row.innerHTML = `<span class="domain-icon" style="color:${DOMAINS[r.domain].accent}">${DOMAINS[r.domain].icon}</span> <span>${escapeHTML(r.text)}</span> <span class="subject-request-status">${I18n.t("focus.queued")}</span>`;
     list.appendChild(row);
   });
@@ -1016,7 +1041,8 @@ $("subject-request-form").addEventListener("submit", (e) => {
   Storage.saveState(activeProfile.id, state);
   Cloud.queueSubjectRequest(activeProfile, entry);
   $("subject-text").value = "";
-  renderSubjectRequests();
+  Sound.tap();
+  renderSubjectRequests(entry.id);
 });
 
 // ---------- Dashboard ----------

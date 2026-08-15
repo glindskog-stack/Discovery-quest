@@ -1316,7 +1316,7 @@ button {
 }
 
 .focus-topic-section {
-  margin-bottom: 18px;
+  margin-bottom: 26px;
 }
 
 .focus-topic-section:last-child {
@@ -1326,7 +1326,7 @@ button {
 .chip-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
 }
 
 .chip {
@@ -1334,8 +1334,8 @@ button {
   border: 1px solid var(--border);
   border-radius: 999px;
   color: var(--text-secondary);
-  padding: 7px 14px;
-  font-size: 13px;
+  padding: 9px 16px;
+  font-size: 13.5px;
   font-weight: 600;
   cursor: pointer;
   text-transform: capitalize;
@@ -1613,12 +1613,19 @@ button {
 .subject-request-status {
   font-family: var(--font-mono);
   font-size: 10.5px;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--text-muted);
-  border: 1px solid var(--border);
+  color: var(--status-good);
+  border: 1px solid color-mix(in srgb, var(--status-good) 40%, var(--border));
+  background: color-mix(in srgb, var(--status-good) 10%, transparent);
   border-radius: 999px;
   padding: 3px 8px;
+  white-space: nowrap;
+}
+
+.subject-request-item-new {
+  animation: pop-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* ---------- Trophy case + records ---------- */

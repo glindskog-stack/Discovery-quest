@@ -128,7 +128,7 @@ const I18N_STRINGS = {
   "focus.write_subject_hint": { en: "Doesn't drop in instantly — it queues for the next content pass. See what's already queued below.", sv: "Dyker inte upp direkt — läggs i kö till nästa innehållsuppdatering. Se vad som redan väntar nedan.", fr: "N'apparaît pas tout de suite — mis en file pour la prochaine mise à jour de contenu. Vois ce qui est déjà en attente ci-dessous.", de: "Erscheint nicht sofort — wird für den nächsten Inhalts-Durchlauf vorgemerkt. Siehe unten, was schon wartet.", es: "No aparece al instante — se pone en cola para la próxima actualización de contenido. Mira abajo lo que ya está en cola." },
   "focus.write_subject_placeholder": { en: "e.g. K-pop history, orbital mechanics, Rust", sv: "t.ex. K-pop-historia, omloppsmekanik, Rust", fr: "ex. histoire de la K-pop, mécanique orbitale, Rust", de: "z. B. K-Pop-Geschichte, Orbitalmechanik, Rust", es: "p. ej. historia del K-pop, mecánica orbital, Rust" },
   "focus.nothing_queued": { en: "Nothing queued yet.", sv: "Inget i kö ännu.", fr: "Rien en file pour l'instant.", de: "Noch nichts vorgemerkt.", es: "Nada en cola todavía." },
-  "focus.queued": { en: "queued", sv: "i kö", fr: "en file", de: "vorgemerkt", es: "en cola" },
+  "focus.queued": { en: "✓ Queued", sv: "✓ Köad", fr: "✓ En file", de: "✓ Vorgemerkt", es: "✓ En cola" },
   "focus.language_title": { en: "Language", sv: "Språk", fr: "Langue", de: "Sprache", es: "Idioma" },
 
   "dashboard.day_streak.one": { en: "{n} day streak", sv: "{n} dags svit", fr: "{n} jour de suite", de: "{n} Tag in Folge", es: "{n} día seguido" },

@@ -153,27 +153,35 @@ const Engine = {
     const focus = state.focus || { breadth: "broad", topics: {}, regions: [], domains: [], styleMix: 25 };
     const narrow = focus.breadth === "narrow";
     const enabledDomains = focus.domains && focus.domains.length ? DOMAIN_ORDER.filter((d) => focus.domains.includes(d)) : DOMAIN_ORDER;
-    const focusedDomains = enabledDomains.filter(
+
+    // Style has to be decided BEFORE domain, not after — the "writing"
+    // domain is 100% creative, so picking domain first and style second
+    // meant every writing pick silently ignored styleMix entirely (a
+    // "Quiz only"/"Mostly quiz" player would still get full writing
+    // prompts whenever that domain came up). Deciding style first and
+    // then only offering domains that actually have that style keeps the
+    // player's mix setting authoritative overall, not just per-domain.
+    const styleMixPct = typeof focus.styleMix === "number" ? focus.styleMix : 25;
+    const style = Math.random() * 100 < styleMixPct ? "creative" : "rigorous";
+    const styleDomains = enabledDomains.filter((d) => QUESTIONS[d].some((n) => n.style === style));
+    const domainPool = styleDomains.length ? styleDomains : enabledDomains; // never dead-end if a filter leaves nothing
+
+    const focusedDomains = domainPool.filter(
       (d) => (focus.topics[d] || []).length > 0 || (d === "trivia" && (focus.regions || []).length > 0)
     );
 
     let domainWeights;
     if (narrow) {
-      const narrowPool = focusedDomains.length ? focusedDomains : [topAffinityDomain(state, enabledDomains)];
+      const narrowPool = focusedDomains.length ? focusedDomains : [topAffinityDomain(state, domainPool)];
       domainWeights = Object.fromEntries(narrowPool.map((d) => [d, state.affinity.domain[d]]));
     } else {
       domainWeights = Object.fromEntries(
-        enabledDomains.map((d) => [d, focusedDomains.includes(d) ? state.affinity.domain[d] * 2.2 : state.affinity.domain[d]])
+        domainPool.map((d) => [d, focusedDomains.includes(d) ? state.affinity.domain[d] * 2.2 : state.affinity.domain[d]])
       );
     }
 
     const domain = weightedPick(domainWeights, narrow ? null : state.lastDomain);
     const pool = QUESTIONS[domain];
-    const availableStyles = new Set(pool.map((n) => n.style));
-    const styleMixPct = typeof focus.styleMix === "number" ? focus.styleMix : 25;
-    const style = availableStyles.size === 1
-      ? [...availableStyles][0]
-      : Math.random() * 100 < styleMixPct ? "creative" : "rigorous";
     const targetTier = state.tier[domain];
 
     const topicFilter = focus.topics[domain] || [];

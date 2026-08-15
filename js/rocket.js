@@ -51,7 +51,7 @@ const ROCKET_COURSE = [
         source: "Rocket Propulsion Fundamentals", verifiedAt: "2026-08",
       },
       {
-        id: "rc1-5", style: "creative", freeResponse: true, minWords: 15,
+        id: "rc1-5", style: "creative", freeResponse: true, minWords: 5,
         q: "You're designing the booster stage for a brand-new rocket. What's one creative feature it has, and what problem does it solve?",
       },
     ],
@@ -95,7 +95,7 @@ const ROCKET_COURSE = [
         source: "Orbital mechanics", verifiedAt: "2026-08",
       },
       {
-        id: "rc2-5", style: "creative", freeResponse: true, minWords: 15,
+        id: "rc2-5", style: "creative", freeResponse: true, minWords: 5,
         q: "Your rocket just reached orbit, and the second stage's fuel tank is empty and about to be dropped. Write the moment from the pilot's point of view.",
       },
     ],
@@ -139,7 +139,7 @@ const ROCKET_COURSE = [
         source: "SpaceX", verifiedAt: "2026-08",
       },
       {
-        id: "rc3-5", style: "creative", freeResponse: true, minWords: 20,
+        id: "rc3-5", style: "creative", freeResponse: true, minWords: 5,
         q: "Plan a realistic space mission: where's it going, what's the crew size, and what's the single biggest risk you'd need to design around?",
       },
     ],
