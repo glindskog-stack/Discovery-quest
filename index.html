@@ -24,6 +24,11 @@
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
+  <div id="splash-screen" class="splash-screen">
+    <img src="icons/mascot.svg" alt="" class="splash-mascot" />
+    <div class="splash-wordmark">Rocket Lab</div>
+  </div>
+
   <div id="app" class="app">
 
     <!-- Profile picker -->
@@ -94,9 +99,6 @@
             <button id="toggle-lang" class="btn btn-ghost btn-small" data-i18n-title="btn.language_title">🌐</button>
             <div id="lang-picker-quest" class="lang-picker lang-picker-popover hidden"></div>
           </div>
-          <button id="open-focus" class="btn btn-ghost btn-small" data-i18n="btn.focus" data-i18n-title="btn.focus_title"></button>
-          <button id="open-rocket" class="btn btn-ghost btn-small" data-i18n-title="btn.rocket_title">🚀</button>
-          <button id="open-dashboard" class="btn btn-ghost btn-small" data-i18n="btn.stats"></button>
         </div>
       </header>
 
@@ -163,10 +165,11 @@
         <div class="focus-block">
           <div class="focus-block-title" data-i18n="focus.difficulty_label"></div>
           <p class="focus-hint" data-i18n="focus.difficulty_hint"></p>
-          <div id="difficulty-reset-choice" class="choice-row">
-            <button type="button" class="choice-btn-lg" data-value="1"><span data-i18n="difficulty.easy.title"></span><span data-i18n="difficulty.easy.sub"></span></button>
-            <button type="button" class="choice-btn-lg" data-value="2"><span data-i18n="difficulty.medium.title"></span><span data-i18n="difficulty.medium.sub"></span></button>
-            <button type="button" class="choice-btn-lg" data-value="3"><span data-i18n="difficulty.hard.title"></span><span data-i18n="difficulty.hard.sub"></span></button>
+          <div id="difficulty-dial" class="difficulty-dial">
+            <div id="difficulty-dial-thumb" class="difficulty-dial-thumb"></div>
+            <button type="button" class="difficulty-dial-option" data-value="1" data-i18n="difficulty.easy.title"></button>
+            <button type="button" class="difficulty-dial-option" data-value="2" data-i18n="difficulty.medium.title"></button>
+            <button type="button" class="difficulty-dial-option" data-value="3" data-i18n="difficulty.hard.title"></button>
           </div>
           <p id="difficulty-reset-status" class="focus-hint hidden"></p>
         </div>
@@ -184,7 +187,7 @@
         <div class="focus-block">
           <div class="focus-block-title" data-i18n="focus.subjects_label"></div>
           <p class="focus-hint" data-i18n="focus.subjects_hint"></p>
-          <div id="focus-domains" class="chip-row"></div>
+          <div id="focus-domains" class="domain-card-grid"></div>
         </div>
 
         <div class="focus-block">
@@ -312,6 +315,26 @@
     </div>
 
   </div>
+
+  <!-- Persistent bottom nav — hidden until a profile is active (profiles/onboarding screen has none) -->
+  <nav id="bottom-tabs" class="bottom-tabs hidden">
+    <button id="tab-home" class="bottom-tab" data-tab="quest">
+      <span class="bottom-tab-icon">🏠</span>
+      <span class="bottom-tab-label" data-i18n="tabs.home"></span>
+    </button>
+    <button id="open-focus" class="bottom-tab" data-tab="focus">
+      <span class="bottom-tab-icon">🎯</span>
+      <span class="bottom-tab-label" data-i18n="btn.focus"></span>
+    </button>
+    <button id="open-rocket" class="bottom-tab" data-tab="rocket">
+      <span class="bottom-tab-icon">🚀</span>
+      <span class="bottom-tab-label" data-i18n="tabs.rocket"></span>
+    </button>
+    <button id="open-dashboard" class="bottom-tab" data-tab="dashboard">
+      <span class="bottom-tab-icon">📊</span>
+      <span class="bottom-tab-label" data-i18n="tabs.stats"></span>
+    </button>
+  </nav>
 
   <script src="js/config.js"></script>
   <script src="js/i18n.js"></script>

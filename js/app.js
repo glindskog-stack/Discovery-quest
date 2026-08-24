@@ -22,8 +22,14 @@ function $(id) {
   return document.getElementById(id);
 }
 
+const TAB_SCREENS = new Set(["quest", "focus", "rocket", "dashboard"]);
+
 function showScreen(name) {
   document.querySelectorAll(".screen").forEach((s) => s.classList.toggle("hidden", s.dataset.screen !== name));
+  const showTabs = TAB_SCREENS.has(name);
+  $("bottom-tabs").classList.toggle("hidden", !showTabs);
+  $("app").classList.toggle("has-bottom-tabs", showTabs);
+  document.querySelectorAll(".bottom-tab").forEach((tab) => tab.classList.toggle("active", tab.dataset.tab === name));
 }
 
 // ---------- Profile picker ----------
@@ -319,6 +325,8 @@ $("switch-profile").addEventListener("click", () => {
   $("profile-list").classList.remove("hidden");
   renderProfileList();
 });
+
+$("tab-home").addEventListener("click", () => showScreen("quest"));
 
 // ---------- Session bookkeeping ----------
 
@@ -768,6 +776,7 @@ $("focus-start-bottom").addEventListener("click", leaveFocusScreen);
 
 function renderFocusScreen() {
   $("difficulty-reset-status").classList.add("hidden");
+  setDifficultyDial(activeProfile.difficulty || 2);
   renderThemeToggle();
   renderDomainChips();
   renderStyleMixChoice();
@@ -787,31 +796,41 @@ function renderDomainChips() {
   wrap.innerHTML = "";
   DOMAIN_ORDER.forEach((domainId) => {
     const domain = DOMAINS[domainId];
-    const chip = document.createElement("button");
-    chip.type = "button";
-    chip.className = "chip";
-    chip.innerHTML = `<span class="domain-icon" style="color:${domain.accent}">${domain.icon}</span> ${domain.shortLabel}`;
-    chip.classList.toggle("chip-active", state.focus.domains.includes(domainId));
-    chip.addEventListener("click", () => toggleDomain(domainId, chip));
-    wrap.appendChild(chip);
+    const active = state.focus.domains.includes(domainId);
+    const card = document.createElement("button");
+    card.type = "button";
+    card.className = "domain-card" + (active ? " domain-card-active" : "");
+    card.style.setProperty("--domain-accent", domain.accent);
+    card.innerHTML = `
+      <div class="domain-card-top">
+        <div class="domain-card-icon">${domain.icon}</div>
+        <div class="domain-card-toggle"><div class="domain-card-toggle-knob"></div></div>
+      </div>
+      <div class="domain-card-body">
+        <div class="domain-card-title">${escapeHTML(domain.shortLabel)}</div>
+        <div class="domain-card-tagline">${escapeHTML(domain.tagline || "")}</div>
+      </div>
+    `;
+    card.addEventListener("click", () => toggleDomain(domainId, card));
+    wrap.appendChild(card);
   });
 }
 
-function toggleDomain(domainId, chipEl) {
+function toggleDomain(domainId, cardEl) {
   const list = state.focus.domains;
   const i = list.indexOf(domainId);
   if (i === -1) {
     list.push(domainId);
   } else {
     if (list.length <= 1) {
-      chipEl.classList.remove("chip-locked");
-      void chipEl.offsetWidth; // restart animation if triggered twice in a row
-      chipEl.classList.add("chip-locked");
+      cardEl.classList.remove("chip-locked");
+      void cardEl.offsetWidth; // restart animation if triggered twice in a row
+      cardEl.classList.add("chip-locked");
       return; // never let every domain get disabled
     }
     list.splice(i, 1);
   }
-  chipEl.classList.toggle("chip-active");
+  cardEl.classList.toggle("domain-card-active");
   Storage.saveState(activeProfile.id, state);
 }
 
@@ -895,11 +914,22 @@ $("reminder-toggle").addEventListener("click", async () => {
 // nudges state.tier up/down on correct/miss); this is a manual override
 // for "it's drifted somewhere I don't want" — resets every domain's tier
 // to the chosen level in one shot, same effect as the onboarding pick.
-document.querySelectorAll("#difficulty-reset-choice .choice-btn-lg").forEach((btn) => {
+// The dial's thumb position is just "last level you reset to," not a live
+// read of per-domain tier (which can differ per domain — see the Skill
+// Tree on the dashboard for that).
+function setDifficultyDial(level) {
+  document.querySelectorAll(".difficulty-dial-option").forEach((btn) => {
+    btn.classList.toggle("active", Number(btn.dataset.value) === level);
+  });
+  $("difficulty-dial-thumb").style.transform = `translateX(${(level - 1) * 100}%)`;
+}
+
+document.querySelectorAll(".difficulty-dial-option").forEach((btn) => {
   btn.addEventListener("click", () => {
     const level = Number(btn.dataset.value);
     DOMAIN_ORDER.forEach((d) => (state.tier[d] = level));
     Storage.saveState(activeProfile.id, state);
+    setDifficultyDial(level);
     const levelKey = level === 1 ? "difficulty.easy.title" : level === 2 ? "difficulty.medium.title" : "difficulty.hard.title";
     const status = $("difficulty-reset-status");
     status.textContent = I18n.t("focus.difficulty_reset_confirm", { level: I18n.t(levelKey) });
@@ -964,6 +994,7 @@ function renderTopicChips() {
       const chip = document.createElement("button");
       chip.type = "button";
       chip.className = "chip";
+      chip.style.setProperty("--domain-accent", domain.accent);
       chip.textContent = topic;
       chip.classList.toggle("chip-active", state.focus.topics[domainId].includes(topic));
       chip.addEventListener("click", () => toggleTopic(domainId, topic, chip));
@@ -1348,6 +1379,13 @@ function boot() {
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("sw.js").catch(() => {});
   }
+
+  // Brief guaranteed splash so it reads as an intentional intro, not a
+  // flash — the app underneath is already fully rendered by this point.
+  setTimeout(() => {
+    $("splash-screen").classList.add("splash-hidden");
+    setTimeout(() => $("splash-screen").remove(), 450);
+  }, 550);
 }
 
 boot();

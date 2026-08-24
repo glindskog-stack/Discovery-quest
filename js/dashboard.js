@@ -7,6 +7,8 @@ const Dashboard = {
   render(container, profile, state) {
     container.innerHTML = "";
     container.appendChild(this.buildHero(state));
+    container.appendChild(this.buildBrainFact());
+    container.appendChild(this.buildProgressChart(state));
     container.appendChild(this.buildStatRow(state));
     container.appendChild(this.buildDomainBars(state));
     container.appendChild(this.buildRecords(state));
@@ -26,6 +28,62 @@ const Dashboard = {
       <div class="dash-hero-value">${streak}</div>
       <div class="dash-hero-label">${I18n.plural("dashboard.day_streak", streak)} — ${I18n.t("dashboard.longest_run", { n: state.streak.longest })}</div>
     `;
+    return wrap;
+  },
+
+  // One real, correctly-sourced fact about why practice/memory works the
+  // way this app is built around it — day-seeded so it's stable across
+  // dashboard opens on the same day instead of reshuffling every render.
+  buildBrainFact() {
+    const wrap = document.createElement("div");
+    wrap.className = "dash-brain-fact";
+    const dayIndex = Math.floor(Date.now() / 86400000);
+    const fact = I18n.t(`dashboard.brain_fact.${dayIndex % 6}`);
+    wrap.innerHTML = `
+      <div class="dash-brain-fact-label">🧠 ${I18n.t("dashboard.brain_fact_label")}</div>
+      <p class="dash-brain-fact-text">${escapeHtml(fact)}</p>
+    `;
+    return wrap;
+  },
+
+  // A real trend from state.sessionHistory (each entry's xpGained is set
+  // live during play, see app.js's finishAnswer) — never fabricated, just
+  // whatever the last few sessions actually earned.
+  buildProgressChart(state) {
+    const wrap = document.createElement("div");
+    wrap.className = "dash-progress";
+    const title = document.createElement("h3");
+    title.className = "dash-section-title";
+    title.textContent = I18n.t("dashboard.progress_title");
+    wrap.appendChild(title);
+
+    const recent = state.sessionHistory.slice(-10);
+    if (recent.length < 2) {
+      const empty = document.createElement("p");
+      empty.className = "dash-empty";
+      empty.textContent = I18n.t("dashboard.progress_empty");
+      wrap.appendChild(empty);
+      return wrap;
+    }
+
+    const maxXP = Math.max(...recent.map((s) => s.xpGained || 0), 1);
+    const chart = document.createElement("div");
+    chart.className = "progress-chart";
+    recent.forEach((s) => {
+      const bar = document.createElement("div");
+      bar.className = "progress-bar";
+      const heightPct = Math.max(6, Math.round(((s.xpGained || 0) / maxXP) * 100));
+      bar.innerHTML = `<div class="progress-bar-track"><div class="progress-bar-fill" style="height:${heightPct}%"></div></div><div class="progress-bar-label">${formatShortDate(s.date)}</div>`;
+      chart.appendChild(bar);
+    });
+    wrap.appendChild(chart);
+
+    const totalXP = recent.reduce((sum, s) => sum + (s.xpGained || 0), 0);
+    const caption = document.createElement("p");
+    caption.className = "focus-hint";
+    caption.textContent = I18n.t("dashboard.progress_caption", { n: totalXP, sessions: recent.length });
+    wrap.appendChild(caption);
+
     return wrap;
   },
 
@@ -378,6 +436,10 @@ function escapeHtml(str) {
 function formatLogDate(ts) {
   const d = new Date(ts);
   return d.toLocaleDateString(undefined, { month: "short", day: "numeric" }) + " · " + d.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
+}
+
+function formatShortDate(dateStr) {
+  return new Date(dateStr + "T00:00:00").toLocaleDateString(undefined, { month: "short", day: "numeric" });
 }
 
 function formatDuration(ms) {
