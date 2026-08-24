@@ -47,6 +47,10 @@ const DOMAINS = {
   // js/dashboard.js's answer-history rows have an icon/accent to render
   // for Rocket Science log entries (js/rocket.js).
   rocket: { id: "rocket", icon: "🚀", accent: "#d4ff00" },
+  // Same deal for Explore Anything (js/explore.js) — live AI-generated
+  // quizzes on user-typed topics, logged to answer history but outside
+  // the fixed domain taxonomy.
+  explore: { id: "explore", icon: "✨", accent: "#c084fc" },
 };
 
 function localizeDomains() {

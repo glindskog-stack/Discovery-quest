@@ -216,6 +216,16 @@
           <div id="focus-regions" class="chip-row"></div>
         </div>
 
+        <div class="focus-block explore-block">
+          <div class="focus-block-title" data-i18n="focus.explore_label"></div>
+          <p class="focus-hint" data-i18n="focus.explore_hint"></p>
+          <form id="explore-form" class="subject-request-form">
+            <input id="explore-topic-input" maxlength="60" data-i18n-placeholder="focus.explore_placeholder" autocomplete="off" />
+            <button type="submit" class="btn btn-primary btn-small" data-i18n="btn.explore_go"></button>
+          </form>
+          <div id="explore-recent" class="chip-row"></div>
+        </div>
+
         <div class="focus-block">
           <div class="focus-block-title" data-i18n="focus.write_subject_title"></div>
           <p class="focus-hint" data-i18n="focus.write_subject_hint"></p>
@@ -289,6 +299,52 @@
       </div>
     </section>
 
+    <!-- Explore Anything: live AI-generated quiz on any topic, not part of the fixed content bank -->
+    <section id="screen-explore" class="screen hidden" data-screen="explore">
+      <header class="dashboard-header">
+        <button id="close-explore" class="btn btn-ghost btn-small" data-i18n="btn.back"></button>
+        <h2 id="explore-header-title">✨</h2>
+      </header>
+
+      <div class="rocket-content">
+        <div id="explore-loading-view" class="hidden">
+          <div class="explore-spinner" aria-hidden="true"></div>
+          <p class="explore-loading-text" data-i18n="focus.explore_generating"></p>
+        </div>
+
+        <div id="explore-error-view" class="hidden">
+          <p id="explore-error-text" class="explore-error-text"></p>
+          <button id="explore-retry" class="btn btn-primary btn-small" data-i18n="btn.try_again"></button>
+          <button id="explore-error-back" class="btn btn-ghost btn-small" data-i18n="btn.back"></button>
+        </div>
+
+        <div id="explore-play-view" class="hidden">
+          <div class="rocket-play-header">
+            <div id="explore-progress" class="rocket-progress"></div>
+            <span class="ai-badge" data-i18n="focus.explore_ai_badge"></span>
+          </div>
+          <div id="explore-card" class="quest-card">
+            <p id="explore-prompt" class="quest-prompt"></p>
+            <div id="explore-choices" class="quest-choices"></div>
+            <div id="explore-freeresponse" class="quest-freeresponse hidden">
+              <textarea id="explore-freeresponse-input" rows="4" data-i18n-placeholder="quest.freeresponse_placeholder"></textarea>
+              <div id="explore-wordcount" class="wordcount"></div>
+              <button id="explore-submit-freeresponse" class="btn btn-primary" data-i18n="btn.submit"></button>
+            </div>
+            <div id="explore-feedback" class="quest-feedback hidden"></div>
+          </div>
+          <button id="explore-next" class="btn btn-primary hidden" data-i18n="btn.next"></button>
+        </div>
+
+        <div id="explore-done-view" class="hidden">
+          <h3 data-i18n="focus.explore_done_title"></h3>
+          <p id="explore-done-body"></p>
+          <button id="explore-again" class="btn btn-primary" data-i18n="btn.explore_another"></button>
+          <button id="explore-done-back" class="btn btn-ghost" data-i18n="btn.back"></button>
+        </div>
+      </div>
+    </section>
+
     <!-- Overlays: achievement toast, goal-complete celebration, goal picker -->
     <div id="achievement-toast" class="achievement-toast hidden"></div>
 
@@ -347,6 +403,7 @@
   <script src="js/dashboard.js"></script>
   <script src="js/cloud.js"></script>
   <script src="js/grading.js"></script>
+  <script src="js/explore.js"></script>
   <script src="js/push.js"></script>
   <script src="js/sound.js"></script>
   <script src="js/app.js"></script>

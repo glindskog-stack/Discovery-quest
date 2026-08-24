@@ -786,6 +786,7 @@ function renderFocusScreen() {
   renderSubjectDomainOptions();
   renderSubjectRequests();
   renderReminderState();
+  renderExploreRecent();
 }
 
 // Hard on/off per domain — unlike topic chips (which narrow within a
@@ -1352,6 +1353,242 @@ $("rocket-mission-done").addEventListener("click", () => {
   $("rocket-mission-complete-view").classList.add("hidden");
   $("rocket-stage-list-view").classList.remove("hidden");
   renderRocketStageList();
+});
+
+// ---------- Explore Anything ----------
+// Live AI-generated quiz on literally any topic the user types (roses, a
+// religion, fixing an old car) — a standalone flow like Rocket Science,
+// not merged into the adaptive engine. js/explore.js handles the Gemini
+// call + local cache; this just drives the same node-player pattern
+// Rocket Science uses (choices / freeResponse / feedback / next).
+
+let exploreSession = null; // { topic, nodes, index, correctCount }
+
+function explorerDifficulty() {
+  const tiers = DOMAIN_ORDER.map((d) => state.tier[d] || 2);
+  return Math.round(tiers.reduce((a, b) => a + b, 0) / tiers.length) || 2;
+}
+
+function renderExploreRecent() {
+  const wrap = $("explore-recent");
+  wrap.innerHTML = "";
+  const recent = Explore.listRecent().slice(0, 6);
+  recent.forEach((entry) => {
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "chip";
+    chip.textContent = entry.topic;
+    chip.addEventListener("click", () => launchExplore(entry.topic));
+    wrap.appendChild(chip);
+  });
+}
+
+$("explore-form").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const topic = $("explore-topic-input").value.trim();
+  if (!topic) return;
+  $("explore-topic-input").value = "";
+  launchExplore(topic);
+});
+
+function showExploreState(name) {
+  ["loading", "error", "play", "done"].forEach((s) => {
+    $(`explore-${s}-view`).classList.toggle("hidden", s !== name);
+  });
+}
+
+async function launchExplore(topic) {
+  $("explore-header-title").textContent = `✨ ${topic}`;
+  showScreen("explore");
+  showExploreState("loading");
+  Sound.tap();
+
+  const result = await Explore.generate(topic, I18n.current, explorerDifficulty());
+
+  if (result.error) {
+    $("explore-error-text").textContent = I18n.t(
+      result.error === "unavailable" ? "focus.explore_error_unavailable" : "focus.explore_error_failed"
+    );
+    $("explore-retry").classList.remove("hidden");
+    $("explore-retry").onclick = () => launchExplore(topic);
+    showExploreState("error");
+    return;
+  }
+  if (result.refused) {
+    $("explore-error-text").textContent = result.reason || I18n.t("focus.explore_error_failed");
+    $("explore-retry").classList.add("hidden");
+    showExploreState("error");
+    return;
+  }
+
+  exploreSession = { topic: result.topic, nodes: result.nodes, index: 0, correctCount: 0 };
+  showExploreState("play");
+  renderExploreNode();
+}
+
+function currentExploreNode() {
+  return exploreSession.nodes[exploreSession.index];
+}
+
+function renderExploreNode() {
+  const node = currentExploreNode();
+  $("explore-progress").textContent = I18n.t("rocket.stage_progress", { n: exploreSession.index + 1, total: exploreSession.nodes.length });
+  $("explore-prompt").textContent = node.q;
+  $("explore-feedback").classList.add("hidden");
+  $("explore-next").classList.add("hidden");
+
+  if (node.freeResponse) {
+    $("explore-choices").classList.add("hidden");
+    $("explore-choices").innerHTML = "";
+    $("explore-freeresponse").classList.remove("hidden");
+    $("explore-freeresponse-input").value = "";
+    $("explore-freeresponse-input").disabled = false;
+    $("explore-submit-freeresponse").disabled = false;
+    $("explore-wordcount").textContent = I18n.t("quest.words", { n: 0, target: node.minWords });
+  } else {
+    $("explore-freeresponse").classList.add("hidden");
+    $("explore-choices").classList.remove("hidden");
+    const choicesEl = $("explore-choices");
+    choicesEl.innerHTML = "";
+    node.choices.forEach((choice, i) => {
+      const btn = document.createElement("button");
+      btn.className = "choice-btn";
+      btn.innerHTML = `<span class="choice-letter">${CHOICE_LETTERS[i]}</span><span>${escapeHTML(choice)}</span>`;
+      btn.addEventListener("click", () => handleExploreChoice(node, i, btn));
+      choicesEl.appendChild(btn);
+    });
+  }
+}
+
+function handleExploreChoice(node, choiceIndex, btnEl) {
+  document.querySelectorAll("#explore-choices .choice-btn").forEach((b) => (b.disabled = true));
+  const isCorrect = choiceIndex === node.answer;
+  btnEl.classList.add(isCorrect ? "choice-correct" : "choice-wrong");
+  if (!isCorrect) $("explore-choices").children[node.answer].classList.add("choice-correct");
+  isCorrect ? Sound.correct() : Sound.wrong();
+  buzz(isCorrect ? 15 : [12, 30, 12]);
+  if (isCorrect) exploreSession.correctCount++;
+  logExploreAnswer(node, { answerText: node.choices[choiceIndex], correct: isCorrect, completed: true });
+  showExploreFeedback(node, { correct: isCorrect, completed: true });
+}
+
+$("explore-freeresponse-input").addEventListener("input", () => {
+  const node = currentExploreNode();
+  const words = $("explore-freeresponse-input").value.trim().split(/\s+/).filter(Boolean).length;
+  $("explore-wordcount").textContent = I18n.t("quest.words", { n: words, target: node.minWords });
+});
+
+$("explore-submit-freeresponse").addEventListener("click", async () => {
+  const node = currentExploreNode();
+  const text = $("explore-freeresponse-input").value.trim();
+  $("explore-freeresponse-input").disabled = true;
+  $("explore-submit-freeresponse").disabled = true;
+
+  if (!text) {
+    logExploreAnswer(node, { answerText: null, correct: null, completed: false });
+    showExploreFeedback(node, { completed: false });
+    return;
+  }
+
+  $("explore-wordcount").textContent = I18n.t("quest.grading");
+  const grade = await Grading.gradeFreeResponse({ question: node.q, answer: text, language: I18n.current });
+  if (currentExploreNode() !== node) return; // navigated away while grading was in flight
+  const wordCount = text.split(/\s+/).filter(Boolean).length;
+  const completed = grade ? grade.pass : wordCount >= node.minWords;
+  logExploreAnswer(node, { answerText: text, correct: null, completed });
+  showExploreFeedback(node, { completed, aiFeedback: grade ? grade.feedback : null });
+});
+
+function logExploreAnswer(node, { answerText, correct, completed }) {
+  Storage.appendAnswerLog(state, {
+    nodeId: `explore:${exploreSession.topic}:${node.id}`,
+    domain: "explore",
+    style: node.style,
+    question: node.q,
+    answer: answerText ?? null,
+    correct,
+    completed,
+    enjoyment: null,
+    xpGained: 0,
+  });
+  Storage.saveState(activeProfile.id, state);
+  Cloud.logAnswer(activeProfile, state.answerLog[state.answerLog.length - 1]);
+}
+
+function showExploreFeedback(node, { correct, completed, aiFeedback } = {}) {
+  const feedback = $("explore-feedback");
+  feedback.innerHTML = "";
+  let toneClass, icon, headline;
+  const bodyParts = [];
+
+  if (node.style === "rigorous") {
+    toneClass = correct ? "feedback-good" : "feedback-miss";
+    icon = correct ? "✅" : "💡";
+    headline = correct ? I18n.tRandom("feedback.correct", 5) : I18n.tRandom("feedback.incorrect", 5);
+    if (node.explain) bodyParts.push(node.explain);
+  } else if (!completed) {
+    toneClass = "feedback-neutral";
+    icon = aiFeedback ? "🔁" : "⏭️";
+    headline = aiFeedback ? I18n.t("feedback.creative_retry") : I18n.t("feedback.creative_skipped");
+    if (aiFeedback) bodyParts.push(aiFeedback);
+  } else {
+    toneClass = "feedback-good";
+    icon = "✨";
+    headline = I18n.tRandom("feedback.creative_good", 5);
+    if (aiFeedback) bodyParts.push(aiFeedback);
+  }
+
+  feedback.className = `quest-feedback ${toneClass}`;
+  const head = document.createElement("div");
+  head.className = "feedback-headline";
+  head.textContent = `${icon} ${headline}`;
+  feedback.appendChild(head);
+  if (bodyParts.length) {
+    const body = document.createElement("div");
+    body.className = "feedback-body";
+    body.textContent = bodyParts.join(" ");
+    feedback.appendChild(body);
+  }
+  feedback.classList.remove("hidden");
+
+  $("explore-next").classList.remove("hidden");
+  $("explore-next").onclick = () => advanceExplore();
+}
+
+function advanceExplore() {
+  const nextIndex = exploreSession.index + 1;
+  if (nextIndex < exploreSession.nodes.length) {
+    exploreSession.index = nextIndex;
+    renderExploreNode();
+    return;
+  }
+  const gradable = exploreSession.nodes.filter((n) => n.style === "rigorous").length;
+  $("explore-done-body").textContent = I18n.t("focus.explore_done_body", {
+    score: exploreSession.correctCount,
+    total: gradable,
+    topic: exploreSession.topic,
+  });
+  burstConfetti();
+  Sound.correct();
+  showExploreState("done");
+}
+
+$("explore-again").addEventListener("click", () => {
+  showScreen("focus");
+  renderExploreRecent();
+  $("explore-topic-input").focus();
+});
+
+$("explore-done-back").addEventListener("click", () => {
+  showScreen("focus");
+  renderExploreRecent();
+});
+
+$("explore-error-back").addEventListener("click", () => showScreen("focus"));
+
+$("close-explore").addEventListener("click", () => {
+  showScreen("focus");
+  renderExploreRecent();
 });
 
 // ---------- Boot ----------
