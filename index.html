@@ -107,31 +107,41 @@
         <div id="streak-pill" class="streak-pill"></div>
       </div>
 
-      <div id="domain-badge" class="domain-badge"></div>
-
-      <div id="quest-card" class="quest-card">
-        <p id="quest-prompt" class="quest-prompt"></p>
-        <div id="quest-choices" class="quest-choices"></div>
-        <div id="quest-freeresponse" class="quest-freeresponse hidden">
-          <textarea id="freeresponse-input" rows="4" data-i18n-placeholder="quest.freeresponse_placeholder"></textarea>
-          <div id="wordcount" class="wordcount"></div>
-          <button id="submit-freeresponse" class="btn btn-primary" data-i18n="btn.submit"></button>
-        </div>
-        <div id="enjoyment-picker" class="enjoyment-picker hidden">
-          <p data-i18n="quest.how_was_that"></p>
-          <div class="enjoyment-options">
-            <button class="btn enjoyment-btn" data-value="1">🥱</button>
-            <button class="btn enjoyment-btn" data-value="2">🙂</button>
-            <button class="btn enjoyment-btn" data-value="3">😃</button>
-            <button class="btn enjoyment-btn" data-value="4">🔥</button>
-          </div>
-        </div>
-        <div id="quest-feedback" class="quest-feedback hidden"></div>
+      <div id="quest-landing-view" class="quest-landing hidden">
+        <img src="icons/mascot.svg" class="quest-landing-mascot" alt="" />
+        <h2 id="quest-landing-greeting" class="quest-landing-greeting"></h2>
+        <p id="quest-landing-sub" class="quest-landing-sub"></p>
+        <button id="quest-landing-start" class="btn btn-primary quest-landing-cta" data-i18n="btn.start_quest"></button>
+        <div id="quest-landing-fact"></div>
       </div>
 
-      <div class="quest-footer">
-        <button id="next-prompt" class="btn btn-primary hidden" data-i18n="btn.next"></button>
-        <button id="skip-prompt" class="btn btn-ghost btn-small" data-i18n="btn.skip"></button>
+      <div id="quest-play-view" class="hidden">
+        <div id="domain-badge" class="domain-badge"></div>
+
+        <div id="quest-card" class="quest-card">
+          <p id="quest-prompt" class="quest-prompt"></p>
+          <div id="quest-choices" class="quest-choices"></div>
+          <div id="quest-freeresponse" class="quest-freeresponse hidden">
+            <textarea id="freeresponse-input" rows="4" data-i18n-placeholder="quest.freeresponse_placeholder"></textarea>
+            <div id="wordcount" class="wordcount"></div>
+            <button id="submit-freeresponse" class="btn btn-primary" data-i18n="btn.submit"></button>
+          </div>
+          <div id="enjoyment-picker" class="enjoyment-picker hidden">
+            <p data-i18n="quest.how_was_that"></p>
+            <div class="enjoyment-options">
+              <button class="btn enjoyment-btn" data-value="1">🥱</button>
+              <button class="btn enjoyment-btn" data-value="2">🙂</button>
+              <button class="btn enjoyment-btn" data-value="3">😃</button>
+              <button class="btn enjoyment-btn" data-value="4">🔥</button>
+            </div>
+          </div>
+          <div id="quest-feedback" class="quest-feedback hidden"></div>
+        </div>
+
+        <div class="quest-footer">
+          <button id="next-prompt" class="btn btn-primary hidden" data-i18n="btn.next"></button>
+          <button id="skip-prompt" class="btn btn-ghost btn-small" data-i18n="btn.skip"></button>
+        </div>
       </div>
     </section>
 

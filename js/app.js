@@ -291,7 +291,7 @@ function selectProfile(id, opts = {}) {
     openFocusScreen(true);
   } else {
     showScreen("quest");
-    loadNextNode();
+    showQuestLanding();
   }
 }
 
@@ -326,7 +326,33 @@ $("switch-profile").addEventListener("click", () => {
   renderProfileList();
 });
 
-$("tab-home").addEventListener("click", () => showScreen("quest"));
+$("tab-home").addEventListener("click", () => {
+  showScreen("quest");
+  showQuestLanding();
+});
+
+// Home is a landing hub (greeting, streak, one CTA), not a mid-question
+// resume — tapping it always shows this, same as Duolingo's home never
+// reopening you mid-lesson. Only "Start" moves into the actual quest loop.
+function showQuestLanding() {
+  const hour = new Date().getHours();
+  const greetKey = hour < 12 ? "quest.landing_greeting_morning" : hour < 18 ? "quest.landing_greeting_afternoon" : "quest.landing_greeting_evening";
+  $("quest-landing-greeting").textContent = I18n.t(greetKey, { name: activeProfile.name });
+  $("quest-landing-sub").textContent = I18n.tRandom("quest.landing_sub", 5);
+  const factWrap = $("quest-landing-fact");
+  factWrap.innerHTML = "";
+  factWrap.appendChild(Dashboard.buildBrainFact());
+  $("quest-play-view").classList.add("hidden");
+  $("quest-landing-view").classList.remove("hidden");
+}
+
+function startQuestPlay() {
+  $("quest-landing-view").classList.add("hidden");
+  $("quest-play-view").classList.remove("hidden");
+  loadNextNode();
+}
+
+$("quest-landing-start").addEventListener("click", startQuestPlay);
 
 // ---------- Session bookkeeping ----------
 
@@ -767,7 +793,7 @@ function leaveFocusScreen() {
   const wasFresh = firstRunFocus;
   firstRunFocus = false;
   showScreen("quest");
-  if (wasFresh) loadNextNode();
+  if (wasFresh) startQuestPlay();
 }
 
 $("open-focus").addEventListener("click", () => openFocusScreen(false));
