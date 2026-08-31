@@ -354,6 +354,16 @@ function startQuestPlay() {
 
 $("quest-landing-start").addEventListener("click", startQuestPlay);
 
+// Points at Explore Anything (js/explore.js) rather than duplicating it —
+// most people never scroll far enough into Focus to notice it exists.
+$("quest-landing-explore-teaser").addEventListener("click", () => {
+  openFocusScreen(false);
+  requestAnimationFrame(() => {
+    $("explore-form").closest(".explore-block").scrollIntoView({ behavior: "smooth", block: "center" });
+    $("explore-topic-input").focus();
+  });
+});
+
 // ---------- Session bookkeeping ----------
 
 function startSessionTimer() {
@@ -418,6 +428,13 @@ function loadNextNode() {
 }
 
 const CHOICE_LETTERS = ["A", "B", "C", "D"];
+
+// The 🔊/🔇 emoji render as a busy multi-shape glyph at 16px and are hard
+// to tell apart at a glance — a plain single-color SVG reads instantly.
+const SOUND_ICON_ON =
+  '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3,9 8,9 13,4 13,20 8,15 3,15" fill="currentColor" stroke="none"/><path d="M16 8a5 5 0 0 1 0 8"/><path d="M19 5a9 9 0 0 1 0 14"/></svg>';
+const SOUND_ICON_OFF =
+  '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3,9 8,9 13,4 13,20 8,15 3,15" fill="currentColor" stroke="none"/><line x1="16" y1="9" x2="22" y2="15"/><line x1="22" y1="9" x2="16" y2="15"/></svg>';
 
 function renderNode(node) {
   const domain = DOMAINS[node.domain];
@@ -764,7 +781,7 @@ function burstConfetti() {
 
 $("toggle-sound").addEventListener("click", () => {
   const muted = Sound.toggleMute();
-  $("toggle-sound").textContent = muted ? "🔇" : "🔊";
+  $("toggle-sound").innerHTML = muted ? SOUND_ICON_OFF : SOUND_ICON_ON;
   if (!muted) Sound.tap();
 });
 
@@ -1629,7 +1646,7 @@ function boot() {
   fitTaglineToOneLine();
   window.addEventListener("resize", fitTaglineToOneLine);
   renderLangPicker();
-  $("toggle-sound").textContent = Sound.isMuted() ? "🔇" : "🔊";
+  $("toggle-sound").innerHTML = Sound.isMuted() ? SOUND_ICON_OFF : SOUND_ICON_ON;
   renderProfileList();
   const lastId = Storage.getActiveProfileId();
   const profiles = Storage.listProfiles();
